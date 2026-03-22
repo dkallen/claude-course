@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 — Interactive Concept Explorer</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState } = React;
+
+const concepts = {
+  loop: {
+    title: "The Agentic Loop",
+    tagline: "How Claude Code works",
+    phases: [
+      {
+        name: "Read",
+        description: "Claude Code gathers context before doing anything. It reads your files, examines your project structure, processes your prompt, and loads your CLAUDE.md if one exists. It's building a picture of the situation.",
+        details: "This phase is why pointing Claude at the right files matters. The more relevant context it reads, the better its plan will be. In VS Code, it also sees your open files and cursor position. In the terminal, it sees whatever you've given it access to.",
+        question: "What happens if Claude doesn't read enough context?",
+        answer: "It fills in gaps with assumptions — often reasonable ones, but sometimes wrong. This is why it might propose a solution using a library you don't use, or miss a convention your project follows."
+      },
+      {
+        name: "Plan",
+        description: "Based on what it's read, Claude Code forms an approach. For simple tasks, this is near-instant. For complex ones, you might see it reason through options, weigh trade-offs, or ask you clarifying questions.",
+        details: "The planning phase is where Claude's \"thinking\" happens. With the ultrathink keyword or higher effort levels (covered in Module 3), you can push Claude to spend more time here — which often improves results on complex tasks.",
+        question: "Can you see the planning happening?",
+        answer: "Sometimes. With extended thinking enabled, Claude shows its reasoning. Other times, it jumps straight from reading to acting — which usually means the task was straightforward enough that it didn't need to deliberate."
+      },
+      {
+        name: "Act",
+        description: "Claude Code executes — writing code, editing files, running terminal commands, calling external tools via MCP. These are real actions on your real filesystem. It's not simulating; it's doing.",
+        details: "This is the phase most people focus on, but it's actually the least interesting from a mental-model perspective. The quality of the action depends entirely on the quality of the reading and planning that preceded it.",
+        question: "What kinds of actions can Claude take?",
+        answer: "It can create and edit files, run shell commands, execute code, call MCP tools (like GitHub, databases, or APIs), and install packages. The specific actions available depend on your environment and what you've given it access to."
+      },
+      {
+        name: "Verify",
+        description: "After acting, Claude Code checks its work. Did the code compile? Did the tests pass? Does the output match expectations? If something's off, it loops back to the Read phase with new information (the error) and tries again.",
+        details: "Self-correction is powerful but limited. Claude will refine within its current approach — fixing syntax errors, adding missing imports, adjusting logic. But if the fundamental approach is wrong, it'll keep polishing a bad idea. That's when you need to step in and redirect.",
+        question: "How many times will it retry?",
+        answer: "There's no fixed limit, but in practice it usually tries 2-3 correction cycles before either succeeding or getting stuck in a loop. If you see it repeating the same fix, that's your cue to intervene with a different direction."
+      }
+    ]
+  },
+  environments: {
+    title: "Environments",
+    tagline: "Where Claude Code runs",
+    items: [
+      {
+        name: "Terminal CLI",
+        context: "Full filesystem, shell commands, MCP servers",
+        bestFor: "Maximum control, scripting, power users",
+        tradeoff: "Text only — no visual rendering of UI components",
+        insight: "This is Claude Code in its purest form. If you're comfortable in a terminal, this gives you the most control and the fastest feedback loop."
+      },
+      {
+        name: "VS Code Extension",
+        context: "Full filesystem + open files, cursor position, recent edits",
+        bestFor: "Active development, tight edit-test cycles",
+        tradeoff: "Same model, just better-integrated context — not smarter",
+        insight: "The extra context from your editor state (what file is open, where your cursor is) helps Claude make more relevant suggestions without you having to explain what you're working on."
+      },
+      {
+        name: "Desktop App (Cowork)",
+        context: "Selected folder, MCP connectors (Slack, Calendar, etc.)",
+        bestFor: "Document tasks, non-terminal users, file management",
+        tradeoff: "Runs in a sandboxed VM — some system-level operations unavailable",
+        insight: "This is the most accessible way to use Claude Code. You don't need to know terminal commands. But the sandbox means it can't do everything the CLI can."
+      },
+      {
+        name: "Web (claude.ai)",
+        context: "Cloud sandbox only — no local filesystem access",
+        bestFor: "Quick tasks, no setup needed, away from your machine",
+        tradeoff: "No access to your project, MCP servers, or local config",
+        insight: "Good for generic coding tasks, but it's working blind to your specific project. It doesn't know your conventions, your file structure, or your dependencies."
+      }
+    ]
+  },
+  context: {
+    title: "Context Windows",
+    tagline: "What Claude remembers — and forgets",
+    sections: [
+      {
+        name: "The Window",
+        content: "Every interaction happens within a context window — a fixed-size buffer (~200K tokens) that holds everything Claude can \"see\" at once: your prompt, conversation history, file contents, tool outputs, and its own responses. Think of it as working memory."
+      },
+      {
+        name: "Compaction",
+        content: "When the window fills up, Claude automatically summarizes older content to make room. This is called compaction. It's lossy — specific details, early instructions, and nuanced decisions can get reduced to vague summaries or lost entirely."
+      },
+      {
+        name: "The Symptoms",
+        content: "Contradicts earlier decisions. Repeats work it already did. Asks questions you already answered. Proposes approaches that conflict with choices made earlier in the session. These are all signs that compaction has kicked in."
+      },
+      {
+        name: "The Fix",
+        content: "Keep sessions short and focused. Put critical context in CLAUDE.md (Module 2) so it gets re-read every session. If Claude starts showing compaction symptoms, start a fresh session rather than fighting it."
+      }
+    ]
+  },
+  jagged: {
+    title: "The Jagged Frontier",
+    tagline: "What to trust — and what to double-check",
+    excels: [
+      { task: "Understanding existing code", why: "Pattern recognition from training on millions of codebases. It's seen these structures before." },
+      { task: "Boilerplate & standard patterns", why: "CRUD, APIs, components — these follow well-established templates. Claude has seen thousands of variants." },
+      { task: "Refactoring with clear intent", why: "Mechanical transformations with clear rules. Rename, extract, convert — these are algorithmic, not creative." },
+      { task: "Multi-file coordination", why: "Claude can hold the relationships between files in context. Humans lose track; Claude doesn't (within a session)." },
+      { task: "Documentation generation", why: "Synthesizing code into prose is a strength of language models. It reads the code and describes it clearly." },
+      { task: "Debugging from error messages", why: "Stack trace + code = a puzzle with clear inputs. Claude is excellent at this kind of structured diagnosis." }
+    ],
+    struggles: [
+      { task: "Novel algorithms", why: "Can't be pattern-matched from training data. Looks right but often has subtle logical bugs." },
+      { task: "Long-session consistency", why: "Compaction causes drift. Decisions made early get forgotten, leading to contradictions later." },
+      { task: "Knowing what it doesn't know", why: "Confidence level stays high regardless of actual certainty. This is arguably its most dangerous trait." },
+      { task: "UI/UX judgment", why: "It optimizes for 'works' not 'feels right.' Functional output, but rarely beautiful or well-designed." },
+      { task: "Niche domains", why: "Training data skews toward popular tech. Unusual frameworks or specialized domains get generic treatment." },
+      { task: "Security edge cases", why: "May use outdated practices or miss subtle vulnerabilities. Always get specialist review for security-critical code." }
+    ]
+  }
+};
+
+function ConceptExplorer() {
+  const [activeTab, setActiveTab] = useState("loop");
+  const [expandedPhase, setExpandedPhase] = useState(null);
+  const [expandedEnv, setExpandedEnv] = useState(null);
+  const [showAnswer, setShowAnswer] = useState({});
+  const [jaggedView, setJaggedView] = useState("excels");
+
+  const tabs = [
+    { id: "loop", label: "Agentic Loop" },
+    { id: "environments", label: "Environments" },
+    { id: "context", label: "Context Windows" },
+    { id: "jagged", label: "Jagged Frontier" }
+  ];
+
+  const styles = {
+    container: { fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", maxWidth: 760, margin: "0 auto", padding: "2rem 1rem", color: "#1a1a1a" },
+    title: { fontSize: "1.6rem", fontWeight: 700, marginBottom: "0.3rem", letterSpacing: "-0.01em" },
+    tagline: { fontSize: "0.95rem", color: "#888", marginBottom: "2rem" },
+    tabRow: { display: "flex", gap: "0.5rem", marginBottom: "2rem", flexWrap: "wrap" },
+    tab: (active) => ({ padding: "0.5rem 1rem", borderRadius: 6, border: "1px solid #e0e0e0", background: active ? "#1a1a1a" : "#fff", color: active ? "#fff" : "#555", fontSize: "0.85rem", fontWeight: 500, cursor: "pointer", transition: "all 0.15s" }),
+    card: (expanded) => ({ background: "#fafafa", border: "1px solid #e8e8e8", borderRadius: 8, padding: "1rem 1.2rem", marginBottom: "0.8rem", cursor: "pointer", transition: "all 0.15s", borderLeft: expanded ? "3px solid #333" : "3px solid transparent" }),
+    detail: { fontSize: "0.9rem", lineHeight: 1.65, color: "#444", marginTop: "0.5rem" },
+    questionBtn: { background: "#f0f0f0", border: "1px solid #ddd", borderRadius: 6, padding: "0.5rem 0.8rem", fontSize: "0.82rem", cursor: "pointer", marginTop: "0.8rem", color: "#555" },
+    answerBox: { background: "#f7f7f7", borderRadius: 6, padding: "0.8rem 1rem", marginTop: "0.5rem", fontSize: "0.85rem", lineHeight: 1.6, color: "#555" },
+    sectionBox: { background: "#fafafa", border: "1px solid #e8e8e8", borderRadius: 8, padding: "1.2rem", marginBottom: "0.8rem" },
+    sectionTitle: { fontSize: "0.9rem", fontWeight: 600, marginBottom: "0.5rem", color: "#333" },
+    sectionContent: { fontSize: "0.9rem", lineHeight: 1.65, color: "#555" },
+    toggle: { display: "flex", gap: "0.5rem", marginBottom: "1.5rem" },
+    toggleBtn: (active) => ({ padding: "0.4rem 1rem", borderRadius: 20, border: "1px solid #ddd", background: active ? "#1a1a1a" : "#fff", color: active ? "#fff" : "#777", fontSize: "0.82rem", cursor: "pointer" }),
+    jaggedItem: { display: "flex", gap: "0.8rem", marginBottom: "1rem", alignItems: "baseline" },
+    jaggedDot: (type) => ({ width: 8, height: 8, borderRadius: "50%", background: type === "excels" ? "#555" : "#ccc", flexShrink: 0, marginTop: 6 }),
+    jaggedTask: { fontSize: "0.95rem", fontWeight: 600 },
+    jaggedWhy: { fontSize: "0.85rem", color: "#777", marginTop: "0.15rem", lineHeight: 1.5 },
+    envMeta: { display: "flex", gap: "1.5rem", flexWrap: "wrap", margin: "0.6rem 0", fontSize: "0.82rem", color: "#888" },
+    envLabel: { fontWeight: 600, color: "#666", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.03em" }
+  };
+
+  const renderLoop = () => {
+    const data = concepts.loop;
+    return (
+      <div>
+        <p style={{ fontSize: "0.92rem", color: "#555", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+          Claude Code is an agent that cycles through four phases. Click each phase to explore it in depth — including a question to test your understanding.
+        </p>
+        {data.phases.map((phase, i) => {
+          const isExpanded = expandedPhase === i;
+          return (
+            <div key={i} style={styles.card(isExpanded)} onClick={() => setExpandedPhase(isExpanded ? null : i)}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ fontSize: "1.05rem", fontWeight: 600 }}>
+                  <span style={{ color: "#aaa", marginRight: 8 }}>{i + 1}.</span>{phase.name}
+                </div>
+                <span style={{ color: "#ccc", fontSize: "0.8rem" }}>{isExpanded ? "collapse" : "expand"}</span>
+              </div>
+              {isExpanded && (
+                <div style={{ marginTop: "0.8rem" }}>
+                  <p style={styles.detail}>{phase.description}</p>
+                  <p style={{ ...styles.detail, color: "#666", fontStyle: "italic" }}>{phase.details}</p>
+                  <button
+                    style={styles.questionBtn}
+                    onClick={(e) => { e.stopPropagation(); setShowAnswer(prev => ({ ...prev, [i]: !prev[i] })); }}
+                  >
+                    {showAnswer[i] ? "Hide answer" : `Test yourself: ${phase.question}`}
+                  </button>
+                  {showAnswer[i] && <div style={styles.answerBox}>{phase.answer}</div>}
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const renderEnvironments = () => {
+    const data = concepts.environments;
+    return (
+      <div>
+        <p style={{ fontSize: "0.92rem", color: "#555", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+          Same model, different context surface. Click each environment to see what Claude can access and when to choose it.
+        </p>
+        {data.items.map((env, i) => {
+          const isExpanded = expandedEnv === i;
+          return (
+            <div key={i} style={styles.card(isExpanded)} onClick={() => setExpandedEnv(isExpanded ? null : i)}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ fontSize: "1.05rem", fontWeight: 600 }}>{env.name}</div>
+                <span style={{ color: "#ccc", fontSize: "0.8rem" }}>{isExpanded ? "collapse" : "expand"}</span>
+              </div>
+              {isExpanded && (
+                <div style={{ marginTop: "0.8rem" }}>
+                  <div style={styles.envMeta}>
+                    <div><span style={styles.envLabel}>Context: </span>{env.context}</div>
+                    <div><span style={styles.envLabel}>Best for: </span>{env.bestFor}</div>
+                  </div>
+                  <p style={styles.detail}>{env.insight}</p>
+                  <p style={{ ...styles.detail, color: "#999", fontSize: "0.82rem" }}>Trade-off: {env.tradeoff}</p>
+                </div>
+              )}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const renderContext = () => {
+    const data = concepts.context;
+    return (
+      <div>
+        <p style={{ fontSize: "0.92rem", color: "#555", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+          Claude's working memory is large but finite. Here's how it works — and what to do when it runs out.
+        </p>
+        {data.sections.map((section, i) => (
+          <div key={i} style={styles.sectionBox}>
+            <div style={styles.sectionTitle}>{section.name}</div>
+            <div style={styles.sectionContent}>{section.content}</div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const renderJagged = () => {
+    const data = concepts.jagged;
+    const items = jaggedView === "excels" ? data.excels : data.struggles;
+    return (
+      <div>
+        <p style={{ fontSize: "0.92rem", color: "#555", lineHeight: 1.6, marginBottom: "1rem" }}>
+          Claude Code's capabilities are jagged — strong in some areas, weak in others, with an unintuitive boundary. Explore both sides.
+        </p>
+        <div style={styles.toggle}>
+          <button style={styles.toggleBtn(jaggedView === "excels")} onClick={() => setJaggedView("excels")}>Where it excels</button>
+          <button style={styles.toggleBtn(jaggedView === "struggles")} onClick={() => setJaggedView("struggles")}>Where it struggles</button>
+        </div>
+        {items.map((item, i) => (
+          <div key={i} style={styles.jaggedItem}>
+            <div style={styles.jaggedDot(jaggedView)} />
+            <div>
+              <div style={styles.jaggedTask}>{item.task}</div>
+              <div style={styles.jaggedWhy}>{item.why}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const current = concepts[activeTab];
+
+  return (
+    <div style={styles.container}>
+      <div style={styles.title}>{current.title}</div>
+      <div style={styles.tagline}>{current.tagline}</div>
+      <div style={styles.tabRow}>
+        {tabs.map(tab => (
+          <button key={tab.id} style={styles.tab(activeTab === tab.id)} onClick={() => { setActiveTab(tab.id); setExpandedPhase(null); setExpandedEnv(null); }}>
+            {tab.label}
+          </button>
+        ))}
+      </div>
+      {activeTab === "loop" && renderLoop()}
+      {activeTab === "environments" && renderEnvironments()}
+      {activeTab === "context" && renderContext()}
+      {activeTab === "jagged" && renderJagged()}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<ConceptExplorer />);
+</script>
+</body>
+</html>

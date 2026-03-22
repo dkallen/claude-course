@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif">
+
+  <!-- Background -->
+  <rect width="900" height="620" fill="#ffffff"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" font-size="18" font-weight="700" fill="#1a1a1a">Module 1 — Core Concepts Map</text>
+
+  <!-- ==================== AGENTIC LOOP (top section) ==================== -->
+  <text x="450" y="75" text-anchor="middle" font-size="13" font-weight="600" fill="#888" letter-spacing="0.1em">THE AGENTIC LOOP</text>
+
+  <!-- Read box -->
+  <rect x="80" y="95" width="150" height="70" rx="8" fill="#f7f7f7" stroke="#d0d0d0" stroke-width="1"/>
+  <text x="155" y="122" text-anchor="middle" font-size="15" font-weight="600" fill="#1a1a1a">Read</text>
+  <text x="155" y="142" text-anchor="middle" font-size="11" fill="#777">Gather context</text>
+  <text x="155" y="156" text-anchor="middle" font-size="11" fill="#777">files, code, prompt</text>
+
+  <!-- Arrow Read→Plan -->
+  <line x1="230" y1="130" x2="275" y2="130" stroke="#bbb" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Plan box -->
+  <rect x="280" y="95" width="150" height="70" rx="8" fill="#f7f7f7" stroke="#d0d0d0" stroke-width="1"/>
+  <text x="355" y="122" text-anchor="middle" font-size="15" font-weight="600" fill="#1a1a1a">Plan</text>
+  <text x="355" y="142" text-anchor="middle" font-size="11" fill="#777">Form approach</text>
+  <text x="355" y="156" text-anchor="middle" font-size="11" fill="#777">weigh options</text>
+
+  <!-- Arrow Plan→Act -->
+  <line x1="430" y1="130" x2="475" y2="130" stroke="#bbb" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Act box -->
+  <rect x="480" y="95" width="150" height="70" rx="8" fill="#f7f7f7" stroke="#d0d0d0" stroke-width="1"/>
+  <text x="555" y="122" text-anchor="middle" font-size="15" font-weight="600" fill="#1a1a1a">Act</text>
+  <text x="555" y="142" text-anchor="middle" font-size="11" fill="#777">Execute changes</text>
+  <text x="555" y="156" text-anchor="middle" font-size="11" fill="#777">real files, real commands</text>
+
+  <!-- Arrow Act→Verify -->
+  <line x1="630" y1="130" x2="675" y2="130" stroke="#bbb" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- Verify box -->
+  <rect x="680" y="95" width="150" height="70" rx="8" fill="#f7f7f7" stroke="#d0d0d0" stroke-width="1"/>
+  <text x="755" y="122" text-anchor="middle" font-size="15" font-weight="600" fill="#1a1a1a">Verify</text>
+  <text x="755" y="142" text-anchor="middle" font-size="11" fill="#777">Check results</text>
+  <text x="755" y="156" text-anchor="middle" font-size="11" fill="#777">errors → loop back</text>
+
+  <!-- Feedback loop arrow (Verify back to Read) -->
+  <path d="M 755 165 L 755 185 Q 755 195 745 195 L 165 195 Q 155 195 155 185 L 155 165" fill="none" stroke="#ccc" stroke-width="1.5" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+  <text x="450" y="210" text-anchor="middle" font-size="10" fill="#aaa" font-style="italic">self-correction loop (if errors found)</text>
+
+  <!-- ==================== ENVIRONMENTS (middle section) ==================== -->
+  <text x="450" y="260" text-anchor="middle" font-size="13" font-weight="600" fill="#888" letter-spacing="0.1em">ENVIRONMENTS — SAME MODEL, DIFFERENT CONTEXT</text>
+
+  <!-- Context surface gradient bar -->
+  <defs>
+    <linearGradient id="contextGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e8e8e8"/>
+      <stop offset="100%" stop-color="#555"/>
+    </linearGradient>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#bbb"/>
+    </marker>
+  </defs>
+  <rect x="80" y="275" width="740" height="6" rx="3" fill="url(#contextGrad)"/>
+  <text x="80" y="297" font-size="10" fill="#aaa">Less context</text>
+  <text x="820" y="297" text-anchor="end" font-size="10" fill="#aaa">More context</text>
+
+  <!-- Web -->
+  <rect x="80" y="310" width="160" height="55" rx="6" fill="#fcfcfc" stroke="#e0e0e0" stroke-width="1"/>
+  <text x="160" y="333" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Web</text>
+  <text x="160" y="350" text-anchor="middle" font-size="10" fill="#888">Cloud sandbox only</text>
+
+  <!-- Desktop -->
+  <rect x="270" y="310" width="160" height="55" rx="6" fill="#f9f9f9" stroke="#ddd" stroke-width="1"/>
+  <text x="350" y="333" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Desktop (Cowork)</text>
+  <text x="350" y="350" text-anchor="middle" font-size="10" fill="#888">Your folder + MCP</text>
+
+  <!-- VS Code -->
+  <rect x="460" y="310" width="160" height="55" rx="6" fill="#f5f5f5" stroke="#ccc" stroke-width="1"/>
+  <text x="540" y="333" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">VS Code</text>
+  <text x="540" y="350" text-anchor="middle" font-size="10" fill="#888">Filesystem + editor context</text>
+
+  <!-- Terminal -->
+  <rect x="650" y="310" width="170" height="55" rx="6" fill="#f0f0f0" stroke="#bbb" stroke-width="1"/>
+  <text x="735" y="333" text-anchor="middle" font-size="13" font-weight="600" fill="#1a1a1a">Terminal CLI</text>
+  <text x="735" y="350" text-anchor="middle" font-size="10" fill="#888">Full env + shell + MCP</text>
+
+  <!-- ==================== CONTEXT WINDOW (bottom left) ==================== -->
+  <text x="235" y="415" text-anchor="middle" font-size="13" font-weight="600" fill="#888" letter-spacing="0.1em">CONTEXT WINDOW</text>
+
+  <!-- Whiteboard metaphor -->
+  <rect x="80" y="430" width="310" height="160" rx="8" fill="#fafafa" stroke="#ddd" stroke-width="1"/>
+
+  <!-- Active zone -->
+  <rect x="90" y="440" width="290" height="60" rx="4" fill="#f0f0f0" stroke="#ccc" stroke-width="0.5"/>
+  <text x="235" y="465" text-anchor="middle" font-size="11" font-weight="500" fill="#555">Current conversation</text>
+  <text x="235" y="480" text-anchor="middle" font-size="10" fill="#999">Full detail — Claude can see everything here</text>
+
+  <!-- Compacted zone -->
+  <rect x="90" y="510" width="290" height="35" rx="4" fill="#f7f7f7" stroke="#e0e0e0" stroke-width="0.5" stroke-dasharray="3,3"/>
+  <text x="235" y="532" text-anchor="middle" font-size="10" fill="#aaa">Compacted: summarized, details lost</text>
+
+  <!-- CLAUDE.md callout -->
+  <rect x="90" y="555" width="290" height="28" rx="4" fill="#f5f5f5" stroke="#bbb" stroke-width="1"/>
+  <text x="235" y="574" text-anchor="middle" font-size="10" font-weight="600" fill="#666">CLAUDE.md — always re-read, never compacted</text>
+
+  <!-- ==================== JAGGED FRONTIER (bottom right) ==================== -->
+  <text x="650" y="415" text-anchor="middle" font-size="13" font-weight="600" fill="#888" letter-spacing="0.1em">JAGGED FRONTIER</text>
+
+  <!-- Excels column -->
+  <rect x="490" y="430" width="160" height="160" rx="8" fill="#f9f9f9" stroke="#ddd" stroke-width="1"/>
+  <text x="570" y="452" text-anchor="middle" font-size="11" font-weight="600" fill="#555">Excels</text>
+  <text x="500" y="472" font-size="10" fill="#777">● Code understanding</text>
+  <text x="500" y="490" font-size="10" fill="#777">● Standard patterns</text>
+  <text x="500" y="508" font-size="10" fill="#777">● Refactoring</text>
+  <text x="500" y="526" font-size="10" fill="#777">● Multi-file changes</text>
+  <text x="500" y="544" font-size="10" fill="#777">● Documentation</text>
+  <text x="500" y="562" font-size="10" fill="#777">● Error diagnosis</text>
+
+  <!-- Struggles column -->
+  <rect x="670" y="430" width="160" height="160" rx="8" fill="#fdfdfd" stroke="#e8e8e8" stroke-width="1"/>
+  <text x="750" y="452" text-anchor="middle" font-size="11" font-weight="600" fill="#555">Struggles</text>
+  <text x="680" y="472" font-size="10" fill="#aaa">○ Novel algorithms</text>
+  <text x="680" y="490" font-size="10" fill="#aaa">○ Long-session drift</text>
+  <text x="680" y="508" font-size="10" fill="#aaa">○ Calibrated confidence</text>
+  <text x="680" y="526" font-size="10" fill="#aaa">○ UI/UX taste</text>
+  <text x="680" y="544" font-size="10" fill="#aaa">○ Niche domains</text>
+  <text x="680" y="562" font-size="10" fill="#aaa">○ Security edge cases</text>
+
+  <!-- Footer -->
+  <text x="450" y="612" text-anchor="middle" font-size="10" fill="#ccc">From Concept to Delivery with Claude Code — Module 1 Concept Map</text>
+
+</svg>

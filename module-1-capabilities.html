@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 — Capability Matrix</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem; }
+  .container { max-width: 900px; margin: 0 auto; }
+
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.2rem; }
+  .subtitle { font-size: 0.9rem; color: #888; margin-bottom: 0.5rem; }
+  .intro { font-size: 0.9rem; color: #666; line-height: 1.6; margin-bottom: 2rem; max-width: 650px; }
+
+  /* Filter tabs */
+  .filters { display: flex; gap: 0.4rem; margin-bottom: 1.5rem; flex-wrap: wrap; }
+  .filter-btn { padding: 0.35rem 0.8rem; border-radius: 20px; border: 1px solid #e0e0e0; background: #fff; color: #777; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; }
+  .filter-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+
+  /* Matrix table */
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  thead th { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 2px solid #e0e0e0; font-weight: 600; color: #555; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+  tbody td { padding: 0.7rem 0.8rem; border-bottom: 1px solid #f0f0f0; vertical-align: top; line-height: 1.45; }
+  tbody tr:hover { background: #fafafa; }
+
+  .task-name { font-weight: 600; color: #1a1a1a; }
+  .category-tag { display: inline-block; font-size: 0.7rem; padding: 0.15rem 0.5rem; border-radius: 10px; background: #f3f3f3; color: #888; margin-top: 0.2rem; }
+
+  /* Confidence bar */
+  .confidence-cell { width: 140px; }
+  .bar-container { display: flex; align-items: center; gap: 0.5rem; }
+  .bar { height: 6px; border-radius: 3px; background: #e0e0e0; }
+  .bar-fill { height: 100%; border-radius: 3px; }
+  .bar-label { font-size: 0.75rem; color: #999; white-space: nowrap; }
+
+  .notes { font-size: 0.82rem; color: #777; line-height: 1.4; }
+  .tip { font-size: 0.8rem; color: #555; font-style: italic; }
+
+  /* Legend */
+  .legend { display: flex; gap: 1.5rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid #eee; font-size: 0.78rem; color: #999; flex-wrap: wrap; }
+  .legend-item { display: flex; align-items: center; gap: 0.3rem; }
+  .legend-dot { width: 10px; height: 6px; border-radius: 3px; }
+
+  .footer { margin-top: 1.5rem; font-size: 0.78rem; color: #ccc; }
+
+  @media (max-width: 700px) {
+    table { font-size: 0.8rem; }
+    .notes-col { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Claude Code Capability Matrix</h1>
+  <p class="subtitle">Module 1 — The Jagged Frontier, mapped</p>
+  <p class="intro">This matrix maps Claude Code's capabilities across common task categories. Use it as a quick reference for deciding how much to trust Claude on a given task — and where to focus your verification effort.</p>
+
+  <div class="filters">
+    <button class="filter-btn active" onclick="filterRows('all')">All</button>
+    <button class="filter-btn" onclick="filterRows('code')">Code</button>
+    <button class="filter-btn" onclick="filterRows('analysis')">Analysis</button>
+    <button class="filter-btn" onclick="filterRows('content')">Content</button>
+    <button class="filter-btn" onclick="filterRows('judgment')">Judgment</button>
+    <button class="filter-btn" onclick="filterRows('ops')">Ops</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width:25%;">Task</th>
+        <th class="confidence-cell">Reliability</th>
+        <th class="notes-col">Notes & Advice</th>
+      </tr>
+    </thead>
+    <tbody id="matrix-body">
+    </tbody>
+  </table>
+
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#6a6;"></div> High reliability — trust, then verify</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#da5;"></div> Moderate — let it try, verify carefully</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#c66;"></div> Low — use with caution, always verify</div>
+  </div>
+
+  <div class="footer">From Concept to Delivery with Claude Code — Module 1 Capability Matrix</div>
+</div>
+
+<script>
+const data = [
+  { task: "Explain existing code", category: "analysis", score: 95, notes: "One of its strongest capabilities. Give it a file or function and ask \"what does this do?\" — you'll get a clear, accurate explanation.", tip: "Trust the explanation; verify any claims about performance or edge cases." },
+  { task: "Write CRUD / REST endpoints", category: "code", score: 92, notes: "Standard patterns that Claude has seen thousands of times. Efficient and reliable.", tip: "Verify auth/security aspects separately." },
+  { task: "Generate React components", category: "code", score: 88, notes: "Handles standard component patterns well — forms, lists, data tables, modals. Follows conventions of whatever framework version it detects.", tip: "Good at structure; mediocre at visual design. Style it yourself." },
+  { task: "Refactor / rename across files", category: "code", score: 93, notes: "Mechanical transformations with clear rules. Multi-file coordination is a genuine strength.", tip: "Run your tests after — edge cases in dynamic references can be missed." },
+  { task: "Debug from stack traces", category: "analysis", score: 90, notes: "Give it the error message and access to the code. Remarkably good at tracing to root cause.", tip: "Verify the fix doesn't introduce new issues. Trust the diagnosis more than the solution." },
+  { task: "Write unit tests", category: "code", score: 85, notes: "Good at generating test structure and common cases. Can miss edge cases or write tests that pass trivially.", tip: "Review that tests actually test meaningful behavior — not just that the code runs." },
+  { task: "Generate documentation", category: "content", score: 91, notes: "READMEs, API docs, code comments, changelogs — synthesizing code into prose is a natural strength.", tip: "Verify accuracy of any specific claims (versions, performance numbers)." },
+  { task: "Write configuration files", category: "code", score: 87, notes: "Webpack, Docker, CI/CD, linters — common configs done well. Niche tools may get outdated defaults.", tip: "Check version compatibility with your actual stack." },
+  { task: "Data transformation scripts", category: "code", score: 84, notes: "CSV parsing, JSON reshaping, format conversion — handles well when requirements are clear.", tip: "Test with your actual data, not just happy-path examples." },
+  { task: "Code review", category: "analysis", score: 78, notes: "Good at catching obvious issues (unused variables, potential null refs). Misses architectural concerns and business logic errors.", tip: "Useful as a first pass, not a replacement for human review." },
+  { task: "Write creative content", category: "content", score: 82, notes: "Blog posts, emails, release notes — competent prose. Tends toward generic phrasing without strong examples in the prompt.", tip: "Provide tone examples and specific details to avoid blandness." },
+  { task: "Novel algorithm design", category: "code", score: 45, notes: "Can't be pattern-matched from training. Produces code that looks correct but often has subtle logic bugs.", tip: "Design the algorithm yourself; use Claude for implementation." },
+  { task: "UI/UX design decisions", category: "judgment", score: 40, notes: "Functional but rarely beautiful. Optimizes for \"works\" not \"feels right.\" Lacks design taste.", tip: "You or a designer provide the design direction; Claude implements it." },
+  { task: "Architecture decisions", category: "judgment", score: 60, notes: "Can present trade-offs and options well. But \"right for our situation\" requires domain judgment it may not have.", tip: "Use Claude to enumerate options and trade-offs. Make the decision yourself." },
+  { task: "Security-critical code", category: "code", score: 55, notes: "Writes auth flows and encryption, but may miss edge cases or use outdated practices.", tip: "Always get specialist review. Never ship security code reviewed only by Claude." },
+  { task: "Estimating effort / timeline", category: "judgment", score: 35, notes: "Has no real sense of how long human tasks take. Estimates are essentially random.", tip: "Don't use Claude for time estimates. It has no grounded experience here." },
+  { task: "Domain-specific conventions", category: "judgment", score: 50, notes: "Training data skews toward popular tech. Niche frameworks, internal conventions, and industry-specific patterns get generic treatment.", tip: "Encode your conventions in CLAUDE.md (Module 2) to compensate." },
+  { task: "Git operations", category: "ops", score: 88, notes: "Branching, committing, PR creation, merge conflict resolution — handles standard Git workflows well.", tip: "Double-check force pushes and rebases. Standard operations are reliable." },
+  { task: "Dependency management", category: "ops", score: 80, notes: "Installing, updating, resolving conflicts. Usually correct, but version compatibility issues can slip through.", tip: "Verify compatibility with your runtime version." },
+  { task: "Setting up CI/CD pipelines", category: "ops", score: 75, notes: "Generates reasonable GitHub Actions, GitLab CI configs. May use deprecated actions or miss environment-specific needs.", tip: "Test the pipeline in a branch before merging. Check action versions." },
+  { task: "Performance optimization", category: "analysis", score: 65, notes: "Can identify obvious bottlenecks (N+1 queries, missing indexes). Misses subtle performance issues.", tip: "Use profiling tools for real data; Claude for implementing the fixes once identified." },
+  { task: "Business case analysis", category: "judgment", score: 38, notes: "Produces plausible-sounding but generic business analysis. Lacks real market knowledge or domain expertise.", tip: "Use for structuring your own thinking (Module 4 framework). Don't trust the substance." }
+];
+
+function getColor(score) {
+  if (score >= 75) return "#6a6";
+  if (score >= 55) return "#da5";
+  return "#c66";
+}
+
+function getLabel(score) {
+  if (score >= 85) return "High";
+  if (score >= 70) return "Good";
+  if (score >= 55) return "Moderate";
+  if (score >= 40) return "Low";
+  return "Very low";
+}
+
+function renderTable(filter) {
+  const tbody = document.getElementById("matrix-body");
+  tbody.innerHTML = "";
+  const filtered = filter === "all" ? data : data.filter(d => d.category === filter);
+  filtered.sort((a, b) => b.score - a.score);
+
+  filtered.forEach(item => {
+    const tr = document.createElement("tr");
+    tr.setAttribute("data-category", item.category);
+    tr.innerHTML = `
+      <td>
+        <div class="task-name">${item.task}</div>
+        <div class="category-tag">${item.category}</div>
+      </td>
+      <td class="confidence-cell">
+        <div class="bar-container">
+          <div class="bar" style="width:80px;">
+            <div class="bar-fill" style="width:${item.score}%;background:${getColor(item.score)};"></div>
+          </div>
+          <span class="bar-label">${getLabel(item.score)}</span>
+        </div>
+      </td>
+      <td class="notes-col">
+        <div class="notes">${item.notes}</div>
+        <div class="tip">${item.tip}</div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterRows(category) {
+  document.querySelectorAll(".filter-btn").forEach(btn => btn.classList.remove("active"));
+  event.target.classList.add("active");
+  renderTable(category);
+}
+
+renderTable("all");
+</script>
+
+</body>
+</html>

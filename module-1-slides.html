@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1: Orientation — What Claude Code Actually Is</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; }
+
+  .slide-container { max-width: 900px; margin: 0 auto; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding: 3rem 2rem; }
+  .slide { display: none; }
+  .slide.active { display: block; }
+
+  h1 { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+  h2 { font-size: 1.6rem; font-weight: 600; margin-bottom: 1.5rem; color: #333; }
+  .subtitle { font-size: 1.1rem; color: #666; margin-bottom: 2rem; }
+  p { font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem; color: #333; }
+  .highlight { background: #f5f5f5; border-left: 3px solid #333; padding: 1.2rem 1.5rem; margin: 1.5rem 0; border-radius: 0 6px 6px 0; }
+  .highlight p { margin-bottom: 0; }
+
+  .loop-diagram { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 2rem 0; flex-wrap: wrap; }
+  .loop-step { background: #f7f7f7; border: 1px solid #e0e0e0; border-radius: 8px; padding: 1rem 1.5rem; text-align: center; min-width: 120px; }
+  .loop-step .label { font-weight: 600; font-size: 1.1rem; }
+  .loop-step .desc { font-size: 0.85rem; color: #666; margin-top: 0.3rem; }
+  .loop-arrow { font-size: 1.5rem; color: #999; }
+
+  .env-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin: 1.5rem 0; }
+  .env-card { background: #fafafa; border: 1px solid #e8e8e8; border-radius: 8px; padding: 1.2rem; }
+  .env-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.5rem; }
+  .env-card p { font-size: 0.9rem; margin-bottom: 0; }
+
+  .spectrum { margin: 2rem 0; }
+  .spectrum-bar { height: 8px; background: linear-gradient(to right, #e8e8e8, #333); border-radius: 4px; margin: 1rem 0 0.5rem; }
+  .spectrum-labels { display: flex; justify-content: space-between; font-size: 0.85rem; color: #666; }
+
+  .jagged-list { margin: 1.5rem 0; }
+  .jagged-item { display: flex; gap: 0.75rem; margin-bottom: 0.8rem; align-items: baseline; }
+  .jagged-icon { font-size: 1rem; flex-shrink: 0; }
+  .jagged-text { font-size: 0.95rem; line-height: 1.5; }
+
+  .nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #eee; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+  .nav button { background: #1a1a1a; color: #fff; border: none; padding: 0.6rem 1.5rem; border-radius: 6px; font-size: 0.9rem; cursor: pointer; transition: background 0.2s; }
+  .nav button:hover { background: #333; }
+  .nav button:disabled { background: #ccc; cursor: default; }
+  .progress { font-size: 0.85rem; color: #999; }
+
+  .big-number { font-size: 4rem; font-weight: 700; color: #e0e0e0; margin-bottom: 0.5rem; }
+
+  @media (max-width: 600px) {
+    .env-grid { grid-template-columns: 1fr; }
+    h1 { font-size: 1.6rem; }
+    .loop-diagram { flex-direction: column; }
+    .loop-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<div class="slide-container">
+
+  <!-- Slide 1: Title -->
+  <div class="slide active" id="slide-1">
+    <p class="subtitle">From Concept to Delivery with Claude Code</p>
+    <h1>Module 1: Orientation</h1>
+    <h2>What Claude Code Actually Is</h2>
+    <p>Before you can use Claude Code well, you need an accurate mental model of what it is. Not the marketing pitch — the actual mechanics.</p>
+    <div class="highlight">
+      <p>Most frustration with Claude Code comes from expecting it to be something it isn't. This module fixes that.</p>
+    </div>
+    <p style="margin-top:2rem; color:#666;">Four concepts. Thirty minutes. A foundation for everything that follows.</p>
+  </div>
+
+  <!-- Slide 2: What We'll Cover -->
+  <div class="slide" id="slide-2">
+    <h2>Four Concepts, One Mental Model</h2>
+    <p>By the end of this module, you'll understand:</p>
+    <div style="margin: 1.5rem 0;">
+      <div class="jagged-item"><span class="jagged-icon">1.</span><span class="jagged-text"><strong>The Agentic Loop</strong> — How Claude Code reads, plans, acts, and verifies</span></div>
+      <div class="jagged-item"><span class="jagged-icon">2.</span><span class="jagged-text"><strong>Environments</strong> — Where Claude Code runs and what it can see</span></div>
+      <div class="jagged-item"><span class="jagged-icon">3.</span><span class="jagged-text"><strong>Context Windows</strong> — Why Claude Code "forgets" and what to do about it</span></div>
+      <div class="jagged-item"><span class="jagged-icon">4.</span><span class="jagged-text"><strong>The Jagged Frontier</strong> — What Claude Code excels at vs. where it falls flat</span></div>
+    </div>
+    <p style="color:#666;">These four ideas explain nearly every surprise — good and bad — you'll encounter.</p>
+  </div>
+
+  <!-- Slide 3: Agentic Loop Intro -->
+  <div class="slide" id="slide-3">
+    <div class="big-number">01</div>
+    <h1>The Agentic Loop</h1>
+    <p style="margin-top: 1rem;">Claude Code isn't a chatbot that happens to write code. It's an <strong>agent</strong> — a system that can perceive its environment, form plans, take real actions, and learn from the results.</p>
+    <p>This loop is the engine behind everything Claude Code does.</p>
+  </div>
+
+  <!-- Slide 4: The Four Phases -->
+  <div class="slide" id="slide-4">
+    <h2>Read → Plan → Act → Verify</h2>
+    <div class="loop-diagram">
+      <div class="loop-step">
+        <div class="label">Read</div>
+        <div class="desc">Gather context.<br>Files, code, your prompt.</div>
+      </div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">
+        <div class="label">Plan</div>
+        <div class="desc">Form an approach.<br>Weigh options.</div>
+      </div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">
+        <div class="label">Act</div>
+        <div class="desc">Execute changes.<br>Real files, real commands.</div>
+      </div>
+      <div class="loop-arrow">→</div>
+      <div class="loop-step">
+        <div class="label">Verify</div>
+        <div class="desc">Check the result.<br>Errors? Loop back.</div>
+      </div>
+    </div>
+    <div class="highlight">
+      <p>The loop is self-correcting — Claude reads errors and retries. But it refines within its current approach. If the approach itself is wrong, it needs you to redirect.</p>
+    </div>
+  </div>
+
+  <!-- Slide 5: Loop in Practice -->
+  <div class="slide" id="slide-5">
+    <h2>The Loop in Practice</h2>
+    <p>You ask: <em>"Add input validation to the signup form."</em></p>
+    <div style="margin: 1.5rem 0;">
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Read</span><span class="jagged-text">Scans your project. Finds the signup form. Notices you already use Zod.</span></div>
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Plan</span><span class="jagged-text">Decides to use Zod for validation. Identifies fields and rules needed.</span></div>
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Act</span><span class="jagged-text">Writes the schema, integrates it, updates error handling.</span></div>
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Verify</span><span class="jagged-text">Checks for syntax errors. Runs tests. Finds a missing import — loops back.</span></div>
+    </div>
+    <p>The missing import triggers another micro-cycle: read the error, plan the fix, add the import, verify again. This happens automatically.</p>
+  </div>
+
+  <!-- Slide 6: Environments Intro -->
+  <div class="slide" id="slide-6">
+    <div class="big-number">02</div>
+    <h1>Environments</h1>
+    <p style="margin-top: 1rem;">Claude Code runs in several places. The model is the same everywhere — what changes is the <strong>context surface</strong>: what Claude can see and act on.</p>
+  </div>
+
+  <!-- Slide 7: The Four Environments -->
+  <div class="slide" id="slide-7">
+    <h2>Four Environments, One Model</h2>
+    <div class="env-grid">
+      <div class="env-card">
+        <h3>Terminal CLI</h3>
+        <p>Purest form. Full filesystem access, shell commands, MCP servers. Maximum control, text only.</p>
+      </div>
+      <div class="env-card">
+        <h3>VS Code Extension</h3>
+        <p>Same capabilities, richer context. Sees your open files, cursor position, recent edits.</p>
+      </div>
+      <div class="env-card">
+        <h3>Desktop App (Cowork)</h3>
+        <p>Sandboxed Linux environment. Accessible to non-terminal users. Supports MCP connections.</p>
+      </div>
+      <div class="env-card">
+        <h3>Web (claude.ai)</h3>
+        <p>Cloud sandbox. No local access. Good for quick tasks, but missing your project context.</p>
+      </div>
+    </div>
+    <div class="highlight">
+      <p><strong>The key insight:</strong> Choose the environment that gives Claude the context it needs for the task at hand.</p>
+    </div>
+  </div>
+
+  <!-- Slide 8: Context Surface Spectrum -->
+  <div class="slide" id="slide-8">
+    <h2>The Context Surface Spectrum</h2>
+    <p>More context surface = Claude has more to work with. Less context surface = Claude has to guess more.</p>
+    <div class="spectrum">
+      <div class="spectrum-bar"></div>
+      <div class="spectrum-labels">
+        <span>Web (generic sandbox)</span>
+        <span>Desktop (your folder)</span>
+        <span>CLI / VS Code (your full env)</span>
+      </div>
+    </div>
+    <p style="margin-top: 1.5rem;">This isn't about intelligence — it's about access. The same model, given more context about your specific project, produces dramatically better results.</p>
+  </div>
+
+  <!-- Slide 9: Context Windows Intro -->
+  <div class="slide" id="slide-9">
+    <div class="big-number">03</div>
+    <h1>Context Windows</h1>
+    <p style="margin-top: 1rem;">Claude Code has a large but finite working memory. When it fills up, older details get compressed. This is why Claude sometimes "forgets" — and understanding it changes how you structure your work.</p>
+  </div>
+
+  <!-- Slide 10: How Compaction Works -->
+  <div class="slide" id="slide-10">
+    <h2>The Whiteboard Analogy</h2>
+    <p>Think of the context window as a whiteboard. Claude can write and read everything on it. But the whiteboard has a fixed size.</p>
+    <p>When it runs out of space, it erases the oldest content — keeping a brief summary, but losing the details. This process is called <strong>compaction</strong>.</p>
+    <div class="highlight">
+      <p><strong>Compaction is automatic and lossy.</strong> Specific instructions from early in a conversation can get summarized into vague generalities — or lost entirely.</p>
+    </div>
+    <p>This is mechanical, not careless. Claude literally can't see the earlier content anymore.</p>
+  </div>
+
+  <!-- Slide 11: Practical Implications -->
+  <div class="slide" id="slide-11">
+    <h2>Working With Compaction</h2>
+    <div style="margin: 1rem 0;">
+      <div class="jagged-item"><span class="jagged-icon">→</span><span class="jagged-text"><strong>Prefer short, focused sessions</strong> over marathon conversations. Each new session starts with a fresh context window.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">→</span><span class="jagged-text"><strong>Front-load the important stuff.</strong> Instructions at the start of a long conversation are most vulnerable to being compacted away.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">→</span><span class="jagged-text"><strong>Use CLAUDE.md for critical context</strong> (Module 2). It gets re-read every session, so it survives compaction.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">→</span><span class="jagged-text"><strong>Watch for the signs:</strong> contradicting earlier decisions, repeating work, re-asking answered questions. That's your cue to start fresh.</span></div>
+    </div>
+  </div>
+
+  <!-- Slide 12: Jagged Frontier Intro -->
+  <div class="slide" id="slide-12">
+    <div class="big-number">04</div>
+    <h1>The Jagged Capability Frontier</h1>
+    <p style="margin-top: 1rem;">This is the most important concept in this module. Claude Code's capabilities aren't uniformly good or bad — they're <strong>jagged</strong>. Spectacularly good at some things, surprisingly poor at others, with an unintuitive boundary between the two.</p>
+  </div>
+
+  <!-- Slide 13: Where It Excels -->
+  <div class="slide" id="slide-13">
+    <h2>Where Claude Code Excels</h2>
+    <div class="jagged-list">
+      <div class="jagged-item"><span class="jagged-icon">●</span><span class="jagged-text"><strong>Understanding existing code</strong> — "What does this do?" gets reliably clear, accurate answers.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">●</span><span class="jagged-text"><strong>Boilerplate and standard patterns</strong> — CRUD, APIs, components, config. Efficient and accurate.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">●</span><span class="jagged-text"><strong>Refactoring with clear intent</strong> — Rename, extract, convert. Mechanical transformations.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">●</span><span class="jagged-text"><strong>Multi-file coordination</strong> — Understands how files relate. Makes coordinated changes without losing track.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">●</span><span class="jagged-text"><strong>Documentation generation</strong> — Synthesizes code into readable docs, READMEs, changelogs.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">●</span><span class="jagged-text"><strong>Debugging from error messages</strong> — Stack trace + code access = remarkably effective diagnosis.</span></div>
+    </div>
+  </div>
+
+  <!-- Slide 14: Where It Struggles -->
+  <div class="slide" id="slide-14">
+    <h2>Where Claude Code Struggles</h2>
+    <div class="jagged-list">
+      <div class="jagged-item"><span class="jagged-icon">○</span><span class="jagged-text"><strong>Novel algorithms</strong> — Can't be pattern-matched. Looks right, often has subtle bugs.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">○</span><span class="jagged-text"><strong>Long-session consistency</strong> — Compaction causes contradictions with earlier decisions.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">○</span><span class="jagged-text"><strong>Knowing what it doesn't know</strong> — Confidence is always high, even when it's guessing.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">○</span><span class="jagged-text"><strong>UI/UX judgment</strong> — Functional but rarely beautiful. Optimizes for "works" not "feels right."</span></div>
+      <div class="jagged-item"><span class="jagged-icon">○</span><span class="jagged-text"><strong>Niche domains</strong> — Falls back on generic patterns with unusual frameworks.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">○</span><span class="jagged-text"><strong>Security edge cases</strong> — May miss subtle vulnerabilities. Always get specialist review.</span></div>
+    </div>
+  </div>
+
+  <!-- Slide 15: The Trust Framework -->
+  <div class="slide" id="slide-15">
+    <h2>When to Trust Claude Code</h2>
+    <p>Four questions to calibrate your trust for any given task:</p>
+    <div style="margin: 1.5rem 0;">
+      <div class="jagged-item"><span class="jagged-icon">1.</span><span class="jagged-text"><strong>Is this a common pattern?</strong> Yes → high trust.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">2.</span><span class="jagged-text"><strong>Does this require judgment or taste?</strong> Yes → verify carefully.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">3.</span><span class="jagged-text"><strong>Can I easily verify the output?</strong> Yes → let Claude try, then check.</span></div>
+      <div class="jagged-item"><span class="jagged-icon">4.</span><span class="jagged-text"><strong>What's the cost of an error?</strong> Low → let Claude run. High → verify everything.</span></div>
+    </div>
+    <div class="highlight">
+      <p>Work <em>with</em> the grain: give Claude tasks where it's strong, handle the weak spots yourself, and always verify near the jagged edge.</p>
+    </div>
+  </div>
+
+  <!-- Slide 16: Tying It Together -->
+  <div class="slide" id="slide-16">
+    <h2>Your Mental Model</h2>
+    <div style="margin: 1.5rem 0;">
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Loop</span><span class="jagged-text"><strong>How</strong> it works — read, plan, act, verify, repeat.</span></div>
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Env</span><span class="jagged-text"><strong>Where</strong> it works — and what context it has access to.</span></div>
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Context</span><span class="jagged-text"><strong>What it remembers</strong> — and what it forgets.</span></div>
+      <div class="jagged-item"><span class="jagged-icon" style="color:#999;">Jagged</span><span class="jagged-text"><strong>What to trust</strong> — and what to double-check.</span></div>
+    </div>
+    <p>With this model, you're ready to work with Claude Code as a genuine partner rather than a magic box.</p>
+    <div class="highlight">
+      <p><strong>Module 1 Check:</strong> Can you explain to someone else <em>why</em> Claude Code sometimes nails a task and sometimes misses completely? If yes, you're ready for Module 2.</p>
+    </div>
+  </div>
+
+</div>
+
+<div class="nav">
+  <button id="prev-btn" onclick="navigate(-1)" disabled>← Previous</button>
+  <span class="progress" id="progress">1 / 16</span>
+  <button id="next-btn" onclick="navigate(1)">Next →</button>
+</div>
+
+<script>
+  let current = 1;
+  const total = document.querySelectorAll('.slide').length;
+
+  function navigate(dir) {
+    document.getElementById('slide-' + current).classList.remove('active');
+    current += dir;
+    current = Math.max(1, Math.min(total, current));
+    document.getElementById('slide-' + current).classList.add('active');
+    document.getElementById('progress').textContent = current + ' / ' + total;
+    document.getElementById('prev-btn').disabled = current === 1;
+    document.getElementById('next-btn').disabled = current === total;
+    window.scrollTo(0, 0);
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); navigate(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); navigate(-1); }
+  });
+</script>
+
+</body>
+</html>

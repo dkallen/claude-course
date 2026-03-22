@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 1 — Flashcards</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #fff; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel">
+const { useState, useEffect, useCallback } = React;
+
+const STORAGE_KEY = "module-1-flashcard-state";
+
+const cards = [
+  { id: 0, front: "What are the four phases of the agentic loop?", back: "Read → Plan → Act → Verify. Claude gathers context, forms an approach, executes changes, then checks its work. If verification fails, it loops back to Read with the new information." },
+  { id: 1, front: "What is compaction?", back: "When the context window fills up, Claude automatically summarizes older content to make room. This is lossy — specific details and early instructions can be reduced to vague summaries or lost entirely." },
+  { id: 2, front: "What is the context window?", back: "A fixed-size buffer (~200K tokens) that holds everything Claude can \"see\" at once: your prompt, conversation history, file contents, tool outputs, and its own responses. Think of it as working memory." },
+  { id: 3, front: "What is the jagged capability frontier?", back: "Claude Code's capabilities are unevenly distributed — spectacularly good at some things, surprisingly poor at others, with an unintuitive and unpredictable boundary between the two." },
+  { id: 4, front: "Why might Claude contradict a decision it made 30 minutes ago?", back: "Compaction. In a long session, older parts of the conversation get summarized or dropped from the context window. Claude literally can't see the earlier decision anymore." },
+  { id: 5, front: "What's the difference between environments?", back: "The model is the same everywhere. What changes is the context surface — what Claude can see and act on. Terminal/VS Code give it your full local environment. Desktop gives a controlled slice. Web gives a generic sandbox." },
+  { id: 6, front: "Name three things Claude Code excels at.", back: "Understanding existing code, writing boilerplate/standard patterns, refactoring with clear intent, multi-file coordination, generating documentation, debugging from error messages." },
+  { id: 7, front: "Name three things Claude Code struggles with.", back: "Novel algorithms, maintaining consistency in long sessions, knowing what it doesn't know, UI/UX judgment, niche domains, security edge cases." },
+  { id: 8, front: "What is the \"context surface\"?", back: "The set of things Claude can see and act on in a given environment. More context surface (your files, MCP servers, editor state) leads to better results — not because the model is smarter, but because it has more relevant input." },
+  { id: 9, front: "When Claude's agentic loop self-corrects, what's its limitation?", back: "It refines within its current approach — fixing syntax errors, adding imports, adjusting logic. But if the fundamental approach is wrong, it'll keep polishing a bad idea rather than stepping back. That's when you need to redirect." },
+  { id: 10, front: "What are the four trust calibration questions?", back: "1. Is this a common pattern? (Yes → high trust)\n2. Does this require judgment or taste? (Yes → verify carefully)\n3. Can I easily verify the output? (Yes → let Claude try, then check)\n4. What's the cost of an error? (Low → let it run. High → verify everything.)" },
+  { id: 11, front: "What belongs in CLAUDE.md vs. in a prompt?", back: "CLAUDE.md: persistent context that should survive across sessions — conventions, frameworks, standards, project-specific rules. Prompts: session-specific instructions, one-off tasks, contextual details about what you're working on right now." },
+  { id: 12, front: "What are the signs that compaction has kicked in?", back: "Claude contradicts earlier decisions, repeats work it already did, asks questions you already answered, or proposes approaches that conflict with earlier session choices." },
+  { id: 13, front: "Why is Claude Code's consistent confidence level dangerous?", back: "Claude's confidence stays high regardless of actual certainty. It rarely says \"I'm not sure.\" This means the output quality varies, but the confidence level doesn't — making it hard to tell when Claude is guessing vs. when it genuinely knows." },
+  { id: 14, front: "What's the best strategy for long or complex tasks?", back: "Break them into shorter, focused sessions rather than one marathon conversation. Each new session starts with a fresh context window, avoiding compaction issues. Put critical decisions in CLAUDE.md so they persist across sessions." }
+];
+
+function loadState() {
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch (e) {}
+  return {};
+}
+
+function saveState(state) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+
+function Flashcards() {
+  const [cardStates, setCardStates] = useState(loadState);
+  const [mode, setMode] = useState("index");       // index | study
+  const [studyIndex, setStudyIndex] = useState(0);  // index within filtered deck
+  const [flipped, setFlipped] = useState(false);
+  const [filter, setFilter] = useState("all");       // all | review | known | unseen
+
+  // Persist on every change
+  useEffect(() => { saveState(cardStates); }, [cardStates]);
+
+  const getStatus = (id) => cardStates[id] || "unseen";
+
+  const filteredCards = cards.filter(c => {
+    if (filter === "all") return true;
+    return getStatus(c.id) === filter;
+  });
+
+  const counts = {
+    all: cards.length,
+    review: cards.filter(c => getStatus(c.id) === "review").length,
+    known: cards.filter(c => getStatus(c.id) === "known").length,
+    unseen: cards.filter(c => getStatus(c.id) === "unseen").length
+  };
+
+  const markCard = (id, status) => {
+    setCardStates(prev => {
+      const next = { ...prev };
+      if (status === "unseen") { delete next[id]; }
+      else { next[id] = status; }
+      return next;
+    });
+  };
+
+  const openCard = (filteredIdx) => {
+    setStudyIndex(filteredIdx);
+    setFlipped(false);
+    setMode("study");
+  };
+
+  const studyNext = () => {
+    setFlipped(false);
+    if (studyIndex < filteredCards.length - 1) setStudyIndex(studyIndex + 1);
+    else setStudyIndex(0);
+  };
+
+  const studyPrev = () => {
+    setFlipped(false);
+    if (studyIndex > 0) setStudyIndex(studyIndex - 1);
+    else setStudyIndex(filteredCards.length - 1);
+  };
+
+  const handleStudyMark = (status) => {
+    const card = filteredCards[studyIndex];
+    if (card) markCard(card.id, status);
+    // If we're in a filtered view and just changed the card's status,
+    // it might leave the filtered set. Stay on the same index or adjust.
+    // We let re-render handle it — the card list updates, study mode continues.
+    studyNext();
+  };
+
+  const resetAll = () => {
+    setCardStates({});
+    setFilter("all");
+    setMode("index");
+  };
+
+  // Keyboard nav in study mode
+  useEffect(() => {
+    if (mode !== "study") return;
+    const handler = (e) => {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); setFlipped(f => !f); }
+      if (e.key === "ArrowRight") { e.preventDefault(); studyNext(); }
+      if (e.key === "ArrowLeft") { e.preventDefault(); studyPrev(); }
+      if (e.key === "Escape") { setMode("index"); }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [mode, studyIndex, filteredCards.length]);
+
+  const s = {
+    container: { fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", maxWidth: 640, margin: "0 auto", padding: "2rem 1rem", color: "#1a1a1a" },
+    header: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "0.5rem" },
+    title: { fontSize: "1.3rem", fontWeight: 700 },
+    headerRight: { fontSize: "0.82rem", color: "#999" },
+
+    // Filter tabs
+    filterRow: { display: "flex", gap: "0.35rem", marginBottom: "1.5rem", flexWrap: "wrap" },
+    filterBtn: (active) => ({
+      padding: "0.35rem 0.8rem", borderRadius: 20, border: "1px solid " + (active ? "#1a1a1a" : "#e0e0e0"),
+      background: active ? "#1a1a1a" : "#fff", color: active ? "#fff" : "#888",
+      fontSize: "0.78rem", fontWeight: 500, cursor: "pointer", transition: "all 0.15s"
+    }),
+    filterCount: { fontSize: "0.72rem", marginLeft: 3, opacity: 0.7 },
+
+    // Index cards
+    indexCard: (status) => ({
+      padding: "0.75rem 1rem", background: "#fafafa", border: "1px solid #eee",
+      borderRadius: 8, marginBottom: "0.5rem", cursor: "pointer",
+      transition: "all 0.15s", display: "flex", gap: "0.8rem", alignItems: "flex-start",
+      borderLeft: status === "review" ? "3px solid #d88" : status === "known" ? "3px solid #8c8" : "3px solid transparent"
+    }),
+    indexCardHover: { borderColor: "#ccc", background: "#f5f5f5" },
+    indexQ: { fontSize: "0.88rem", lineHeight: 1.4, flex: 1, color: "#333" },
+    indexStatus: (status) => ({
+      fontSize: "0.7rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em", flexShrink: 0, marginTop: 2,
+      color: status === "known" ? "#6a6" : status === "review" ? "#a66" : "#ccc"
+    }),
+    indexActions: { display: "flex", gap: "0.3rem", flexShrink: 0, marginTop: 1 },
+    miniBtn: (active, color) => ({
+      width: 22, height: 22, borderRadius: 4, border: "1px solid " + (active ? color : "#e0e0e0"),
+      background: active ? color : "#fff", color: active ? "#fff" : "#ccc",
+      fontSize: "0.65rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+      transition: "all 0.12s", fontWeight: 600
+    }),
+
+    // Study card
+    card: { background: "#fafafa", border: "1px solid #e5e5e5", borderRadius: 12, padding: "2.5rem 2rem", minHeight: 220, display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", cursor: "pointer", textAlign: "center" },
+    cardLabel: { fontSize: "0.72rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", color: "#bbb", marginBottom: "1rem" },
+    cardText: { fontSize: "1.08rem", lineHeight: 1.65, color: "#333", whiteSpace: "pre-line", maxWidth: 500 },
+    flipHint: { fontSize: "0.78rem", color: "#ccc", marginTop: "1.2rem" },
+
+    controls: { display: "flex", gap: "0.5rem", marginTop: "1.2rem", justifyContent: "center", flexWrap: "wrap" },
+    btn: (bg) => ({ background: bg, color: bg === "#1a1a1a" ? "#fff" : "#555", border: bg === "#fff" ? "1px solid #ddd" : "none", borderRadius: 6, padding: "0.5rem 1.2rem", fontSize: "0.85rem", cursor: "pointer", transition: "all 0.12s" }),
+    navRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem" },
+    navBtn: { background: "none", border: "none", color: "#999", fontSize: "0.85rem", cursor: "pointer", padding: "0.3rem 0" },
+    counter: { fontSize: "0.82rem", color: "#bbb" },
+
+    backLink: { background: "none", border: "none", color: "#999", fontSize: "0.82rem", cursor: "pointer", padding: 0, marginBottom: "1.2rem", display: "inline-block" },
+    emptyState: { padding: "3rem 1rem", textAlign: "center", color: "#bbb", fontSize: "0.9rem" },
+
+    footerRow: { display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.5rem", paddingTop: "1rem", borderTop: "1px solid #f0f0f0" },
+    resetBtn: { background: "none", border: "none", color: "#ccc", fontSize: "0.78rem", cursor: "pointer" },
+    hint: { fontSize: "0.75rem", color: "#ddd" }
+  };
+
+  // ---- INDEX MODE ----
+  if (mode === "index") {
+    return (
+      <div style={s.container}>
+        <div style={s.header}>
+          <div style={s.title}>Module 1 Flashcards</div>
+          <div style={s.headerRight}>{counts.known} / {cards.length} known</div>
+        </div>
+
+        <div style={s.filterRow}>
+          {[
+            { key: "all", label: "All" },
+            { key: "review", label: "Needs review" },
+            { key: "known", label: "Known" },
+            { key: "unseen", label: "Unseen" }
+          ].map(f => (
+            <button key={f.key} style={s.filterBtn(filter === f.key)} onClick={() => setFilter(f.key)}>
+              {f.label}<span style={s.filterCount}>({counts[f.key]})</span>
+            </button>
+          ))}
+        </div>
+
+        {filteredCards.length === 0 ? (
+          <div style={s.emptyState}>
+            {filter === "review" ? "Nothing marked for review. Nice work." :
+             filter === "known" ? "No cards marked as known yet." :
+             filter === "unseen" ? "You've seen all the cards!" :
+             "No cards to show."}
+          </div>
+        ) : (
+          <>
+            {filteredCards.map((card, fi) => {
+              const status = getStatus(card.id);
+              return (
+                <div key={card.id} style={s.indexCard(status)}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.background = "#f5f5f5"; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = "#eee"; e.currentTarget.style.background = "#fafafa"; }}
+                >
+                  <div style={s.indexQ} onClick={() => openCard(fi)}>{card.front}</div>
+                  <div style={s.indexActions}>
+                    <button
+                      style={s.miniBtn(status === "review", "#d88")}
+                      title="Mark for review"
+                      onClick={(e) => { e.stopPropagation(); markCard(card.id, status === "review" ? "unseen" : "review"); }}
+                    >R</button>
+                    <button
+                      style={s.miniBtn(status === "known", "#8c8")}
+                      title="Mark as known"
+                      onClick={(e) => { e.stopPropagation(); markCard(card.id, status === "known" ? "unseen" : "known"); }}
+                    >K</button>
+                  </div>
+                </div>
+              );
+            })}
+
+            <div style={{ ...s.controls, marginTop: "1.5rem" }}>
+              <button style={s.btn("#1a1a1a")} onClick={() => openCard(0)}>
+                Study {filter === "all" ? "all" : filter} ({filteredCards.length})
+              </button>
+            </div>
+          </>
+        )}
+
+        <div style={s.footerRow}>
+          <button style={s.resetBtn} onClick={resetAll}>Reset all progress</button>
+          <span style={s.hint}>Click any card to study it</span>
+        </div>
+      </div>
+    );
+  }
+
+  // ---- STUDY MODE ----
+  // Guard against out-of-bounds if filter changed
+  const safeIndex = Math.min(studyIndex, Math.max(0, filteredCards.length - 1));
+  const currentCard = filteredCards[safeIndex];
+
+  if (!currentCard) {
+    return (
+      <div style={s.container}>
+        <button style={s.backLink} onClick={() => setMode("index")}>← Back to index</button>
+        <div style={s.emptyState}>No cards in this set. Go back and change the filter.</div>
+      </div>
+    );
+  }
+
+  const currentStatus = getStatus(currentCard.id);
+
+  return (
+    <div style={s.container}>
+      <button style={s.backLink} onClick={() => setMode("index")}>← Back to index</button>
+
+      <div style={s.card} onClick={() => setFlipped(f => !f)}>
+        <div style={s.cardLabel}>{flipped ? "Answer" : "Question"}</div>
+        <div style={s.cardText}>{flipped ? currentCard.back : currentCard.front}</div>
+        <div style={s.flipHint}>{flipped ? "click to see question" : "click to reveal answer"}</div>
+      </div>
+
+      {flipped && (
+        <div style={s.controls}>
+          <button style={s.btn(currentStatus === "review" ? "#f5f0f0" : "#fff")} onClick={() => handleStudyMark("review")}>
+            Needs review
+          </button>
+          <button style={s.btn("#1a1a1a")} onClick={() => handleStudyMark("known")}>
+            Got it
+          </button>
+        </div>
+      )}
+
+      <div style={s.navRow}>
+        <button style={s.navBtn} onClick={studyPrev}>← Previous</button>
+        <span style={s.counter}>{safeIndex + 1} / {filteredCards.length}</span>
+        <button style={s.navBtn} onClick={studyNext}>Next →</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<Flashcards />);
+</script>
+</body>
+</html>

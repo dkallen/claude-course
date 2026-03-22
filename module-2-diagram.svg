@@ -1,0 +1,147 @@
+<svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="800" height="500" fill="white"/>
+
+  <!-- Title -->
+  <text x="400" y="35" font-family="system-ui, -apple-system, sans-serif" font-size="28" font-weight="600" text-anchor="middle" fill="#1a1a1a">
+    CLAUDE.md Hierarchy
+  </text>
+
+  <!-- Subtitle -->
+  <text x="400" y="60" font-family="system-ui, -apple-system, sans-serif" font-size="14" text-anchor="middle" fill="#666">
+    Instructions cascade from global to folder-specific levels
+  </text>
+
+  <!-- Left column: Hierarchy levels -->
+  <g id="hierarchy">
+    <!-- Global level -->
+    <rect x="40" y="90" width="300" height="110" fill="#f5f5f5" stroke="#d0d0d0" stroke-width="1" rx="4"/>
+    <text x="55" y="115" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#999">
+      LEVEL 1
+    </text>
+    <text x="55" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#1a1a1a">
+      Global
+    </text>
+    <text x="55" y="156" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#666">
+      ~/.claude/CLAUDE.md
+    </text>
+    <text x="55" y="175" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#888">
+      Applies to all projects
+    </text>
+    <text x="55" y="193" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#999" font-style="italic">
+      Most general
+    </text>
+
+    <!-- Project level -->
+    <rect x="40" y="215" width="300" height="110" fill="#f9f9f9" stroke="#d0d0d0" stroke-width="1" rx="4"/>
+    <text x="55" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#999">
+      LEVEL 2
+    </text>
+    <text x="55" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#1a1a1a">
+      Project
+    </text>
+    <text x="55" y="281" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#666">
+      ./CLAUDE.md (project root)
+    </text>
+    <text x="55" y="300" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#888">
+      Applies to this project
+    </text>
+    <text x="55" y="318" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#999" font-style="italic">
+      Can override global
+    </text>
+
+    <!-- Folder level -->
+    <rect x="40" y="340" width="300" height="110" fill="#fefefe" stroke="#d0d0d0" stroke-width="1" rx="4"/>
+    <text x="55" y="365" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#999">
+      LEVEL 3
+    </text>
+    <text x="55" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="600" fill="#1a1a1a">
+      Folder
+    </text>
+    <text x="55" y="406" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#666">
+      ./subfolder/CLAUDE.md
+    </text>
+    <text x="55" y="425" font-family="system-ui, -apple-system, sans-serif" font-size="12" fill="#888">
+      Applies to this folder only
+    </text>
+    <text x="55" y="443" font-family="system-ui, -apple-system, sans-serif" font-size="11" fill="#999" font-style="italic">
+      Most specific
+    </text>
+  </g>
+
+  <!-- Cascade arrows -->
+  <g id="cascade" stroke="#999" stroke-width="2" fill="none">
+    <path d="M 360 145 L 420 145" marker-end="url(#arrowhead)"/>
+    <path d="M 360 270 L 420 270" marker-end="url(#arrowhead)"/>
+    <path d="M 360 395 L 420 395" marker-end="url(#arrowhead)"/>
+  </g>
+
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#999"/>
+    </marker>
+  </defs>
+
+  <!-- Right column: What belongs where -->
+  <g id="content">
+    <!-- Global content -->
+    <rect x="430" y="90" width="330" height="110" fill="#f5f5f5" stroke="#e0e0e0" stroke-width="1" rx="4"/>
+    <text x="445" y="115" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#999">
+      WHAT GOES HERE
+    </text>
+    <text x="445" y="135" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Personal preferences
+    </text>
+    <text x="445" y="153" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Coding style guide
+    </text>
+    <text x="445" y="171" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Frameworks you always use
+    </text>
+    <text x="445" y="189" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • General conventions
+    </text>
+
+    <!-- Project content -->
+    <rect x="430" y="215" width="330" height="110" fill="#f9f9f9" stroke="#e0e0e0" stroke-width="1" rx="4"/>
+    <text x="445" y="240" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#999">
+      WHAT GOES HERE
+    </text>
+    <text x="445" y="260" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Tech stack details
+    </text>
+    <text x="445" y="278" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Architecture decisions
+    </text>
+    <text x="445" y="296" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Team standards
+    </text>
+    <text x="445" y="314" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Project-specific rules
+    </text>
+
+    <!-- Folder content -->
+    <rect x="430" y="340" width="330" height="110" fill="#fefefe" stroke="#e0e0e0" stroke-width="1" rx="4"/>
+    <text x="445" y="365" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="600" fill="#999">
+      WHAT GOES HERE
+    </text>
+    <text x="445" y="385" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Directory-specific rules
+    </text>
+    <text x="445" y="403" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Test conventions
+    </text>
+    <text x="445" y="421" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • API-specific patterns
+    </text>
+    <text x="445" y="439" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="500" fill="#1a1a1a">
+      • Specialized instructions
+    </text>
+  </g>
+
+  <!-- Footer note -->
+  <text x="400" y="480" font-family="system-ui, -apple-system, sans-serif" font-size="11" text-anchor="middle" fill="#999">
+    More specific levels override more general ones
+  </text>
+</svg>
