@@ -567,11 +567,7 @@ if (gistToken) {
   loadFromGist();
 } else {
   setSyncStatus("offline", "Not connected");
-  // Show setup prompt on first visit (no prior progress and no token)
-  const hasAnyProgress = Object.keys(progress).length > 0;
-  if (!hasAnyProgress) {
-    showTokenModal();
-  }
+  showTokenModal();
 }
 </script>
 
