@@ -38,12 +38,23 @@
   .resource-link .res-type { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin-left: 0.3rem; color: #bbb; }
 
   .sidebar-footer { padding: 1rem 1.2rem; border-top: 1px solid #f0f0f0; margin-top: 0.5rem; }
-  .sidebar-footer button { background: none; border: 1px solid #e0e0e0; border-radius: 5px; padding: 0.3rem 0.6rem; font-size: 0.72rem; color: #999; cursor: pointer; margin-right: 0.3rem; transition: all 0.15s; }
-  .sidebar-footer button:hover { border-color: #bbb; color: #555; }
-  .progress-bar-container { margin-top: 0.6rem; }
+  .progress-bar-container { margin-bottom: 0.7rem; }
   .progress-label { font-size: 0.7rem; color: #bbb; margin-bottom: 0.25rem; }
   .progress-bar { height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: #888; border-radius: 2px; transition: width 0.3s; }
+
+  /* Sync status row */
+  .sync-row { display: flex; align-items: center; justify-content: space-between; }
+  .sync-status { font-size: 0.7rem; display: flex; align-items: center; gap: 0.3rem; }
+  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
+  .sync-dot.synced { background: #4caf50; }
+  .sync-dot.syncing { background: #ff9800; animation: pulse 1s infinite; }
+  .sync-dot.error { background: #f44336; }
+  .sync-dot.offline { background: #ccc; }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+  .sync-text { color: #aaa; }
+  .sync-settings-btn { background: none; border: none; font-size: 0.7rem; color: #ccc; cursor: pointer; padding: 0; text-decoration: underline; }
+  .sync-settings-btn:hover { color: #888; }
 
   /* Toggle button */
   .sidebar-toggle { position: fixed; top: 12px; left: 12px; z-index: 100; background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: #999; transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
@@ -81,6 +92,23 @@
   .mc-check { font-size: 0.85rem; color: #888; line-height: 1.6; margin-top: 1.5rem; padding: 1rem; background: #fafafa; border-radius: 8px; border-left: 3px solid #ddd; }
   .mc-check strong { color: #666; }
 
+  /* Token setup modal */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; }
+  .modal-backdrop.hidden { display: none; }
+  .modal { background: #fff; border-radius: 10px; padding: 2rem; max-width: 460px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
+  .modal h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
+  .modal p { font-size: 0.85rem; color: #666; line-height: 1.6; margin-bottom: 1rem; }
+  .modal ol { font-size: 0.85rem; color: #666; line-height: 2; margin-bottom: 1rem; padding-left: 1.2rem; }
+  .modal label { font-size: 0.8rem; font-weight: 600; color: #555; display: block; margin-bottom: 0.3rem; }
+  .modal input[type="text"] { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 0.5rem 0.7rem; font-size: 0.85rem; font-family: monospace; outline: none; transition: border-color 0.15s; }
+  .modal input[type="text"]:focus { border-color: #999; }
+  .modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
+  .modal-btn { padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; border: 1px solid #ddd; background: #fff; color: #555; transition: all 0.15s; }
+  .modal-btn.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .modal-btn.primary:hover { background: #333; }
+  .modal-btn:hover { border-color: #bbb; }
+  .modal-error { font-size: 0.8rem; color: #f44336; margin-top: 0.5rem; min-height: 1.2em; }
+
   @media (max-width: 768px) {
     .sidebar { position: fixed; z-index: 50; background: #fff; height: 100vh; box-shadow: 2px 0 8px rgba(0,0,0,0.05); }
     .sidebar.collapsed { margin-left: -300px; }
@@ -108,12 +136,16 @@
   <div id="toc3"></div>
 
   <div class="sidebar-footer">
-    <button onclick="exportProgress()">Export progress</button>
-    <button onclick="document.getElementById('import-file').click()">Import</button>
-    <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importProgress(event)">
     <div class="progress-bar-container">
       <div class="progress-label" id="progress-label">0 / 14 complete</div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+    </div>
+    <div class="sync-row">
+      <div class="sync-status">
+        <div class="sync-dot offline" id="sync-dot"></div>
+        <span class="sync-text" id="sync-text">Not connected</span>
+      </div>
+      <button class="sync-settings-btn" onclick="showTokenModal()">Settings</button>
     </div>
   </div>
 </nav>
@@ -127,8 +159,33 @@
   <div id="module-panel" style="display:none;"></div>
 </main>
 
+<!-- Token setup modal -->
+<div class="modal-backdrop hidden" id="modal-backdrop">
+  <div class="modal">
+    <h2>Connect GitHub Gist Sync</h2>
+    <p>Your progress will be saved to a private GitHub Gist and synced automatically across all your devices.</p>
+    <ol>
+      <li>Go to <strong>github.com</strong> → Settings → Developer settings</li>
+      <li>Personal access tokens → Tokens (classic)</li>
+      <li>Generate new token (classic) — scope: <strong>gist</strong> only</li>
+      <li>Paste it below</li>
+    </ol>
+    <label for="token-input">GitHub Personal Access Token</label>
+    <input type="text" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
+    <div class="modal-error" id="modal-error"></div>
+    <div class="modal-actions">
+      <button class="modal-btn primary" onclick="saveToken()">Connect</button>
+      <button class="modal-btn" onclick="hideTokenModal()">Cancel</button>
+      <button class="modal-btn" onclick="disconnectGist()" style="margin-left:auto; color:#f44336; border-color:#fdd;">Disconnect</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const STORAGE_KEY = "claude-code-course-progress";
+const GIST_TOKEN_KEY = "claude-course-gist-token";
+const GIST_ID_KEY = "claude-course-gist-id";
+const GIST_FILENAME = "claude-course-progress.json";
 
 const modules = [
   { num: 1, name: "Orientation — What Claude Code Actually Is", section: 1,
@@ -185,46 +242,195 @@ const modules = [
 
 let progress = {};
 let expandedModule = null;
+let gistToken = null;
+let gistId = null;
 
-function loadProgress() {
+// ── Local storage helpers ──────────────────────────────────────────────────
+
+function loadLocalProgress() {
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) progress = JSON.parse(stored);
   } catch (e) {}
 }
 
-function saveProgress() {
+function saveLocalProgress() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
   } catch (e) {}
 }
 
-function exportProgress() {
-  const blob = new Blob([JSON.stringify(progress, null, 2)], { type: "application/json" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "course-progress.json";
-  a.click();
-  URL.revokeObjectURL(a.href);
+// ── Sync status UI ─────────────────────────────────────────────────────────
+
+function setSyncStatus(state, text) {
+  const dot = document.getElementById("sync-dot");
+  const label = document.getElementById("sync-text");
+  dot.className = "sync-dot " + state;
+  label.textContent = text;
 }
 
-function importProgress(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      progress = JSON.parse(e.target.result);
-      saveProgress();
-      renderTOC();
-      updateProgress();
-    } catch (err) {
-      alert("Couldn't read that file. Make sure it's a valid course-progress.json.");
+// ── Gist API ───────────────────────────────────────────────────────────────
+
+async function gistFetch(url, options = {}) {
+  return fetch(url, {
+    ...options,
+    headers: {
+      Authorization: "token " + gistToken,
+      "Content-Type": "application/json",
+      ...(options.headers || {})
     }
-  };
-  reader.readAsText(file);
-  event.target.value = "";
+  });
 }
+
+async function loadFromGist() {
+  if (!gistToken) return;
+  setSyncStatus("syncing", "Syncing…");
+
+  try {
+    // If we have a known gist ID, fetch it directly
+    if (gistId) {
+      const res = await gistFetch("https://api.github.com/gists/" + gistId);
+      if (res.ok) {
+        const data = await res.json();
+        const content = data.files[GIST_FILENAME] && data.files[GIST_FILENAME].content;
+        if (content) {
+          progress = JSON.parse(content);
+          saveLocalProgress();
+          renderTOC();
+          updateProgress();
+          setSyncStatus("synced", "Synced");
+          return;
+        }
+      }
+      // Gist ID is stale — fall through to search
+    }
+
+    // Search existing gists for our file
+    const listRes = await gistFetch("https://api.github.com/gists?per_page=100");
+    if (!listRes.ok) { setSyncStatus("error", "Sync failed"); return; }
+
+    const gists = await listRes.json();
+    const match = gists.find(g => g.files[GIST_FILENAME]);
+
+    if (match) {
+      gistId = match.id;
+      localStorage.setItem(GIST_ID_KEY, gistId);
+      // Fetch full content (list response truncates it)
+      const detail = await gistFetch("https://api.github.com/gists/" + gistId);
+      if (detail.ok) {
+        const data = await detail.json();
+        const content = data.files[GIST_FILENAME] && data.files[GIST_FILENAME].content;
+        if (content) {
+          progress = JSON.parse(content);
+          saveLocalProgress();
+          renderTOC();
+          updateProgress();
+        }
+      }
+    } else {
+      // No existing gist — create one with current progress
+      await createGist();
+    }
+
+    setSyncStatus("synced", "Synced");
+  } catch (e) {
+    setSyncStatus("error", "Sync failed");
+  }
+}
+
+async function createGist() {
+  const res = await gistFetch("https://api.github.com/gists", {
+    method: "POST",
+    body: JSON.stringify({
+      description: "Claude Code Course Progress",
+      public: false,
+      files: { [GIST_FILENAME]: { content: JSON.stringify(progress, null, 2) } }
+    })
+  });
+  if (res.ok) {
+    const data = await res.json();
+    gistId = data.id;
+    localStorage.setItem(GIST_ID_KEY, gistId);
+  }
+}
+
+async function saveToGist() {
+  if (!gistToken) return;
+  setSyncStatus("syncing", "Syncing…");
+
+  try {
+    if (!gistId) { await createGist(); }
+
+    const res = await gistFetch("https://api.github.com/gists/" + gistId, {
+      method: "PATCH",
+      body: JSON.stringify({
+        files: { [GIST_FILENAME]: { content: JSON.stringify(progress, null, 2) } }
+      })
+    });
+    setSyncStatus(res.ok ? "synced" : "error", res.ok ? "Synced" : "Sync failed");
+  } catch (e) {
+    setSyncStatus("error", "Sync failed");
+  }
+}
+
+// ── Save (local + gist) ────────────────────────────────────────────────────
+
+function saveProgress() {
+  saveLocalProgress();
+  saveToGist();
+}
+
+// ── Token setup modal ──────────────────────────────────────────────────────
+
+function showTokenModal() {
+  document.getElementById("token-input").value = gistToken || "";
+  document.getElementById("modal-error").textContent = "";
+  document.getElementById("modal-backdrop").classList.remove("hidden");
+  document.getElementById("token-input").focus();
+}
+
+function hideTokenModal() {
+  document.getElementById("modal-backdrop").classList.add("hidden");
+}
+
+async function saveToken() {
+  const input = document.getElementById("token-input").value.trim();
+  const errorEl = document.getElementById("modal-error");
+  errorEl.textContent = "";
+
+  if (!input) { errorEl.textContent = "Please paste your token."; return; }
+
+  // Quick validation: test the token against the API
+  errorEl.textContent = "Verifying…";
+  try {
+    const res = await fetch("https://api.github.com/user", {
+      headers: { Authorization: "token " + input }
+    });
+    if (!res.ok) { errorEl.textContent = "Token invalid or missing gist scope. Try again."; return; }
+  } catch (e) {
+    errorEl.textContent = "Could not reach GitHub. Check your connection.";
+    return;
+  }
+
+  gistToken = input;
+  gistId = null; // reset so we re-discover
+  localStorage.setItem(GIST_TOKEN_KEY, gistToken);
+  localStorage.removeItem(GIST_ID_KEY);
+
+  hideTokenModal();
+  await loadFromGist();
+}
+
+function disconnectGist() {
+  gistToken = null;
+  gistId = null;
+  localStorage.removeItem(GIST_TOKEN_KEY);
+  localStorage.removeItem(GIST_ID_KEY);
+  setSyncStatus("offline", "Not connected");
+  hideTokenModal();
+}
+
+// ── Core UI ────────────────────────────────────────────────────────────────
 
 function toggleCheck(num, e) {
   e.stopPropagation();
@@ -260,7 +466,6 @@ function showModulePanel(num) {
     return;
   }
 
-  // Build the module content view with phases (per-module or default)
   const defaultPhases = [
     { label: "Phase 1", title: "Learn the concepts", desc: "Start here.", items: [0, 1] },
     { label: "Phase 2", title: "Explore", desc: "Go deeper at your own pace.", items: [2, 3] },
@@ -269,7 +474,6 @@ function showModulePanel(num) {
     { label: "Phase 5", title: "Bookmark for later", desc: "Reference materials.", items: [7, 8] }
   ];
   const phases = mod.phases || defaultPhases;
-
   const typeMap = { read: "passive", visual: "passive", interactive: "interactive", exercise: "interactive", reference: "passive" };
 
   let html = `<div class="module-content">`;
@@ -322,9 +526,7 @@ function renderTOC() {
 
     const item = document.createElement("div");
     item.className = "module-item" + (isExpanded ? " active" : "") + (!hasContent ? " disabled" : "");
-    if (hasContent) {
-      item.onclick = () => loadModule(mod.num);
-    }
+    if (hasContent) item.onclick = () => loadModule(mod.num);
 
     item.innerHTML = `
       <input type="checkbox" class="module-check" ${checked ? "checked" : ""} onclick="toggleCheck('${mod.num}', event)" title="Mark as complete">
@@ -336,7 +538,6 @@ function renderTOC() {
 
     containers[mod.section].appendChild(item);
 
-    // Resource sub-list
     if (hasContent) {
       const resList = document.createElement("div");
       resList.className = "module-resources" + (isExpanded ? " open" : "");
@@ -353,10 +554,25 @@ function renderTOC() {
   });
 }
 
-// Init
-loadProgress();
+// ── Init ───────────────────────────────────────────────────────────────────
+
+loadLocalProgress();
 renderTOC();
 updateProgress();
+
+gistToken = localStorage.getItem(GIST_TOKEN_KEY);
+gistId = localStorage.getItem(GIST_ID_KEY);
+
+if (gistToken) {
+  loadFromGist();
+} else {
+  setSyncStatus("offline", "Not connected");
+  // Show setup prompt on first visit (no prior progress and no token)
+  const hasAnyProgress = Object.keys(progress).length > 0;
+  if (!hasAnyProgress) {
+    showTokenModal();
+  }
+}
 </script>
 
 </body>
