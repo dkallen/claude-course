@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 1 — Lesson: What Claude Code Actually Is</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            color: #1a1a1a;
+            background: #fff;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .back-link {
+            font-size: 0.8rem;
+            color: #888;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-link:hover {
+            color: #555;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+
+        code {
+            background: #f5f5f5;
+            font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 0.75rem;
+        }
+
+        pre code {
+            padding: 0;
+            background: none;
+        }
+
+        blockquote {
+            border-left: 2px solid #999;
+            padding-left: 1rem;
+            color: #444;
+            font-style: italic;
+            margin-bottom: 0.75rem;
+        }
+
+        ul, ol {
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.35rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 2rem 0;
+        }
+
+        .footer {
+            border-top: 1px solid #eee;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        em {
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <a href="module-1-index.html" class="back-link">&larr; Module 1</a>
+
+        <h1>Module 1: Orientation &mdash; What Claude Code Actually Is</h1>
+        <p class="subtitle">From Concept to Delivery with Claude Code &mdash; A Practitioner's Course</p>
+
+        <hr>
+
+        <h2>Why This Module Matters</h2>
+
+        <p>Before you can use Claude Code well, you need an accurate mental model of what it is. Not the marketing pitch, not the vibes &mdash; the actual mechanics. Most frustration with Claude Code comes from expecting it to be something it isn't. This module fixes that.</p>
+
+        <p>By the end, you'll understand how Claude Code thinks, where it runs, why it sometimes forgets what you told it five minutes ago, and &mdash; crucially &mdash; why it crushes some tasks and fumbles others.</p>
+
+        <hr>
+
+        <h2>1. The Agentic Loop</h2>
+
+        <p>Claude Code isn't a chatbot that happens to write code. It's an <strong>agent</strong> &mdash; a system that can read its environment, make a plan, take action, observe the results, and adjust. This is the agentic loop, and understanding it changes how you interact with the tool.</p>
+
+        <h3>The Four Phases</h3>
+
+        <p><strong>Read &rarr; Plan &rarr; Act &rarr; Verify</strong></p>
+
+        <p>Here's what's actually happening when you give Claude Code a task:</p>
+
+        <p><strong>Read.</strong> Claude Code starts by gathering context. It looks at the files you've pointed it at, reads your CLAUDE.md (if you have one &mdash; that's Module 2), examines relevant code, and processes your prompt. It's building a picture of the situation before doing anything.</p>
+
+        <p><strong>Plan.</strong> Based on what it's read, Claude Code forms an approach. For simple tasks, this is nearly instantaneous. For complex ones, you might see it reason through options, consider trade-offs, or ask clarifying questions. This is where the "thinking" happens.</p>
+
+        <p><strong>Act.</strong> Claude Code executes &mdash; writing code, editing files, running terminal commands, calling external tools. These are real actions on your real filesystem. It's not simulating; it's doing.</p>
+
+        <p><strong>Verify.</strong> After acting, Claude Code checks its work. Did the code compile? Did the tests pass? Does the output match what was expected? If something's off, it loops back &mdash; re-reading, re-planning, and trying again.</p>
+
+        <h3>Why This Matters in Practice</h3>
+
+        <p>The loop means Claude Code is <strong>self-correcting</strong> &mdash; to a degree. When you give it a task and it hits an error, it doesn't just throw up its hands. It reads the error, adjusts its plan, and retries. This is powerful, but it's not magic. If the underlying approach is wrong, it'll keep refining a bad idea rather than stepping back and rethinking from scratch. That's where you come in &mdash; as the director.</p>
+
+        <p>The loop also means Claude Code <strong>accumulates context as it works</strong>. Each read-plan-act-verify cycle adds to what it knows about the current session. Early in a session, it might be feeling around in the dark. After a few cycles, it's built up a rich picture of your project.</p>
+
+        <h3>A Practical Example</h3>
+
+        <p>Say you ask Claude Code: <em>"Add input validation to the signup form."</em></p>
+
+        <ol>
+            <li><strong>Read</strong>: It scans your project, finds the signup form component, reads the existing code, checks for validation libraries already in use.</li>
+            <li><strong>Plan</strong>: It decides to use the validation library you already have (say, Zod), identifies which fields need validation, and plans the validation rules.</li>
+            <li><strong>Act</strong>: It writes the validation schema, integrates it into the form, updates error message handling.</li>
+            <li><strong>Verify</strong>: It checks for syntax errors, runs any existing tests, maybe even runs the app to check for import issues.</li>
+        </ol>
+
+        <p>If step 4 reveals a problem &mdash; say, a missing import &mdash; it loops back: reads the error, plans the fix, acts on it, verifies again.</p>
+
+        <hr>
+
+        <h2>2. Environments: Where Claude Code Lives</h2>
+
+        <p>Claude Code isn't a single experience. It runs in several environments, and they're not all the same. Knowing the differences saves you from confusion when something works in one place but not another.</p>
+
+        <h3>Terminal CLI</h3>
+
+        <p>This is Claude Code in its purest form. You open a terminal, type <code>claude</code>, and you're in a conversational interface with full access to your filesystem, shell commands, and any MCP servers you've configured.</p>
+
+        <p><strong>Strengths:</strong> Maximum control. You see exactly what Claude is doing. You can pipe input, script interactions, and integrate it into existing terminal workflows. It's the fastest way to work if you're comfortable in a terminal.</p>
+
+        <p><strong>Limitations:</strong> No visual rendering. You're reading text output only. If Claude generates a React component, you won't see it rendered &mdash; you'll see the code.</p>
+
+        <h3>VS Code Extension</h3>
+
+        <p>Claude Code integrated into your editor. It appears as a sidebar panel, and it can see your open files, your workspace, and your terminal.</p>
+
+        <p><strong>Strengths:</strong> Context is richer &mdash; Claude can see what file you're looking at, where your cursor is, and what you've recently edited. The feedback loop is tighter because you can see changes reflected in your editor in real time.</p>
+
+        <p><strong>Limitations:</strong> It's still the same underlying model and agentic loop, just with a different input surface. Don't expect it to be smarter in VS Code &mdash; it has the same capabilities, just better-integrated context.</p>
+
+        <h3>Desktop App (Cowork)</h3>
+
+        <p>The Claude desktop application includes a "Cowork" mode that gives Claude Code access to a sandboxed Linux environment. You select a folder from your computer, and Claude can read and write files in it.</p>
+
+        <p><strong>Strengths:</strong> Accessible to people who don't live in a terminal. Good for document creation, file management, and tasks that benefit from a visual interface. Supports MCP connections to external services (Slack, Google Calendar, etc.).</p>
+
+        <p><strong>Limitations:</strong> Runs in a lightweight VM, so some system-level operations aren't available. The sandboxed environment is reset between sessions (though your workspace folder persists).</p>
+
+        <h3>Web (claude.ai)</h3>
+
+        <p>Claude Code is available on the web at claude.ai, where it can write and execute code in a cloud environment.</p>
+
+        <p><strong>Strengths:</strong> No local setup required. Good for quick tasks or when you're away from your primary machine.</p>
+
+        <p><strong>Limitations:</strong> The code runs in a cloud sandbox, not on your machine. It doesn't have access to your local filesystem, your MCP servers, or your project configuration. It's Claude Code, but without <em>your</em> context.</p>
+
+        <h3>The Key Insight</h3>
+
+        <p>The model behind all these environments is the same. What changes is the <strong>context surface</strong> &mdash; what Claude can see and act on. Terminal and VS Code give it your full local environment. Desktop gives it a controlled slice. Web gives it a generic sandbox. Choose the environment that gives Claude the context it needs for the task at hand.</p>
+
+        <hr>
+
+        <h2>3. Context Windows and Compaction</h2>
+
+        <p>This is where most people's mental model breaks. Claude Code seems like it has a great memory &mdash; until suddenly it doesn't. Understanding why requires understanding the context window.</p>
+
+        <h3>What the Context Window Is</h3>
+
+        <p>Every interaction with Claude Code happens within a <strong>context window</strong> &mdash; a fixed-size buffer that holds everything Claude can "see" at once. This includes your prompt, the conversation history, any files it's read, tool outputs, and its own responses. Think of it as Claude's working memory.</p>
+
+        <p>The context window is large (up to 200,000 tokens for current models), but it's not infinite. A single large codebase can fill it up. A long conversation will eventually hit the limit.</p>
+
+        <h3>What Happens When It Fills Up: Compaction</h3>
+
+        <p>When the context window approaches its limit, Claude Code performs <strong>compaction</strong> &mdash; it summarizes older parts of the conversation to make room for new content. This is automatic, and it's mostly invisible to you.</p>
+
+        <p>The problem? Compaction is lossy. Details get dropped. Specific instructions you gave early in a conversation might get summarized into vague generalities &mdash; or lost entirely. This is why Claude Code sometimes "forgets" things you told it earlier.</p>
+
+        <h3>What This Means for You</h3>
+
+        <p><strong>Short, focused sessions work better than marathon sessions.</strong> If you're working on a complex task, it's often better to break it into smaller sessions rather than trying to do everything in one long conversation. Each new session starts with a fresh context window.</p>
+
+        <p><strong>Front-load the important stuff.</strong> Instructions at the beginning of a very long conversation are the most vulnerable to compaction. If something is critical, put it in your CLAUDE.md file (Module 2) rather than relying on conversation history &mdash; CLAUDE.md gets re-read at the start of every session.</p>
+
+        <p><strong>If Claude seems to have forgotten something, it probably has.</strong> Don't get frustrated &mdash; just re-state the important context. It's not being careless; it literally can't see the earlier part of the conversation anymore.</p>
+
+        <p><strong>Watch for the signs.</strong> If Claude starts contradicting earlier decisions, repeating work it already did, or asking questions you already answered &mdash; compaction has likely kicked in. That's your cue to start a fresh session or re-provide key context.</p>
+
+        <h3>A Mental Model for Context</h3>
+
+        <p>Think of it like a whiteboard. Claude can write and read everything on the whiteboard. But the whiteboard has a fixed size. When it runs out of space, it erases the oldest stuff &mdash; keeping a brief note about what was there, but losing the details. Your job is to make sure the most important information is written somewhere it won't get erased (like CLAUDE.md).</p>
+
+        <hr>
+
+        <h2>4. The Jagged Capability Frontier</h2>
+
+        <p>This is the most important concept in this module. Get this right, and you'll save yourself hours of frustration.</p>
+
+        <p>Claude Code's capabilities aren't uniformly good or uniformly bad. They're <strong>jagged</strong> &mdash; spectacularly good at some things, surprisingly poor at others, with the boundary between "good" and "bad" being unintuitive and irregular.</p>
+
+        <h3>Where Claude Code Excels</h3>
+
+        <p><strong>Understanding and explaining existing code.</strong> Point it at a codebase and ask "what does this do?" and you'll get a clear, accurate explanation. This is one of its strongest capabilities.</p>
+
+        <p><strong>Writing boilerplate and standard patterns.</strong> CRUD operations, API endpoints, React components, test scaffolding, configuration files &mdash; anything that follows well-established patterns, Claude Code handles efficiently and accurately.</p>
+
+        <p><strong>Refactoring with clear intent.</strong> "Rename this variable across the project," "extract this function," "convert this class component to a functional component" &mdash; tasks with clear, mechanical transformation rules.</p>
+
+        <p><strong>Multi-file coordination.</strong> Claude Code can understand how files relate to each other and make coordinated changes across a codebase. This is something it's genuinely better at than doing manually, because it doesn't lose track of which files need updating.</p>
+
+        <p><strong>Generating documentation.</strong> README files, API docs, code comments, changelogs &mdash; Claude Code is excellent at synthesizing information from code into human-readable documentation.</p>
+
+        <p><strong>Debugging from error messages.</strong> Give it a stack trace and access to the code, and it's remarkably good at tracing the issue to its root cause and proposing a fix.</p>
+
+        <h3>Where Claude Code Struggles</h3>
+
+        <p><strong>Novel algorithms and complex logic.</strong> If the solution requires genuine mathematical or algorithmic insight &mdash; something that can't be pattern-matched from training data &mdash; Claude Code will often produce something that looks right but has subtle bugs.</p>
+
+        <p><strong>Maintaining consistency over long sessions.</strong> Due to compaction (see above), Claude Code can contradict its own earlier decisions in a long session. It might refactor code in a direction that conflicts with architectural choices it made earlier.</p>
+
+        <p><strong>Knowing what it doesn't know.</strong> Claude Code will rarely say "I'm not sure about this." It'll produce confident-looking output even when it's guessing. This is arguably its most dangerous trait &mdash; the output quality is inconsistent, but the confidence level is always high.</p>
+
+        <p><strong>UI/UX judgment.</strong> It can write UI code, but its design instincts are mediocre. It'll produce something functional but rarely beautiful. It optimizes for "works" not "feels right."</p>
+
+        <p><strong>Domain-specific knowledge gaps.</strong> Claude Code's training data skews toward popular technologies and common patterns. If you're working with a niche framework, an unusual architecture, or domain-specific conventions, it'll fall back on generic patterns that may not fit.</p>
+
+        <p><strong>Security-sensitive code.</strong> It can write authentication flows and handle encryption, but it may miss edge cases or use outdated practices. Always have security-critical code reviewed by a specialist.</p>
+
+        <h3>The "Jagged" Part</h3>
+
+        <p>What makes the frontier jagged &mdash; rather than just "good at X, bad at Y" &mdash; is that the boundary is unpredictable. Claude Code might handle 90% of a complex task flawlessly and then make a bizarre error on the simplest part. Or it might struggle with the setup but nail the hard logic. You can't predict in advance exactly where it'll stumble.</p>
+
+        <p>This is why the course philosophy emphasizes <strong>working with the grain of the tool.</strong> Instead of trusting Claude Code blindly or refusing to trust it at all, you learn to:</p>
+
+        <ol>
+            <li><strong>Give it tasks where it's strong</strong> and handle the weak spots yourself.</li>
+            <li><strong>Verify its output</strong>, especially in areas near the jagged edge.</li>
+            <li><strong>Break complex tasks into pieces</strong> so you can catch errors at each step rather than discovering them after a long chain of work.</li>
+            <li><strong>Use tests as a safety net</strong> (Module 6) &mdash; tests don't care whether the code was written by a human or an AI. They catch bugs either way.</li>
+        </ol>
+
+        <h3>A Framework for Deciding When to Trust Claude Code</h3>
+
+        <p>Ask yourself:</p>
+
+        <ul>
+            <li><strong>Is this a common pattern?</strong> If yes, trust is high.</li>
+            <li><strong>Does this require judgment or taste?</strong> If yes, trust is lower &mdash; verify carefully.</li>
+            <li><strong>Can I easily verify the output?</strong> If yes, let Claude try and check the result. If verification is hard, proceed more cautiously.</li>
+            <li><strong>What's the cost of an error?</strong> Low-stakes work (internal tools, prototypes) &rarr; let Claude run. High-stakes work (production security, financial calculations) &rarr; verify everything.</li>
+        </ul>
+
+        <hr>
+
+        <h2>Tying It Together</h2>
+
+        <p>These four concepts &mdash; the agentic loop, environments, context windows, and jagged capabilities &mdash; form your mental model for working with Claude Code effectively.</p>
+
+        <p>The agentic loop tells you <strong>how</strong> it works: read, plan, act, verify, repeat.</p>
+        <p>The environments tell you <strong>where</strong> it works and what context it has.</p>
+        <p>Context windows tell you <strong>what it remembers</strong> &mdash; and what it forgets.</p>
+        <p>The jagged frontier tells you <strong>what to trust</strong> &mdash; and what to double-check.</p>
+
+        <p>With this model in your head, you're ready to start working with Claude Code as a genuine partner rather than a magic box. Module 2 will show you how to give it persistent context about who you are and how you work.</p>
+
+        <hr>
+
+        <h2>Check</h2>
+
+        <p>Can you explain to someone else <em>why</em> Claude Code sometimes nails a task and sometimes misses completely?</p>
+
+        <p>If your answer touches on the jagged capability frontier (pattern-matched vs. novel tasks), context window limitations (compaction and forgetting), and the agentic loop (self-correction has limits) &mdash; you're ready for Module 2.</p>
+
+        <div class="footer">
+            From Concept to Delivery with Claude Code &mdash; A Practitioner's Course
+        </div>
+
+    </div>
+</body>
+</html>

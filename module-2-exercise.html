@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 — Exercise: CLAUDE.md — Teaching Claude Who You Are</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            color: #1a1a1a;
+            background: #fff;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .back-link {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: #888;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-link:hover {
+            color: #555;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+
+        code {
+            background: #f5f5f5;
+            font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        pre code {
+            background: none;
+            padding: 0;
+            font-size: 0.85rem;
+            line-height: 1.5;
+        }
+
+        blockquote {
+            border-left: 2px solid #999;
+            padding-left: 1rem;
+            color: #444;
+            font-style: italic;
+            margin-bottom: 0.75rem;
+        }
+
+        ul, ol {
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin-bottom: 0.3rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 2rem 0;
+        }
+
+        .footer {
+            border-top: 1px solid #eee;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+
+        .file-tree {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="module-2-index.html" class="back-link">&larr; Module 2</a>
+
+        <h1>Module 2 Exercise: CLAUDE.md &mdash; Teaching Claude Who You Are</h1>
+
+        <h2>Overview</h2>
+
+        <p>This exercise has three parts. You'll create a CLAUDE.md file in a real project, test how Claude reads and respects it, and then deliberately push it into territory where vagueness breaks down. The goal isn't to perfect your documentation &mdash; it's to build intuition about how Claude uses context to make better decisions.</p>
+
+        <p><strong>Time estimate:</strong> 25&ndash;35 minutes</p>
+
+        <hr>
+
+        <h2>Before You Start</h2>
+
+        <p>You'll need:</p>
+        <ul>
+            <li>Claude Code installed and working (verify with <code>claude --version</code>)</li>
+            <li>A project folder you care about (can be something you're actively working on, or a practice repo)</li>
+            <li>A text editor to write CLAUDE.md</li>
+        </ul>
+
+        <hr>
+
+        <h2>Part 1: Write Your First CLAUDE.md</h2>
+
+        <p>Open your project root and create a file called <code>CLAUDE.md</code>. This is your instruction manual for Claude.</p>
+
+        <p>Start with the basics:</p>
+
+<pre><code># Project: [Your Project Name]
+
+## What This Is
+[One sentence describing the project purpose]
+
+## Tech Stack
+- Language: [e.g., Python, TypeScript, Rust]
+- Framework: [e.g., React, Django, Actix]
+- Key Libraries: [list 2–3]
+
+## Key Conventions
+- Naming: [e.g., "kebab-case for files, camelCase for functions"]
+- Structure: [e.g., "src/ contains all code, tests/ contains tests"]
+- Style: [e.g., "Prefer functional patterns, keep functions under 50 lines"]
+
+## Business Analysis Framework (SOP)
+When analyzing any new idea or feature request, apply this framework in order:
+1. **Goals** — What are we trying to achieve?
+2. **Problems** — What's blocking us or could go wrong?
+3. **Solutions** — What are the options?
+4. **Risks** — What could break? What's the cost?
+5. **Scope** — What's in bounds? What's out?
+
+Use this framework for every task where direction matters.</code></pre>
+
+        <p>Save it and run a simple task:</p>
+
+        <blockquote><p>"Take a look at my project structure and summarize what you see."</p></blockquote>
+
+        <p><strong>Checkpoint:</strong> Did Claude mention the CLAUDE.md file? Did it reflect any of your conventions in its response?</p>
+
+        <hr>
+
+        <h2>Part 2: Test the Hierarchy</h2>
+
+        <p>Create a global Claude configuration at <code>~/.claude/CLAUDE.md</code>:</p>
+
+<pre><code># Global Preferences
+
+- Always use TypeScript for new code
+- Prefer functional programming patterns
+- Keep functions under 50 lines where possible</code></pre>
+
+        <p>Now create a subfolder in your project and add a folder-level override:</p>
+
+        <div class="file-tree">my-project/<br>├── CLAUDE.md<br>└── experimental/<br>&nbsp;&nbsp;&nbsp;&nbsp;└── CLAUDE.md</div>
+
+        <p>In <code>experimental/CLAUDE.md</code>:</p>
+
+<pre><code># Experimental Folder
+
+Override: Use Python for this folder only.
+Style: Imperative, step-by-step clarity over cleverness.</code></pre>
+
+        <p>Give Claude a cross-boundary task:</p>
+
+        <blockquote><p>"Create a new utility function in both the main project and the experimental/ folder. Make them do the same thing."</p></blockquote>
+
+        <p><strong>Reflection:</strong></p>
+        <ul>
+            <li>Did Claude use TypeScript in the main project?</li>
+            <li>Did it switch to Python in experimental/?</li>
+            <li>Which CLAUDE.md took precedence: global or project-level? Why do you think that is?</li>
+        </ul>
+
+        <hr>
+
+        <h2>Part 3: The Vague Task Test</h2>
+
+        <h3>Step 1: Task Without CLAUDE.md</h3>
+
+        <p>Temporarily rename your CLAUDE.md to CLAUDE.md.bak and ask Claude:</p>
+
+        <blockquote><p>"Help me plan a new feature for this project."</p></blockquote>
+
+        <p>Notice what happens. Claude will likely ask clarifying questions or make generic suggestions. Observe the output &mdash; is it specific to your project, or could it apply to any codebase?</p>
+
+        <h3>Step 2: Task With CLAUDE.md</h3>
+
+        <p>Restore CLAUDE.md and ask the exact same question:</p>
+
+        <blockquote><p>"Help me plan a new feature for this project."</p></blockquote>
+
+        <p><strong>Reflection:</strong></p>
+        <ul>
+            <li>Did Claude follow the business analysis framework unprompted?</li>
+            <li>Did it reference your specific tech stack or conventions?</li>
+            <li>Did the output quality differ? How?</li>
+            <li>What would you improve about your CLAUDE.md to make Claude even more helpful?</li>
+        </ul>
+
+        <hr>
+
+        <h2>Part 4: Reflection and Self-Assessment</h2>
+
+        <p>Before moving on, ask yourself:</p>
+
+        <ul>
+            <li><strong>What surprised you</strong> about how Claude read and used CLAUDE.md?</li>
+            <li><strong>Where did it fall short?</strong> (Claude will still have questions sometimes &mdash; that's normal.)</li>
+            <li><strong>How would you change your CLAUDE.md</strong> after this exercise?</li>
+        </ul>
+
+        <hr>
+
+        <h2>Optional: Going Further</h2>
+
+        <ul>
+            <li>Add domain-specific vocabulary or acronyms to your CLAUDE.md and test if Claude uses them naturally.</li>
+            <li>Create a CLAUDE.md for a different project and compare how differently Claude behaves.</li>
+            <li>Write a CLAUDE.md for a hypothetical project and give Claude a task in it &mdash; how much scaffolding does it need before Claude acts like an expert?</li>
+        </ul>
+
+        <hr>
+
+        <p><strong>Module Check:</strong> What is the main purpose of a CLAUDE.md file?</p>
+
+        <div class="footer">
+            <p>Claude Code Course &copy; 2025</p>
+        </div>
+    </div>
+</body>
+</html>
