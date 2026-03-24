@@ -3,23 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>From Concept to Delivery with Claude Code</title>
+<title>Course Shell</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; display: flex; min-height: 100vh; }
-
-  /* Sidebar */
-  .sidebar { width: 300px; min-width: 300px; border-right: 1px solid #eee; padding: 1.5rem 0; overflow-y: auto; height: 100vh; position: sticky; top: 0; transition: margin-left 0.25s ease; }
-  .sidebar.collapsed { margin-left: -300px; }
-
+  .sidebar { width: 320px; min-width: 320px; border-right: 1px solid #eee; padding: 1.5rem 0; overflow-y: auto; height: 100vh; position: sticky; top: 0; transition: margin-left 0.25s ease; }
+  .sidebar.collapsed { margin-left: -320px; }
   .sidebar-header { padding: 0 1.2rem 1rem; border-bottom: 1px solid #f0f0f0; margin-bottom: 0.8rem; }
-  .sidebar-title { font-size: 0.95rem; font-weight: 700; margin-bottom: 0.15rem; }
-  .sidebar-subtitle { font-size: 0.75rem; color: #aaa; }
-
+  .sidebar-title { font-size: 1rem; font-weight: 700; margin-bottom: 0.2rem; line-height: 1.3; }
+  .sidebar-subtitle { font-size: 0.76rem; color: #999; margin-bottom: 0.8rem; }
+  .subject-select { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 0.6rem 0.7rem; font: inherit; background: #fff; }
+  .subject-links { margin-top: 0.7rem; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .subject-link { font-size: 0.75rem; color: #777; text-decoration: none; padding: 0.3rem 0.5rem; border-radius: 999px; background: #f5f5f5; }
   .module-item { padding: 0.45rem 1.2rem; display: flex; align-items: flex-start; gap: 0.5rem; cursor: pointer; transition: background 0.1s; }
   .module-item:hover { background: #f9f9f9; }
   .module-item.active { background: #f5f5f5; }
-
   .module-check { margin-top: 2px; accent-color: #555; cursor: pointer; flex-shrink: 0; width: 15px; height: 15px; }
   .module-info { flex: 1; min-width: 0; }
   .module-num { font-size: 0.7rem; color: #bbb; font-weight: 600; }
@@ -27,23 +25,17 @@
   .module-name.checked-label { color: #aaa; text-decoration: line-through; text-decoration-color: #ddd; }
   .module-item.disabled .module-name { color: #ccc; }
   .module-item.disabled { cursor: default; }
-
   .sidebar-section { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #bbb; padding: 0.8rem 1.2rem 0.3rem; }
-
-  /* Sub-items (resources within a module) */
   .module-resources { padding: 0.2rem 0 0.4rem 2.6rem; display: none; }
   .module-resources.open { display: block; }
   .resource-link { display: block; font-size: 0.78rem; color: #666; text-decoration: none; padding: 0.25rem 0.5rem; border-radius: 4px; margin-bottom: 0.1rem; line-height: 1.35; transition: background 0.1s; }
   .resource-link:hover { background: #f0f0f0; color: #333; }
   .resource-link .res-type { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; margin-left: 0.3rem; color: #bbb; }
-
   .sidebar-footer { padding: 1rem 1.2rem; border-top: 1px solid #f0f0f0; margin-top: 0.5rem; }
   .progress-bar-container { margin-bottom: 0.7rem; }
   .progress-label { font-size: 0.7rem; color: #bbb; margin-bottom: 0.25rem; }
   .progress-bar { height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: #888; border-radius: 2px; transition: width 0.3s; }
-
-  /* Sync status row */
   .sync-row { display: flex; align-items: center; justify-content: space-between; }
   .sync-status { font-size: 0.7rem; display: flex; align-items: center; gap: 0.3rem; }
   .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
@@ -55,22 +47,16 @@
   .sync-text { color: #aaa; }
   .sync-settings-btn { background: none; border: none; font-size: 0.7rem; color: #ccc; cursor: pointer; padding: 0; text-decoration: underline; }
   .sync-settings-btn:hover { color: #888; }
-
-  /* Toggle button */
   .sidebar-toggle { position: fixed; top: 12px; left: 12px; z-index: 100; background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: #999; transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
   .sidebar-toggle:hover { border-color: #bbb; color: #555; }
-  .sidebar-open .sidebar-toggle { left: 312px; }
-
-  /* Main content */
+  .sidebar-open .sidebar-toggle { left: 332px; }
   .main { flex: 1; min-width: 0; padding: 2rem; overflow-y: auto; }
   .main-placeholder { display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 80vh; padding: 2rem; text-align: center; }
-  .main-placeholder h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
-  .main-placeholder p { font-size: 0.95rem; color: #888; line-height: 1.6; max-width: 480px; }
+  .main-placeholder h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+  .main-placeholder p { font-size: 0.95rem; color: #888; line-height: 1.6; max-width: 520px; }
   .main-placeholder .start-link { display: inline-block; margin-top: 1.5rem; background: #1a1a1a; color: #fff; text-decoration: none; padding: 0.6rem 1.5rem; border-radius: 6px; font-size: 0.9rem; transition: background 0.15s; }
   .main-placeholder .start-link:hover { background: #333; }
-
-  /* Module content panel */
-  .module-content { max-width: 700px; }
+  .module-content { max-width: 740px; }
   .module-content h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.3rem; letter-spacing: -0.01em; }
   .module-content .mc-subtitle { font-size: 0.88rem; color: #999; margin-bottom: 1.5rem; }
   .module-content .mc-phase { margin-bottom: 2rem; }
@@ -91,83 +77,67 @@
   .mc-coming p { font-size: 0.9rem; color: #aaa; }
   .mc-check { font-size: 0.85rem; color: #888; line-height: 1.6; margin-top: 1.5rem; padding: 1rem; background: #fafafa; border-radius: 8px; border-left: 3px solid #ddd; }
   .mc-check strong { color: #666; }
-
-  /* Token setup modal */
   .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; }
   .modal-backdrop.hidden { display: none; }
   .modal { background: #fff; border-radius: 10px; padding: 2rem; max-width: 460px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
-  .modal h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.4rem; }
-  .modal p { font-size: 0.85rem; color: #666; line-height: 1.6; margin-bottom: 1rem; }
-  .modal ol { font-size: 0.85rem; color: #666; line-height: 2; margin-bottom: 1rem; padding-left: 1.2rem; }
-  .modal label { font-size: 0.8rem; font-weight: 600; color: #555; display: block; margin-bottom: 0.3rem; }
-  .modal input[type="text"] { width: 100%; border: 1px solid #ddd; border-radius: 6px; padding: 0.5rem 0.7rem; font-size: 0.85rem; font-family: monospace; outline: none; transition: border-color 0.15s; }
-  .modal input[type="text"]:focus { border-color: #999; }
-  .modal-actions { display: flex; gap: 0.5rem; margin-top: 1rem; }
-  .modal-btn { padding: 0.5rem 1.2rem; border-radius: 6px; font-size: 0.85rem; cursor: pointer; border: 1px solid #ddd; background: #fff; color: #555; transition: all 0.15s; }
+  .modal h2 { font-size: 1.2rem; margin-bottom: 0.6rem; }
+  .modal p, .modal li, .modal label { font-size: 0.9rem; color: #666; line-height: 1.6; }
+  .modal label { display: block; margin-top: 1rem; margin-bottom: 0.3rem; font-weight: 600; color: #444; }
+  .modal input { width: 100%; padding: 0.7rem 0.8rem; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
+  .modal-error { color: #f44336; font-size: 0.8rem; margin-top: 0.5rem; min-height: 1.2rem; }
+  .modal-actions { display: flex; gap: 0.6rem; margin-top: 1.2rem; }
+  .modal-btn { padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-size: 0.9rem; }
   .modal-btn.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
-  .modal-btn.primary:hover { background: #333; }
-  .modal-btn:hover { border-color: #bbb; }
-  .modal-error { font-size: 0.8rem; color: #f44336; margin-top: 0.5rem; min-height: 1.2em; }
-
-  @media (max-width: 768px) {
-    .sidebar { position: fixed; z-index: 50; background: #fff; height: 100vh; box-shadow: 2px 0 8px rgba(0,0,0,0.05); }
-    .sidebar.collapsed { margin-left: -300px; }
-    .sidebar-open .sidebar-toggle { left: 312px; }
+  @media (max-width: 900px) {
+    .sidebar { position: fixed; z-index: 80; background: #fff; }
+    .sidebar.collapsed { margin-left: -320px; }
+    .main { padding: 4rem 1rem 1.5rem; }
   }
 </style>
 </head>
 <body class="sidebar-open">
+<button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
-<div class="sidebar-toggle" onclick="toggleSidebar()" title="Toggle sidebar">☰</div>
-
-<nav class="sidebar" id="sidebar">
+<aside class="sidebar" id="sidebar">
   <div class="sidebar-header">
-    <div class="sidebar-title">From Concept to Delivery</div>
-    <div class="sidebar-subtitle">with Claude Code — A Practitioner's Course</div>
+    <div class="sidebar-title" id="sidebar-title"></div>
+    <div class="sidebar-subtitle" id="sidebar-subtitle"></div>
+    <select class="subject-select" id="subject-select"></select>
+    <div class="subject-links">
+      <a class="subject-link" href="index.html">All Subjects</a>
+      <a class="subject-link" id="syllabus-link" href="#">Syllabus</a>
+    </div>
   </div>
-
-  <div class="sidebar-section">At Your Desk (1–9)</div>
-  <div id="toc"></div>
-
-  <div class="sidebar-section">On Autopilot (10–12)</div>
-  <div id="toc2"></div>
-
-  <div class="sidebar-section">Ship It</div>
-  <div id="toc3"></div>
-
+  <div id="toc-sections"></div>
   <div class="sidebar-footer">
     <div class="progress-bar-container">
-      <div class="progress-label" id="progress-label">0 / 14 complete</div>
+      <div class="progress-label" id="progress-label">0 / 0 complete</div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     </div>
     <div class="sync-row">
-      <div class="sync-status">
-        <div class="sync-dot offline" id="sync-dot"></div>
-        <span class="sync-text" id="sync-text">Not connected</span>
-      </div>
-      <button class="sync-settings-btn" onclick="showTokenModal()">Settings</button>
+      <div class="sync-status"><span class="sync-dot offline" id="sync-dot"></span><span class="sync-text" id="sync-text">Not connected</span></div>
+      <button class="sync-settings-btn" onclick="showTokenModal()">Sync</button>
     </div>
   </div>
-</nav>
+</aside>
 
-<main class="main" id="main">
+<main class="main">
   <div class="main-placeholder" id="placeholder">
-    <h1>Welcome back, David.</h1>
-    <p>Pick up where you left off, or start from the beginning. Click any module in the sidebar to see its materials. Your checkmarks are saved automatically — they'll be here next time.</p>
-    <a class="start-link" href="#" onclick="loadModule(1); return false;">Start Module 1: Orientation</a>
+    <h1 id="welcome-title"></h1>
+    <p id="welcome-description"></p>
+    <a class="start-link" href="#" id="start-link">Start</a>
   </div>
   <div id="module-panel" style="display:none;"></div>
 </main>
 
-<!-- Token setup modal -->
 <div class="modal-backdrop hidden" id="modal-backdrop">
   <div class="modal">
     <h2>Connect GitHub Gist Sync</h2>
-    <p>Your progress will be saved to a private GitHub Gist and synced automatically across all your devices.</p>
+    <p>Your progress for this subject will be saved to a private GitHub Gist and synced across devices.</p>
     <ol>
       <li>Go to <strong>github.com</strong> → Settings → Developer settings</li>
       <li>Personal access tokens → Tokens (classic)</li>
-      <li>Generate new token (classic) — scope: <strong>gist</strong> only</li>
+      <li>Generate a token with <strong>gist</strong> scope</li>
       <li>Paste it below</li>
     </ol>
     <label for="token-input">GitHub Personal Access Token</label>
@@ -181,97 +151,43 @@
   </div>
 </div>
 
+<script src="course-data.js"></script>
 <script>
-const STORAGE_KEY = "claude-code-course-progress";
-const GIST_TOKEN_KEY = "claude-course-gist-token";
-const GIST_ID_KEY = "claude-course-gist-id";
-const GIST_FILENAME = "claude-course-progress.json";
-
-const modules = [
-  { num: 1, name: "Orientation — What Claude Code Actually Is", section: 1,
-    check: "Can you explain to someone else <em>why</em> Claude Code sometimes nails a task and sometimes misses completely? If your answer touches on the jagged frontier, context window limits, and the agentic loop's self-correction boundaries — you're ready for Module 2.",
-    phases: [
-      { label: "Phase 1", title: "Learn the concepts", desc: "Start here. Read the core lesson, then scan the diagram for a visual anchor.", items: [0, 1] },
-      { label: "Phase 2", title: "Explore interactively", desc: "Dig into each concept at your own pace.", items: [2, 3] },
-      { label: "Phase 3", title: "Practice with real tools", desc: "Hands-on time. Open Claude Code and work through the guided exercise.", items: [4] },
-      { label: "Phase 4", title: "Test your understanding", desc: "See how well the concepts stuck.", items: [5, 6] },
-      { label: "Phase 5", title: "Bookmark for later", desc: "Reference materials you'll come back to.", items: [7, 8] }
-    ],
-    resources: [
-      { name: "Lesson Content", href: "module-1-lesson.html", type: "read" },
-      { name: "Concept Map", href: "module-1-diagram.svg", type: "visual" },
-      { name: "Concept Explorer", href: "module-1-explorer.html", type: "interactive" },
-      { name: "Slide Walkthrough", href: "module-1-slides.html", type: "visual" },
-      { name: "Guided Exercise", href: "module-1-exercise.html", type: "exercise" },
-      { name: "Scenario Quiz", href: "module-1-quiz.html", type: "interactive" },
-      { name: "Flashcards", href: "module-1-flashcards.html", type: "interactive" },
-      { name: "Quick Reference", href: "module-1-reference.html", type: "reference" },
-      { name: "Capability Matrix", href: "module-1-capabilities.html", type: "reference" }
-    ]},
-  { num: 2, name: "CLAUDE.md — Teaching Claude Who You Are", section: 1,
-    check: "Does Claude Code follow your conventions without you having to remind it every time? If your CLAUDE.md is working, Claude should apply your framework, follow your coding standards, and respect your preferences — automatically, session after session. If yes, you're ready for Module 3.",
-    phases: [
-      { label: "Phase 1", title: "Learn the concepts", desc: "Read the core lesson, then study the hierarchy diagram. This gives you the full picture of what CLAUDE.md does and how the three levels work together.", items: [0, 1] },
-      { label: "Phase 2", title: "Build interactively", desc: "Use the template builder to construct your own CLAUDE.md step by step. Theory becomes practice.", items: [2] },
-      { label: "Phase 3", title: "Practice with real tools", desc: "Open Claude Code and test your CLAUDE.md in the real environment.", items: [3] },
-      { label: "Phase 4", title: "Test your understanding", desc: "Check how well the concepts stuck. The quiz tests judgment; the flashcards lock in terminology.", items: [4, 5] },
-      { label: "Phase 5", title: "Bookmark for later", desc: "The reference card is a quick cheat sheet for when you're writing or reviewing a CLAUDE.md.", items: [6] }
-    ],
-    resources: [
-      { name: "Lesson Content", href: "module-2-lesson.html", type: "read" },
-      { name: "Hierarchy Diagram", href: "module-2-diagram.svg", type: "visual" },
-      { name: "CLAUDE.md Builder", href: "module-2-builder.html", type: "interactive" },
-      { name: "Guided Exercise", href: "module-2-exercise.html", type: "exercise" },
-      { name: "Scenario Quiz", href: "module-2-quiz.html", type: "interactive" },
-      { name: "Flashcards", href: "module-2-flashcards.html", type: "interactive" },
-      { name: "Quick Reference", href: "module-2-reference.html", type: "reference" }
-    ]},
-  { num: 3, name: "The Art of the Prompt — From Ramble to Precision", section: 1, resources: [] },
-  { num: 4, name: "Idea Refinement — Using Claude Code to Think", section: 1, resources: [] },
-  { num: 5, name: "Architecture — Designing Before Building", section: 1, resources: [] },
-  { num: 6, name: "Test-Driven Development with Claude Code", section: 1, resources: [] },
-  { num: 7, name: "Skills — Reusable Intelligence", section: 1, resources: [] },
-  { num: 8, name: "MCP — Connecting Claude Code to the World", section: 1, resources: [] },
-  { num: 9, name: "Multi-Agent Workflows — Orchestration at Scale", section: 1, resources: [] },
-  { num: 10, name: "Scheduled Tasks — Putting Claude on Autopilot", section: 2, resources: [] },
-  { num: 11, name: "Remote Control — Claude Code from Your Pocket", section: 2, resources: [] },
-  { num: 12, name: "Channels — Claude Code Meets You Where You Are", section: 2, resources: [] },
-  { num: 13, name: "Delivery — From Working Code to Shipped Product", section: 3, resources: [] },
-  { num: "C", name: "Capstone: Build Something Real", section: 3, resources: [] }
-];
-
+const subjectMap = Object.fromEntries(window.COURSE_DATA.subjects.map(subject => [subject.slug, subject]));
+const params = new URLSearchParams(window.location.search);
+let subjectSlug = params.get("subject") || window.COURSE_DATA.defaultSubject;
+if (!subjectMap[subjectSlug]) subjectSlug = window.COURSE_DATA.defaultSubject;
+let subject = subjectMap[subjectSlug];
+let modules = subject.modules;
 let progress = {};
 let expandedModule = null;
 let gistToken = null;
 let gistId = null;
 
-// ── Local storage helpers ──────────────────────────────────────────────────
+function storageKey() { return subject.progressPrefix + "-progress"; }
+function gistTokenKey() { return subject.progressPrefix + "-gist-token"; }
+function gistIdKey() { return subject.progressPrefix + "-gist-id"; }
+function gistFilename() { return subject.progressPrefix + "-progress.json"; }
 
 function loadLocalProgress() {
   try {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) progress = JSON.parse(stored);
-  } catch (e) {}
+    const stored = localStorage.getItem(storageKey());
+    progress = stored ? JSON.parse(stored) : {};
+  } catch (e) {
+    progress = {};
+  }
 }
 
 function saveLocalProgress() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-  } catch (e) {}
+  localStorage.setItem(storageKey(), JSON.stringify(progress));
 }
-
-// ── Sync status UI ─────────────────────────────────────────────────────────
 
 function setSyncStatus(state, text) {
-  const dot = document.getElementById("sync-dot");
-  const label = document.getElementById("sync-text");
-  dot.className = "sync-dot " + state;
-  label.textContent = text;
+  document.getElementById("sync-dot").className = "sync-dot " + state;
+  document.getElementById("sync-text").textContent = text;
 }
 
-// ── Gist API ───────────────────────────────────────────────────────────────
-
-async function gistFetch(url, options = {}) {
+function gistFetch(url, options = {}) {
   return fetch(url, {
     ...options,
     headers: {
@@ -282,17 +198,31 @@ async function gistFetch(url, options = {}) {
   });
 }
 
+async function createGist() {
+  const res = await gistFetch("https://api.github.com/gists", {
+    method: "POST",
+    body: JSON.stringify({
+      description: subject.gistDescription,
+      public: false,
+      files: { [gistFilename()]: { content: JSON.stringify(progress, null, 2) } }
+    })
+  });
+  if (res.ok) {
+    const data = await res.json();
+    gistId = data.id;
+    localStorage.setItem(gistIdKey(), gistId);
+  }
+}
+
 async function loadFromGist() {
   if (!gistToken) return;
   setSyncStatus("syncing", "Syncing…");
-
   try {
-    // If we have a known gist ID, fetch it directly
     if (gistId) {
       const res = await gistFetch("https://api.github.com/gists/" + gistId);
       if (res.ok) {
         const data = await res.json();
-        const content = data.files[GIST_FILENAME] && data.files[GIST_FILENAME].content;
+        const content = data.files[gistFilename()] && data.files[gistFilename()].content;
         if (content) {
           progress = JSON.parse(content);
           saveLocalProgress();
@@ -302,24 +232,19 @@ async function loadFromGist() {
           return;
         }
       }
-      // Gist ID is stale — fall through to search
     }
 
-    // Search existing gists for our file
     const listRes = await gistFetch("https://api.github.com/gists?per_page=100");
     if (!listRes.ok) { setSyncStatus("error", "Sync failed"); return; }
-
     const gists = await listRes.json();
-    const match = gists.find(g => g.files[GIST_FILENAME]);
-
+    const match = gists.find(gist => gist.files[gistFilename()]);
     if (match) {
       gistId = match.id;
-      localStorage.setItem(GIST_ID_KEY, gistId);
-      // Fetch full content (list response truncates it)
+      localStorage.setItem(gistIdKey(), gistId);
       const detail = await gistFetch("https://api.github.com/gists/" + gistId);
       if (detail.ok) {
         const data = await detail.json();
-        const content = data.files[GIST_FILENAME] && data.files[GIST_FILENAME].content;
+        const content = data.files[gistFilename()] && data.files[gistFilename()].content;
         if (content) {
           progress = JSON.parse(content);
           saveLocalProgress();
@@ -328,43 +253,23 @@ async function loadFromGist() {
         }
       }
     } else {
-      // No existing gist — create one with current progress
       await createGist();
     }
-
     setSyncStatus("synced", "Synced");
   } catch (e) {
     setSyncStatus("error", "Sync failed");
   }
 }
 
-async function createGist() {
-  const res = await gistFetch("https://api.github.com/gists", {
-    method: "POST",
-    body: JSON.stringify({
-      description: "Claude Code Course Progress",
-      public: false,
-      files: { [GIST_FILENAME]: { content: JSON.stringify(progress, null, 2) } }
-    })
-  });
-  if (res.ok) {
-    const data = await res.json();
-    gistId = data.id;
-    localStorage.setItem(GIST_ID_KEY, gistId);
-  }
-}
-
 async function saveToGist() {
   if (!gistToken) return;
   setSyncStatus("syncing", "Syncing…");
-
   try {
-    if (!gistId) { await createGist(); }
-
+    if (!gistId) await createGist();
     const res = await gistFetch("https://api.github.com/gists/" + gistId, {
       method: "PATCH",
       body: JSON.stringify({
-        files: { [GIST_FILENAME]: { content: JSON.stringify(progress, null, 2) } }
+        files: { [gistFilename()]: { content: JSON.stringify(progress, null, 2) } }
       })
     });
     setSyncStatus(res.ok ? "synced" : "error", res.ok ? "Synced" : "Sync failed");
@@ -373,14 +278,10 @@ async function saveToGist() {
   }
 }
 
-// ── Save (local + gist) ────────────────────────────────────────────────────
-
 function saveProgress() {
   saveLocalProgress();
   saveToGist();
 }
-
-// ── Token setup modal ──────────────────────────────────────────────────────
 
 function showTokenModal() {
   document.getElementById("token-input").value = gistToken || "";
@@ -397,26 +298,21 @@ async function saveToken() {
   const input = document.getElementById("token-input").value.trim();
   const errorEl = document.getElementById("modal-error");
   errorEl.textContent = "";
-
   if (!input) { errorEl.textContent = "Please paste your token."; return; }
 
-  // Quick validation: test the token against the API
   errorEl.textContent = "Verifying…";
   try {
-    const res = await fetch("https://api.github.com/user", {
-      headers: { Authorization: "token " + input }
-    });
-    if (!res.ok) { errorEl.textContent = "Token invalid or missing gist scope. Try again."; return; }
+    const res = await fetch("https://api.github.com/user", { headers: { Authorization: "token " + input } });
+    if (!res.ok) { errorEl.textContent = "Token invalid or missing gist scope."; return; }
   } catch (e) {
     errorEl.textContent = "Could not reach GitHub. Check your connection.";
     return;
   }
 
   gistToken = input;
-  gistId = null; // reset so we re-discover
-  localStorage.setItem(GIST_TOKEN_KEY, gistToken);
-  localStorage.removeItem(GIST_ID_KEY);
-
+  gistId = null;
+  localStorage.setItem(gistTokenKey(), gistToken);
+  localStorage.removeItem(gistIdKey());
   hideTokenModal();
   await loadFromGist();
 }
@@ -424,16 +320,14 @@ async function saveToken() {
 function disconnectGist() {
   gistToken = null;
   gistId = null;
-  localStorage.removeItem(GIST_TOKEN_KEY);
-  localStorage.removeItem(GIST_ID_KEY);
+  localStorage.removeItem(gistTokenKey());
+  localStorage.removeItem(gistIdKey());
   setSyncStatus("offline", "Not connected");
   hideTokenModal();
 }
 
-// ── Core UI ────────────────────────────────────────────────────────────────
-
-function toggleCheck(num, e) {
-  e.stopPropagation();
+function toggleCheck(num, event) {
+  event.stopPropagation();
   const key = "m" + num;
   progress[key] = !progress[key];
   saveProgress();
@@ -453,16 +347,14 @@ function loadModule(num) {
 }
 
 function showModulePanel(num) {
-  const mod = modules.find(m => m.num === num);
+  const module = modules.find(item => item.num === num);
+  if (!module) return;
+  document.getElementById("placeholder").style.display = "none";
   const panel = document.getElementById("module-panel");
-  const placeholder = document.getElementById("placeholder");
-
-  if (!mod) return;
-  placeholder.style.display = "none";
   panel.style.display = "block";
 
-  if (mod.resources.length === 0) {
-    panel.innerHTML = `<div class="mc-coming"><h2>${mod.num === "C" ? "Capstone" : "Module " + mod.num}: ${mod.name}</h2><p>Coming soon.</p></div>`;
+  if (!module.resources || module.resources.length === 0) {
+    panel.innerHTML = `<div class="mc-coming"><h2>${module.num === "C" ? "Capstone" : "Module " + module.num}: ${module.name}</h2><p>Coming soon.</p></div>`;
     return;
   }
 
@@ -473,103 +365,127 @@ function showModulePanel(num) {
     { label: "Phase 4", title: "Test your understanding", desc: "See how well the concepts stuck.", items: [5, 6] },
     { label: "Phase 5", title: "Bookmark for later", desc: "Reference materials.", items: [7, 8] }
   ];
-  const phases = mod.phases || defaultPhases;
+  const phases = module.phases || defaultPhases;
   const typeMap = { read: "passive", visual: "passive", interactive: "interactive", exercise: "interactive", reference: "passive" };
-
   let html = `<div class="module-content">`;
-  html += `<h2>Module ${mod.num}: ${mod.name.split("—")[0].trim()}</h2>`;
-  html += `<div class="mc-subtitle">${mod.name.includes("—") ? mod.name.split("—")[1].trim() : ""}</div>`;
+  html += `<h2>Module ${module.num}: ${module.name.split("—")[0].trim()}</h2>`;
+  html += `<div class="mc-subtitle">${module.name.includes("—") ? module.name.split("—")[1].trim() : ""}</div>`;
 
   phases.forEach(phase => {
-    html += `<div class="mc-phase">`;
-    html += `<div class="mc-phase-header">${phase.label}</div>`;
-    html += `<div class="mc-phase-title">${phase.title}</div>`;
-    html += `<div class="mc-phase-desc">${phase.desc}</div>`;
+    html += `<div class="mc-phase"><div class="mc-phase-header">${phase.label}</div><div class="mc-phase-title">${phase.title}</div><div class="mc-phase-desc">${phase.desc}</div>`;
     phase.items.forEach(idx => {
-      if (idx < mod.resources.length) {
-        const res = mod.resources[idx];
-        const tagClass = typeMap[res.type] || "passive";
-        html += `<a class="mc-resource-link" href="${res.href}" target="_blank">
-          <div class="mc-res-num">${idx + 1}</div>
-          <div class="mc-res-body">
-            <div class="mc-res-name">${res.name}</div>
-            <div class="mc-res-meta"><span class="mc-res-tag ${tagClass}">${tagClass}</span>${res.type}</div>
-          </div>
-        </a>`;
+      if (idx < module.resources.length) {
+        const resource = module.resources[idx];
+        const tagClass = typeMap[resource.type] || "passive";
+        html += `<a class="mc-resource-link" href="${resource.href}" target="_blank"><div class="mc-res-num">${idx + 1}</div><div class="mc-res-body"><div class="mc-res-name">${resource.name}</div><div class="mc-res-meta"><span class="mc-res-tag ${tagClass}">${tagClass}</span>${resource.type}</div></div></a>`;
       }
     });
     html += `</div>`;
   });
 
-  const checkText = mod.check || "Complete all materials and exercises before moving on.";
-  html += `<div class="mc-check"><strong>Module ${mod.num} check:</strong> ${checkText}</div>`;
+  html += `<div class="mc-check"><strong>Module ${module.num} check:</strong> ${module.check || "Complete the resources before moving on."}</div>`;
   html += `</div>`;
   panel.innerHTML = html;
 }
 
 function updateProgress() {
   const total = modules.length;
-  const done = modules.filter(m => progress["m" + m.num]).length;
-  document.getElementById("progress-label").textContent = done + " / " + total + " complete";
-  document.getElementById("progress-fill").style.width = Math.round((done / total) * 100) + "%";
+  const done = modules.filter(module => progress["m" + module.num]).length;
+  document.getElementById("progress-label").textContent = `${done} / ${total} complete`;
+  document.getElementById("progress-fill").style.width = `${Math.round((done / total) * 100)}%`;
 }
 
 function renderTOC() {
-  const containers = { 1: document.getElementById("toc"), 2: document.getElementById("toc2"), 3: document.getElementById("toc3") };
-  Object.values(containers).forEach(c => c.innerHTML = "");
+  const container = document.getElementById("toc-sections");
+  container.innerHTML = "";
+  const grouped = {};
+  modules.forEach(module => {
+    if (!grouped[module.section]) grouped[module.section] = [];
+    grouped[module.section].push(module);
+  });
 
-  modules.forEach(mod => {
-    const key = "m" + mod.num;
-    const checked = !!progress[key];
-    const hasContent = mod.resources.length > 0;
-    const isExpanded = expandedModule === mod.num;
+  Object.keys(subject.sections).forEach(sectionKey => {
+    const sectionModules = grouped[sectionKey];
+    if (!sectionModules || sectionModules.length === 0) return;
 
-    const item = document.createElement("div");
-    item.className = "module-item" + (isExpanded ? " active" : "") + (!hasContent ? " disabled" : "");
-    if (hasContent) item.onclick = () => loadModule(mod.num);
+    const label = document.createElement("div");
+    label.className = "sidebar-section";
+    label.textContent = subject.sections[sectionKey];
+    container.appendChild(label);
 
-    item.innerHTML = `
-      <input type="checkbox" class="module-check" ${checked ? "checked" : ""} onclick="toggleCheck('${mod.num}', event)" title="Mark as complete">
-      <div class="module-info">
-        <div class="module-num">${mod.num === "C" ? "Capstone" : "Module " + mod.num}</div>
-        <div class="module-name ${checked ? "checked-label" : ""}">${mod.name}</div>
-      </div>
-    `;
+    sectionModules.forEach(module => {
+      const item = document.createElement("div");
+      item.className = "module-item" + (expandedModule === module.num ? " active" : "") + ((!module.resources || module.resources.length === 0) ? " disabled" : "");
+      item.onclick = () => loadModule(module.num);
+      const checked = !!progress["m" + module.num];
+      item.innerHTML = `
+        <input class="module-check" type="checkbox" ${checked ? "checked" : ""} onclick="toggleCheck('${module.num}', event)">
+        <div class="module-info">
+          <div class="module-num">${module.num === "C" ? "Capstone" : "Module " + module.num}</div>
+          <div class="module-name ${checked ? "checked-label" : ""}">${module.name}</div>
+        </div>
+      `;
+      container.appendChild(item);
 
-    containers[mod.section].appendChild(item);
-
-    if (hasContent) {
-      const resList = document.createElement("div");
-      resList.className = "module-resources" + (isExpanded ? " open" : "");
-      mod.resources.forEach(res => {
-        const a = document.createElement("a");
-        a.className = "resource-link";
-        a.href = "#";
-        a.onclick = (e) => { e.preventDefault(); e.stopPropagation(); loadResource(res.href); };
-        a.innerHTML = res.name + `<span class="res-type">${res.type}</span>`;
-        resList.appendChild(a);
-      });
-      containers[mod.section].appendChild(resList);
-    }
+      if (module.resources && module.resources.length > 0) {
+        const resources = document.createElement("div");
+        resources.className = "module-resources" + (expandedModule === module.num ? " open" : "");
+        module.resources.forEach(resource => {
+          const link = document.createElement("a");
+          link.className = "resource-link";
+          link.href = resource.href;
+          link.target = "_blank";
+          link.innerHTML = `${resource.name}<span class="res-type">${resource.type}</span>`;
+          resources.appendChild(link);
+        });
+        container.appendChild(resources);
+      }
+    });
   });
 }
 
-// ── Init ───────────────────────────────────────────────────────────────────
+function renderSubjectMeta() {
+  document.title = subject.title;
+  document.getElementById("sidebar-title").textContent = subject.title;
+  document.getElementById("sidebar-subtitle").textContent = subject.subtitle;
+  document.getElementById("syllabus-link").href = subject.syllabusHref;
+  document.getElementById("welcome-title").textContent = subject.welcomeTitle;
+  document.getElementById("welcome-description").textContent = subject.welcomeDescription;
+  document.getElementById("start-link").textContent = `Start ${subject.modules.find(module => module.num === subject.startModule)?.name.split("—")[0].trim() || "Module 1"}`;
+  document.getElementById("start-link").onclick = event => {
+    event.preventDefault();
+    loadModule(subject.startModule);
+  };
 
-loadLocalProgress();
-renderTOC();
-updateProgress();
-
-gistToken = localStorage.getItem(GIST_TOKEN_KEY);
-gistId = localStorage.getItem(GIST_ID_KEY);
-
-if (gistToken) {
-  loadFromGist();
-} else {
-  setSyncStatus("offline", "Not connected");
-  showTokenModal();
+  const select = document.getElementById("subject-select");
+  select.innerHTML = "";
+  window.COURSE_DATA.subjects.forEach(item => {
+    const option = document.createElement("option");
+    option.value = item.slug;
+    option.textContent = item.title;
+    option.selected = item.slug === subject.slug;
+    select.appendChild(option);
+  });
+  select.onchange = event => {
+    const next = event.target.value;
+    const nextParams = new URLSearchParams(window.location.search);
+    nextParams.set("subject", next);
+    window.location.search = nextParams.toString();
+  };
 }
-</script>
 
+function init() {
+  renderSubjectMeta();
+  loadLocalProgress();
+  gistToken = localStorage.getItem(gistTokenKey());
+  gistId = localStorage.getItem(gistIdKey());
+  setSyncStatus(gistToken ? "syncing" : "offline", gistToken ? "Syncing…" : "Not connected");
+  renderTOC();
+  updateProgress();
+  if (gistToken) loadFromGist();
+}
+
+init();
+</script>
 </body>
 </html>

@@ -1,8 +1,8 @@
 # From Concept to Delivery with Claude Code
 
 **A Practitioner's Course by David (with Claude)**
-**Version:** Draft 1.2 — March 2026
-**Format:** Self-paced, exercise-driven, interactive
+**Version:** Draft 1.3 — March 2026
+**Format:** Self-paced, exercise-driven, interactive, browser-first
 
 ---
 
@@ -19,6 +19,8 @@ This course teaches you how to use Claude Code as a **thinking and building part
 Solutions targeting Risks are simply Solutions pointed at a different kind of problem.
 
 Claude Code's capabilities are jagged. This course teaches you where they're strong, where they're weak, and how to work *with* the grain rather than against it.
+
+This repository is also evolving from a single-subject Claude course into a **multi-subject course platform**. The next subject being prototyped is **OpenAI Codex**, starting with its own syllabus and first module.
 
 ---
 
@@ -64,26 +66,42 @@ The course spans 13 modules plus a capstone project:
 - **claude-code-course-syllabus.md** — Full course syllabus with learning objectives, key concepts, exercises, and checks for each module
 - **SESSION-NOTES.md** — Running notes on course development, decisions, and implementation details
 - **Structured Business Analysis.md** — Deep dive into the Goals/Problems/Solutions/Risks/Scope framework used throughout the course
+- **codex-course-expansion-plan.html** — Architecture plan for expanding the repo into a multi-subject course platform
+- **codex-course-syllabus.html** — Early syllabus for the OpenAI Codex course
+- **codex-module-1-index.html** — First Codex module index page
+- **codex-module-1-lesson.html** — First Codex module lesson page
 
 ### Interactive Learning Resources
 
 Each module includes multiple learning formats:
 
 - **Module Index** (e.g., `module-1-index.html`) — Navigation hub for that module
-- **Lesson** (e.g., `module-1-lesson.md`) — Core content in markdown
+- **Lesson** (e.g., `module-1-lesson.html`) — Core content as a standalone responsive HTML page
 - **Slides** (e.g., `module-1-slides.html`) — Visual presentation format
 - **Explorer** (e.g., `module-1-explorer.html`) — Interactive tool for exploring concepts
 - **Flashcards** (e.g., `module-1-flashcards.html`) — Spaced-repetition review cards
 - **Quiz** (e.g., `module-1-quiz.html`) — Self-assessment questions with feedback
 - **Reference** (e.g., `module-1-reference.html`) — Quick lookup for key terms and definitions
 - **Diagram** (e.g., `module-1-diagram.svg`) — Visual architecture or workflow diagram
-- **Exercise** (e.g., `module-1-exercise.md`) — Hands-on practice with real scenarios
+- **Exercise** (e.g., `module-1-exercise.html`) — Hands-on practice with real scenarios
 - **Builder** (e.g., `module-2-builder.html`) — Interactive tool to build or configure concepts
 
 ### Responsive Versions
 
-- **course.html** — Full course experience (desktop optimized)
+- **index.html** — Multi-subject landing page for the whole course library
+- **course.html** — Full course experience
 - **course-mobile.html** — Mobile-friendly version for learning on the go
+
+### Presentation Direction
+
+Learner-facing course material is moving to a **browser-native HTML/SVG delivery model**.
+
+That means:
+
+- course materials should open directly in a browser without a Markdown extension
+- mobile compatibility is a requirement, not an afterthought
+- Markdown may still exist as internal drafting or source material, but it is no longer the intended presentation layer
+- new subjects and new modules should default to HTML for lessons, exercises, and other learner-facing content
 
 ### Tools & Extensions
 
@@ -100,7 +118,7 @@ Each module includes multiple learning formats:
 
 ### Self-Paced Learning
 
-1. **Start with Module 1** — Read `module-1-lesson.md` or view `module-1-slides.html` to build your mental model
+1. **Start with Module 1** — Read `module-1-lesson.html` or view `module-1-slides.html` to build your mental model
 2. **Engage with Interactives** — Use the explorer, flashcards, and quiz to reinforce key concepts
 3. **Do the Exercise** — Apply what you learned to a real or practice scenario
 4. **Check Your Understanding** — Re-read the "Check" section in the syllabus. If you can do it, move on
@@ -117,6 +135,17 @@ Each module includes multiple learning formats:
 ### For Instructors
 
 Print or share `course.html` (desktop) or `course-mobile.html` (mobile) as your main delivery mechanism. All content is self-contained — no external dependencies beyond the HTML/SVG files.
+
+### Architecture Direction
+
+The repository started as a flat, single-course structure. It is now moving toward:
+
+- multiple subjects in the same repo
+- shared course-shell infrastructure
+- subject-specific module manifests or data files
+- browser-native delivery for all learner-facing material
+
+The guiding rule is simple: **if a learner is meant to consume it directly, it should work cleanly in the browser on desktop and mobile without extra extensions**.
 
 ---
 
@@ -168,8 +197,11 @@ For questions, issues, or feedback:
 ### Immediate Next Steps
 
 1. **Read the syllabus** — Get the full bird's-eye view: `claude-code-course-syllabus.md`
-2. **Open Module 1** — Start with `module-1-index.html` to navigate the first module's resources
-3. **Complete the Module 1 exercise** — Confirm your setup works and get hands-on with Claude Code
+2. **Open the library entry point** — Start with `index.html` to choose a subject
+3. **Open Claude Code in the subject shell** — Use `course.html?subject=claude-code`
+4. **Open Module 1 directly if you want** — Use `module-1-index.html` to navigate the first module's resources
+5. **Review the Codex prototype** — Open `course.html?subject=openai-codex` or `codex-module-1-index.html`
+6. **Complete the Module 1 exercise** — Confirm your setup works and get hands-on with Claude Code
 
 ### Setting Up Your Environment
 
@@ -189,6 +221,6 @@ You'll learn by doing, not by watching. Each module is short enough to complete 
 
 ---
 
-**Version:** Draft 1.2 — March 2026
+**Version:** Draft 1.3 — March 2026
 **Author:** David (with Claude)
 **License:** See LICENSE file
