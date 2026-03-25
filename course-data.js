@@ -75,9 +75,50 @@ window.COURSE_DATA = {
             { name: "Flashcards", href: "module-3-flashcards.html", type: "interactive" },
             { name: "Quick Reference", href: "module-3-reference.html", type: "reference" }
           ]},
-        { num: 4, name: "Idea Refinement — Using Claude Code to Think", section: 1, resources: [] },
-        { num: 5, name: "Architecture — Designing Before Building", section: 1, resources: [] },
-        { num: 6, name: "Test-Driven Development with Claude Code", section: 1, resources: [] },
+        { num: 4, name: "Idea Refinement — Using Claude Code to Think", section: 1,
+          check: "Do you have a clear written brief with goals, problems, aligned solutions, risks with mitigations, and explicit scope? If yes, you're ready for Module 5.",
+          phases: [
+            { label: "Phase 1", title: "Learn the framework", desc: "Read the lesson, then scan the framework map so the relationships are visually clear.", items: [0, 1] },
+            { label: "Phase 2", title: "Practice the analysis", desc: "Use the exercise to turn one real idea into a structured brief.", items: [2] },
+            { label: "Phase 3", title: "Pressure-test your understanding", desc: "Use the quiz and reference to strengthen judgment before moving into architecture.", items: [3, 4] }
+          ],
+          resources: [
+            { name: "Lesson Content", href: "module-4-lesson.html", type: "read" },
+            { name: "Framework Map", href: "module-4-framework.html", type: "visual" },
+            { name: "Guided Exercise", href: "module-4-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "module-4-quiz.html", type: "interactive" },
+            { name: "Quick Reference", href: "module-4-reference.html", type: "reference" }
+          ]},
+        { num: 5, name: "Architecture — Designing Before Building", section: 1,
+          check: "Do you have a proposed structure with named components, clear responsibilities, major interfaces, and explicit tradeoffs before implementation starts? If yes, you're ready for Module 6.",
+          phases: [
+            { label: "Phase 1", title: "Learn the architecture lens", desc: "Read the lesson and scan the architecture map so you can distinguish structure from implementation detail.", items: [0, 1] },
+            { label: "Phase 2", title: "Practice decomposition", desc: "Take one refined idea and turn it into a first-pass architecture with boundaries and tradeoffs.", items: [2] },
+            { label: "Phase 3", title: "Pressure-test your structure", desc: "Use the quiz and reference to sharpen your judgment before you start coding.", items: [3, 4] }
+          ],
+          resources: [
+            { name: "Lesson Content", href: "module-5-lesson.html", type: "read" },
+            { name: "Architecture Map", href: "module-5-architecture.html", type: "visual" },
+            { name: "Guided Exercise", href: "module-5-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "module-5-quiz.html", type: "interactive" },
+            { name: "Quick Reference", href: "module-5-reference.html", type: "reference" }
+          ]},
+        { num: 6, name: "Test-Driven Development with Claude Code", section: 1,
+          check: "Can you turn plain-English requirements into failing tests first, catch weak tests before implementation, and use the red-green-refactor loop to drive a real change? If yes, you're ready for Module 7.",
+          phases: [
+            { label: "Phase 1", title: "Learn the cycle", desc: "Read the lesson and study the red-green-refactor map so you know what TDD is doing beyond ritual.", items: [0, 1] },
+            { label: "Phase 2", title: "Design tests before code", desc: "Use the workbench and exercise to turn one real requirement into a test-first implementation flow.", items: [2, 3] },
+            { label: "Phase 3", title: "Pressure-test your judgment", desc: "Use the quiz, flashcards, and reference to sharpen your sense of good tests versus empty tests.", items: [4, 5, 6] }
+          ],
+          resources: [
+            { name: "Lesson Content", href: "module-6-lesson.html", type: "read" },
+            { name: "Red-Green-Refactor Map", href: "module-6-cycle.html", type: "visual" },
+            { name: "Spec-to-Tests Workbench", href: "module-6-workbench.html", type: "interactive" },
+            { name: "Guided Exercise", href: "module-6-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "module-6-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "module-6-flashcards.html", type: "interactive" },
+            { name: "Quick Reference", href: "module-6-reference.html", type: "reference" }
+          ]},
         { num: 7, name: "Skills — Reusable Intelligence", section: 1, resources: [] },
         { num: 8, name: "MCP — Connecting Claude Code to the World", section: 1, resources: [] },
         { num: 9, name: "Multi-Agent Workflows — Orchestration at Scale", section: 1, resources: [] },
@@ -115,9 +156,50 @@ window.COURSE_DATA = {
             { name: "Lesson Content", href: "codex-module-1-lesson.html", type: "read" },
             { name: "Course Syllabus", href: "codex-course-syllabus.html", type: "reference" }
           ]},
-        { num: 2, name: "AGENTS.md — Teaching Codex How You Work", section: 1, resources: [] },
-        { num: 3, name: "Prompting and Planning", section: 1, resources: [] },
-        { num: 4, name: "Permissions and Sandboxing", section: 1, resources: [] },
+        { num: 2, name: "AGENTS.md — Teaching Codex How You Work", section: 1,
+          check: "Does Codex reliably inherit your repo conventions and verification rules without you restating them in every task? If yes, move on.",
+          phases: [
+            { label: "Phase 1", title: "Learn the structure", desc: "Read the lesson and review the quick reference so the discovery chain and purpose are clear.", items: [0, 1] },
+            { label: "Phase 2", title: "Practice in a repo", desc: "Write and test an AGENTS.md on a real project.", items: [2] },
+            { label: "Phase 3", title: "Reinforce", desc: "Use the quiz for judgment and the flashcards to lock in the durable-vs-one-off distinction.", items: [3, 4] }
+          ],
+          resources: [
+            { name: "Lesson Content", href: "codex-module-2-lesson.html", type: "read" },
+            { name: "Quick Reference", href: "codex-module-2-reference.html", type: "reference" },
+            { name: "Guided Exercise", href: "codex-module-2-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "codex-module-2-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "codex-module-2-flashcards.html", type: "interactive" }
+          ]},
+        { num: 3, name: "Prompting and Planning", section: 1,
+          check: "Can you tell when to ask Codex to plan first, when to stay direct, and how to define success so the task does not drift? If yes, you're ready for Module 4.",
+          phases: [
+            { label: "Phase 1", title: "Learn the mental model", desc: "Read the lesson and review the planning ladder so you know when direct prompting stops being enough.", items: [0, 1] },
+            { label: "Phase 2", title: "Practice prompt shaping", desc: "Take one real task and rewrite it into a stronger Codex request with plan, constraints, and done-when.", items: [2] },
+            { label: "Phase 3", title: "Reinforce", desc: "Use the quiz to distinguish fast-path tasks from plan-first work, then use flashcards to drill the planning ladder.", items: [3, 4] }
+          ],
+          resources: [
+            { name: "Lesson Content", href: "codex-module-3-lesson.html", type: "read" },
+            { name: "Planning Ladder", href: "codex-module-3-ladder.html", type: "visual" },
+            { name: "Guided Exercise", href: "codex-module-3-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "codex-module-3-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "codex-module-3-flashcards.html", type: "interactive" }
+          ]},
+        { num: 4, name: "Permissions and Sandboxing", section: 1,
+          check: "Can you choose the right sandbox mode and approval policy for a task without defaulting straight to full access? If yes, you're ready for Module 5.",
+          phases: [
+            { label: "Phase 1", title: "Learn the operating model", desc: "Read the lesson and study the sandbox matrix so you can separate technical boundaries from approval behavior.", items: [0, 1] },
+            { label: "Phase 2", title: "Choose modes deliberately", desc: "Use the mode chooser and exercise to map real tasks to the right permissions profile.", items: [2, 3] },
+            { label: "Phase 3", title: "Reinforce", desc: "Use the quiz, flashcards, and reference to lock in the safe default patterns.", items: [4, 5, 6] }
+          ],
+          resources: [
+            { name: "Lesson Content", href: "codex-module-4-lesson.html", type: "read" },
+            { name: "Sandbox Matrix", href: "codex-module-4-matrix.html", type: "visual" },
+            { name: "Mode Chooser", href: "codex-module-4-chooser.html", type: "interactive" },
+            { name: "Guided Exercise", href: "codex-module-4-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "codex-module-4-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "codex-module-4-flashcards.html", type: "interactive" },
+            { name: "Quick Reference", href: "codex-module-4-reference.html", type: "reference" }
+          ]},
         { num: 5, name: "VS Code Workflows", section: 1, resources: [] },
         { num: 6, name: "Testing, Review, and Git Discipline", section: 1, resources: [] },
         { num: 7, name: "config.toml and Personal Defaults", section: 2, resources: [] },

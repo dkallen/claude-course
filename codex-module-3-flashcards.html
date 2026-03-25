@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Module 3 — Flashcards</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .card { perspective: 1000px; cursor: pointer; min-height: 180px; }
+  .card-inner { position: relative; width: 100%; height: 100%; min-height: 180px; transition: transform 0.5s; transform-style: preserve-3d; }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; border: 1px solid #eee; border-radius: 12px; padding: 1rem; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.55; }
+  .front { background: #fafafa; font-weight: 600; }
+  .back { background: #fff; transform: rotateY(180deg); color: #444; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Module 3: Flashcards</h1>
+  <p class="subtitle">Click any card to flip it.</p>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+const cards = [
+  ["Direct task", "A small, sharp request that is easy to describe and easy to verify."],
+  ["Plan-first task", "A complex or ambiguous request that should be clarified and structured before coding begins."],
+  ["Clarifying question", "A planning move that reduces the risk of solving the wrong problem."],
+  ["Done-when", "The concrete conditions that define finished work."],
+  ["Constraints", "The bounds Codex must respect while it works."],
+  ["Planning ladder", "A progression from direct request to direct-plus-constraints to plan-first to structured execution plan."],
+  ["Task shape", "The real complexity and ambiguity of the work, which should determine the prompt shape."],
+  ["Prompt shape", "The amount of structure you give Codex in the request."],
+  ["Scope drift", "When Codex starts solving more than you asked for or solving a neighboring problem."],
+  ["Operational clarity", "Clear goal, context, constraints, and finish criteria that make the task executable and reviewable."]
+];
+
+const grid = document.getElementById("grid");
+cards.forEach(([front, back]) => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<div class="card-inner"><div class="face front">${front}</div><div class="face back">${back}</div></div>`;
+  card.addEventListener("click", () => card.classList.toggle("flipped"));
+  grid.appendChild(card);
+});
+</script>
+</body>
+</html>

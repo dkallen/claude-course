@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Module 4 — Quick Reference</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  p, li, td, th { font-size: 0.92rem; line-height: 1.6; color: #333; }
+  h2 { font-size: 1rem; margin: 1.4rem 0 0.6rem; color: #555; text-transform: uppercase; letter-spacing: 0.05em; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 0.6rem 0.7rem; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; }
+  th { color: #666; font-weight: 600; }
+  ul { padding-left: 1.4rem; }
+  a { color: #444; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Module 4: Quick Reference</h1>
+  <p>Use this when choosing a Codex permissions mode for real work.</p>
+
+  <h2>Core Distinction</h2>
+  <table>
+    <tr><td><strong>Sandbox</strong></td><td>Defines the technical boundary.</td></tr>
+    <tr><td><strong>Approval policy</strong></td><td>Defines when Codex must stop and ask.</td></tr>
+  </table>
+
+  <h2>Common Modes</h2>
+  <table>
+    <tr><th>Mode / Policy</th><th>Use it for</th></tr>
+    <tr><td><strong>read-only</strong></td><td>Inspection, diagnosis, explanation</td></tr>
+    <tr><td><strong>workspace-write</strong></td><td>Normal local editing work</td></tr>
+    <tr><td><strong>danger-full-access</strong></td><td>Intentional full-trust operation only</td></tr>
+    <tr><td><strong>on-request</strong></td><td>Work normally inside the boundary; ask when it must cross it</td></tr>
+    <tr><td><strong>untrusted</strong></td><td>Gate commands outside the trusted set</td></tr>
+    <tr><td><strong>never</strong></td><td>Non-interactive runs where prompts must not appear</td></tr>
+  </table>
+
+  <h2>Remember</h2>
+  <ul>
+    <li><code>--full-auto</code> is <code>workspace-write</code> plus <code>on-request</code>.</li>
+    <li>True full access is <code>danger-full-access</code> plus <code>never</code>.</li>
+    <li>Network and outside-workspace writes are separate boundary questions.</li>
+    <li>Prefer writable roots or rules to broad access when a task needs one exception.</li>
+  </ul>
+
+  <h2>Official Docs</h2>
+  <ul>
+    <li><a href="https://developers.openai.com/codex/concepts/sandboxing/">Sandboxing</a></li>
+    <li><a href="https://developers.openai.com/codex/agent-approvals-security/#common-sandbox-and-approval-combinations">Common sandbox and approval combinations</a></li>
+    <li><a href="https://developers.openai.com/codex/config-advanced/#approval-policies-and-sandbox-modes">Approval policies and sandbox modes</a></li>
+  </ul>
+</div>
+</body>
+</html>

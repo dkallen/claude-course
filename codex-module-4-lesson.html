@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Module 4 — Lesson: Permissions and Sandboxing</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1a1a1a; background: #fff; font-size: 0.92rem; line-height: 1.6; }
+  .container { max-width: 700px; margin: 0 auto; padding: 2rem 1rem; }
+  .back-link { font-size: 0.8rem; color: #888; text-decoration: none; display: inline-block; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+  .subtitle { font-size: 0.88rem; color: #555; margin-bottom: 1.5rem; font-style: italic; }
+  h2 { font-size: 1.05rem; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2rem; margin-bottom: 0.75rem; }
+  p, li { font-size: 0.92rem; line-height: 1.6; }
+  p { margin-bottom: 0.75rem; }
+  ul, ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+  code { background: #f5f5f5; padding: 0.15rem 0.4rem; border-radius: 3px; font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.85rem; }
+  blockquote { border-left: 2px solid #999; padding-left: 1rem; color: #444; font-style: italic; margin-bottom: 0.75rem; }
+  hr { border: none; border-top: 1px solid #eee; margin: 2rem 0; }
+  .sources { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #eee; font-size: 0.86rem; color: #666; }
+  .sources a { color: #444; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="codex-module-4-index.html" class="back-link">&larr; Codex Module 4</a>
+  <h1>Module 4: Permissions and Sandboxing</h1>
+  <p class="subtitle">Working Effectively with OpenAI Codex &mdash; A Practitioner's Course</p>
+
+  <hr>
+  <h2>Why This Module Matters</h2>
+  <p>Codex becomes useful when you let it act. It becomes safe when you control the boundary of that action. The current docs make an important distinction here: sandboxing and approvals are not the same control.</p>
+  <p>The sandbox defines what Codex can technically do without escaping its boundary. The approval policy defines when Codex must stop and ask before going beyond that boundary.</p>
+
+  <h2>1. Sandbox and Approval Policy Are Different Controls</h2>
+  <p>Think of sandboxing as the fence and approval policy as the checkpoint. The fence defines the allowed area. The checkpoint decides when the agent must pause for a human decision.</p>
+  <blockquote>Sandboxing defines the boundary. Approval policy defines when Codex pauses.</blockquote>
+  <p>If you blur those together, mode selection feels confusing. If you keep them separate, the model becomes much easier to reason about.</p>
+
+  <h2>2. The Sandbox Applies to Commands Too</h2>
+  <p>OpenAI’s docs are explicit that the sandbox does not just affect built-in file edits. If Codex runs local commands like <code>git</code>, test runners, or package managers, those commands inherit the same boundaries.</p>
+  <p>That matters because a task may look small in chat while still requiring command execution that crosses the current boundary.</p>
+
+  <h2>3. The Common Sandbox Modes</h2>
+  <ul>
+    <li><strong>read-only:</strong> good for inspection and questions</li>
+    <li><strong>workspace-write:</strong> the normal low-friction local mode for reading, editing in the workspace, and routine local work</li>
+    <li><strong>danger-full-access:</strong> removes the sandbox boundary and should be used only intentionally</li>
+  </ul>
+  <p>The practical default for local work is usually <code>workspace-write</code>, not full access.</p>
+
+  <h2>4. The Common Approval Policies</h2>
+  <ul>
+    <li><strong>untrusted:</strong> ask before running commands outside the trusted set</li>
+    <li><strong>on-request:</strong> work inside the sandbox normally, ask when a task needs to cross the boundary</li>
+    <li><strong>never:</strong> do not stop for approval prompts</li>
+  </ul>
+  <p><code>never</code> is not a convenience toggle. It changes the trust model.</p>
+
+  <h2>5. Full-Auto Is Not Full Access</h2>
+  <p>This distinction matters because people often compress the two. OpenAI’s docs say <code>--full-auto</code> is the lower-risk local automation preset: <code>workspace-write</code> plus <code>on-request</code>. That is not the same as unrestricted access.</p>
+  <p>True full access is <code>danger-full-access</code> combined with <code>never</code>. That removes both the sandbox boundary and the approval pauses.</p>
+
+  <h2>6. How You Control It</h2>
+  <p>In the Codex app and IDE, the current docs say you use the permissions selector under the composer or chat input. In the CLI, you can switch modes during a session with <code>/permissions</code>.</p>
+  <p>The operating habit you want is deliberate switching, not leaving Codex permanently over-permissioned.</p>
+
+  <h2>7. Network, Outside-Workspace Writes, and Protected Areas</h2>
+  <p>The docs also make two operational points that are easy to miss:</p>
+  <ul>
+    <li>network access may still require explicit allowance or approval even in <code>workspace-write</code></li>
+    <li>some environments keep directories like <code>.git/</code> and <code>.codex/</code> read-only even when the rest of the workspace is writable</li>
+  </ul>
+  <p>That is why a command like <code>git commit</code> can still need approval even when editing files feels permitted.</p>
+
+  <h2>8. Prefer Narrow Exceptions Over Broad Access</h2>
+  <p>The docs recommend using writable roots and rules when you need a specific exception. That is usually better than jumping to broad access because it keeps the trust boundary legible.</p>
+  <p>The safest operational heuristic is simple: widen access only as much as the task requires, and only for as long as it requires.</p>
+
+  <h2>9. What Good Judgment Looks Like</h2>
+  <p>For most tasks, the right move is not “full access or nothing.” It is one of these:</p>
+  <ul>
+    <li>read-only when you are inspecting or learning</li>
+    <li>workspace-write when you need normal local edits</li>
+    <li>network opt-in or writable-root adjustments when the task has a specific boundary need</li>
+    <li>full access only when you intentionally want to remove those boundaries</li>
+  </ul>
+
+  <hr>
+  <h2>Check</h2>
+  <p>If you can explain the difference between sandboxing and approvals, distinguish full-auto from full access, and choose a narrower mode before a broader one, you are ready for VS Code workflow details.</p>
+
+  <div class="sources">
+    Grounded in the current official docs:
+    <a href="https://developers.openai.com/codex/concepts/sandboxing/">Sandboxing</a>,
+    <a href="https://developers.openai.com/codex/agent-approvals-security/#common-sandbox-and-approval-combinations">Agent approvals &amp; security</a>,
+    <a href="https://developers.openai.com/codex/config-advanced/#approval-policies-and-sandbox-modes">Advanced Config</a>.
+  </div>
+</div>
+</body>
+</html>

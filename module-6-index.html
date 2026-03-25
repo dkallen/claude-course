@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 6: Test-Driven Development with Claude Code</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 700px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+  .course-title { font-size: 0.9rem; color: #999; margin-bottom: 1.5rem; }
+  .intro { font-size: 0.95rem; color: #555; line-height: 1.65; margin-bottom: 2rem; }
+  .phase { margin-bottom: 2.4rem; }
+  .phase-header { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.3rem; }
+  .phase-number { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; }
+  .phase-title { font-size: 1.1rem; font-weight: 600; }
+  .phase-desc { font-size: 0.88rem; color: #777; line-height: 1.5; margin-bottom: 1rem; }
+  .resource { display: flex; gap: 1rem; align-items: flex-start; padding: 0.95rem 1rem; background: #fafafa; border: 1px solid #eee; border-radius: 10px; margin-bottom: 0.65rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+  .resource:hover { border-color: #ccc; background: #f5f5f5; }
+  .resource-icon { font-size: 1.15rem; flex-shrink: 0; width: 28px; text-align: center; margin-top: 1px; }
+  .resource-name { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.15rem; }
+  .resource-type { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.1rem 0.4rem; border-radius: 3px; background: #f0f0f0; color: #888; display: inline-block; margin-bottom: 0.3rem; }
+  .interactive { background: #1a1a1a; color: #fff; }
+  .resource-desc { font-size: 0.82rem; color: #888; }
+  .resource-time { font-size: 0.78rem; color: #bbb; margin-top: 0.2rem; }
+  .note { font-size: 0.85rem; color: #888; line-height: 1.6; margin-top: 2rem; padding: 1rem; background: #fafafa; border-radius: 8px; border-left: 3px solid #ddd; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="course-title">From Concept to Delivery with Claude Code</div>
+  <h1>Module 6: Test-Driven Development</h1>
+  <p class="intro">This module treats tests as specification, not cleanup. Claude Code becomes stronger when the tests define the target before implementation starts. The point is not ceremony. The point is giving the agent an executable contract.</p>
+
+  <div class="phase">
+    <div class="phase-header"><span class="phase-number">Phase 1</span><span class="phase-title">Learn the cycle</span></div>
+    <p class="phase-desc">Read the lesson and study the red-green-refactor map before you start generating tests.</p>
+    <a class="resource" href="module-6-lesson.html"><div class="resource-icon">1</div><div><div class="resource-name">Lesson Content</div><div class="resource-type">Passive</div><div class="resource-desc">Why TDD matters more with AI, how to review tests first, and where Claude goes wrong</div><div class="resource-time">~18 min read</div></div></a>
+    <a class="resource" href="module-6-cycle.html"><div class="resource-icon">2</div><div><div class="resource-name">Red-Green-Refactor Map</div><div class="resource-type">Passive</div><div class="resource-desc">A visual guide to the TDD loop and where Claude should help</div><div class="resource-time">~3 min</div></div></a>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header"><span class="phase-number">Phase 2</span><span class="phase-title">Design tests before code</span></div>
+    <p class="phase-desc">Start from behavior, not implementation. Use the workbench to turn a requirement into a test plan, then run the full cycle in a real repo.</p>
+    <a class="resource" href="module-6-workbench.html"><div class="resource-icon">3</div><div><div class="resource-name">Spec-to-Tests Workbench</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">Turn plain-English requirements into concrete tests and a TDD prompt for Claude</div><div class="resource-time">~12 min</div></div></a>
+    <a class="resource" href="module-6-exercise.html"><div class="resource-icon">4</div><div><div class="resource-name">Guided Exercise</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">Run one complete test-first cycle on a real feature or bug fix</div><div class="resource-time">~35–45 min</div></div></a>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header"><span class="phase-number">Phase 3</span><span class="phase-title">Pressure-test your judgment</span></div>
+    <p class="phase-desc">The quiz checks whether you can spot empty tests and choose the right test granularity. The flashcards and reference help the cycle stick.</p>
+    <a class="resource" href="module-6-quiz.html"><div class="resource-icon">5</div><div><div class="resource-name">Scenario Quiz</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">6 judgment calls about test quality, granularity, and TDD discipline</div><div class="resource-time">~10 min</div></div></a>
+    <a class="resource" href="module-6-flashcards.html"><div class="resource-icon">6</div><div><div class="resource-name">Flashcards</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">Drill the core TDD terms, smells, and cycle checkpoints</div><div class="resource-time">~8 min</div></div></a>
+    <a class="resource" href="module-6-reference.html"><div class="resource-icon">7</div><div><div class="resource-name">Quick Reference</div><div class="resource-type">Passive</div><div class="resource-desc">A compact guide to the cycle, test review, and unit-vs-integration choices</div><div class="resource-time">~2 min</div></div></a>
+  </div>
+
+  <div class="note"><strong>Module 6 check:</strong> Can you turn plain-English requirements into failing tests first, catch weak tests before implementation, and use the red-green-refactor loop to drive a real change? If yes, you're ready for Module 7.</div>
+</div>
+</body>
+</html>

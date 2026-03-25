@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 6 — Quick Reference</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+  p, li, td, th { font-size: 0.92rem; line-height: 1.6; color: #333; }
+  h2 { font-size: 1rem; margin: 1.4rem 0 0.6rem; color: #555; text-transform: uppercase; letter-spacing: 0.05em; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 0.6rem 0.7rem; border-bottom: 1px solid #eee; text-align: left; vertical-align: top; }
+  th { color: #666; font-weight: 600; }
+  ul { padding-left: 1.4rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Module 6: Quick Reference</h1>
+  <p>Use this when you want Claude to work test-first instead of coding first.</p>
+
+  <h2>The Cycle</h2>
+  <table>
+    <tr><th>Stage</th><th>Question</th></tr>
+    <tr><td><strong>Red</strong></td><td>Would this test fail if the behavior did not exist?</td></tr>
+    <tr><td><strong>Green</strong></td><td>What is the smallest change that makes it pass?</td></tr>
+    <tr><td><strong>Refactor</strong></td><td>What can be cleaned up now that behavior is protected?</td></tr>
+  </table>
+
+  <h2>Review Tests Before Implementation</h2>
+  <ul>
+    <li>Does each test validate behavior instead of internals?</li>
+    <li>Is there at least one meaningful edge case?</li>
+    <li>Would the tests catch a real regression?</li>
+    <li>Do they fail for the intended reason before implementation exists?</li>
+  </ul>
+
+  <h2>Choose The Test Level</h2>
+  <table>
+    <tr><th>Use unit tests when</th><th>Use integration tests when</th></tr>
+    <tr><td>The risk is in isolated logic and you want fast feedback.</td><td>The risk is in the interaction between parts, layers, or services.</td></tr>
+  </table>
+
+  <h2>Prompt Skeleton</h2>
+  <ul>
+    <li>Write tests only from these requirements.</li>
+    <li>Do not implement yet.</li>
+    <li>Make the first tests fail for clear reasons.</li>
+    <li>After review, implement the smallest change to go green.</li>
+  </ul>
+</div>
+</body>
+</html>
