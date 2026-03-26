@@ -19,6 +19,7 @@
   .module-item:hover { background: #f9f9f9; }
   .module-item.active { background: #f5f5f5; }
   .module-check { margin-top: 2px; accent-color: #555; cursor: pointer; flex-shrink: 0; width: 15px; height: 15px; }
+  .resource-check { accent-color: #555; cursor: pointer; flex-shrink: 0; width: 15px; height: 15px; margin-left: auto; align-self: center; }
   .module-info { flex: 1; min-width: 0; }
   .module-num { font-size: 0.7rem; color: #bbb; font-weight: 600; }
   .module-name { font-size: 0.82rem; color: #333; line-height: 1.35; }
@@ -335,6 +336,13 @@ function toggleCheck(num, event) {
   updateProgress();
 }
 
+function toggleResourceCheck(moduleNum, idx, event) {
+  event.stopPropagation();
+  const key = "r" + moduleNum + "-" + idx;
+  progress[key] = !progress[key];
+  saveProgress();
+}
+
 function toggleSidebar() {
   document.body.classList.toggle("sidebar-open");
   document.getElementById("sidebar").classList.toggle("collapsed");
@@ -377,7 +385,8 @@ function showModulePanel(num) {
       if (idx < module.resources.length) {
         const resource = module.resources[idx];
         const tagClass = typeMap[resource.type] || "passive";
-        html += `<a class="mc-resource-link" href="${resource.href}" target="_blank"><div class="mc-res-num">${idx + 1}</div><div class="mc-res-body"><div class="mc-res-name">${resource.name}</div><div class="mc-res-meta"><span class="mc-res-tag ${tagClass}">${tagClass}</span>${resource.type}</div></div></a>`;
+        const rChecked = !!progress["r" + num + "-" + idx];
+        html += `<a class="mc-resource-link" href="${resource.href}" target="_blank"><div class="mc-res-num">${idx + 1}</div><div class="mc-res-body"><div class="mc-res-name">${resource.name}</div><div class="mc-res-meta"><span class="mc-res-tag ${tagClass}">${tagClass}</span>${resource.type}</div></div><input class="resource-check" type="checkbox" ${rChecked ? "checked" : ""} onclick="toggleResourceCheck('${num}', ${idx}, event)"></a>`;
       }
     });
     html += `</div>`;
