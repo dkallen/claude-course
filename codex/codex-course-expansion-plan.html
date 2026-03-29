@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Course Expansion Plan</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1a1a1a; background: #fff; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  h1 { font-size: 1.75rem; line-height: 1.25; margin-bottom: 0.4rem; }
+  .subtitle { font-size: 0.92rem; color: #666; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.05rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: #555; }
+  h3 { font-size: 0.98rem; font-weight: 600; margin-top: 1.25rem; margin-bottom: 0.45rem; }
+  p { font-size: 0.95rem; line-height: 1.65; margin-bottom: 0.8rem; }
+  ul, ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+  li { font-size: 0.93rem; line-height: 1.6; margin-bottom: 0.35rem; }
+  code, pre { font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; }
+  code { background: #f5f5f5; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.86rem; }
+  pre { background: #f5f5f5; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; font-size: 0.86rem; line-height: 1.5; }
+  hr { border: none; border-top: 1px solid #eee; margin: 1.5rem 0; }
+  .note { background: #fafafa; border: 1px solid #eee; border-left: 3px solid #ddd; border-radius: 8px; padding: 1rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Plan for Expanding the Course Architecture Beyond Claude Code</h1>
+  <p class="subtitle">March 24, 2026 · Target new subject: OpenAI Codex · Scope: plan the multi-subject architecture and prove it with one Codex module</p>
+
+  <h2>Why the Structure Needs to Change</h2>
+  <p>The current project works well for a single subject, but it is optimized around one course living in a flat namespace. Module numbering, syllabus references, and embedded course data all assume one course. That becomes brittle as soon as the repository needs multiple subjects.</p>
+  <ul>
+    <li><code>course.html</code> and <code>index.html</code> embed Claude-specific module metadata directly in page scripts.</li>
+    <li>File names like <code>module-1-lesson.html</code> assume there is only one module 1.</li>
+    <li>The shell has no concept of a subject, only a single module list.</li>
+  </ul>
+
+  <h2>Recommended Direction</h2>
+  <h3>Phase 1: Prove the Shape Additively</h3>
+  <p>Keep the existing Claude course working as-is. Add Codex artifacts with explicit prefixes and use them to validate voice, structure, and fit.</p>
+
+  <h3>Phase 2: Introduce a Shared Subject Manifest</h3>
+  <p>Once the second subject feels right, move course structure data out of inline JavaScript and into subject-level manifests.</p>
+  <pre><code>courses/
+  claude-code/
+    course.json
+    syllabus.html
+    modules/
+      01/
+        lesson.html
+        index.html
+        exercise.html
+  openai-codex/
+    course.json
+    syllabus.html
+    modules/
+      01/
+        lesson.html
+        index.html</code></pre>
+
+  <h3>Phase 3: Convert the Course Shell Into a Subject Shell</h3>
+  <p>Refactor the shell so it can load one selected subject rather than assuming Claude. That shell should support a subject picker, subject-scoped progress tracking, and manifest-driven rendering of modules and resources.</p>
+
+  <h3>Phase 4: Standardize Resource Taxonomy</h3>
+  <p>The course should treat lessons, exercises, references, quizzes, diagrams, slides, and tools as resource types, not hardcoded assumptions per module.</p>
+
+  <h2>Important Presentation Change</h2>
+  <div class="note">
+    <p>Learner-facing content should be delivered as responsive HTML and SVG, not as Markdown that depends on a browser extension. Markdown can remain a drafting format, but it should not be the presentation layer the learner relies on.</p>
+  </div>
+
+  <h2>Proposed Codex Course Shape</h2>
+  <ol>
+    <li>Orientation — What Codex Is and Where It Runs</li>
+    <li><code>AGENTS.md</code> — Durable Guidance for Codex</li>
+    <li>Prompting and Planning</li>
+    <li>Permissions, Sandboxing, and Trust Boundaries</li>
+    <li>Working Inside VS Code</li>
+    <li>Review, Testing, and Git Checkpoints</li>
+    <li>Config and Personal Defaults</li>
+    <li>MCP and External Context</li>
+    <li>Skills and Reusable Workflows</li>
+    <li>Automations and Longer-Running Work</li>
+    <li>Codex Cloud and Remote Delegation</li>
+    <li>Capstone</li>
+  </ol>
+
+  <h2>What This First Codex Pass Should Prove</h2>
+  <ul>
+    <li>The course voice still works for a different tool.</li>
+    <li>The app and VS Code extension fit the existing exercise-driven teaching style.</li>
+    <li>The repo should become a family of subjects, not one Claude-specific structure.</li>
+    <li>HTML-first delivery is the right long-term presentation model.</li>
+  </ul>
+
+  <h2>Recommended Next Step</h2>
+  <p>If this direction feels right, the next implementation pass should create the <code>courses/</code> structure, define the first manifest format, and migrate one shell page to render from manifest data before moving the whole Claude course.</p>
+</div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

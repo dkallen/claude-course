@@ -1,6 +1,7 @@
 (function () {
     var NOTES_KEY = 'course-notes';
-    var filename = window.location.pathname.split('/').pop() || 'index.html';
+    var parts = window.location.pathname.split('/').filter(Boolean);
+    var filename = parts.length >= 2 ? parts.slice(-2).join('/') : (parts[0] || 'index.html');
 
     function loadNotes() {
         try {

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 4 — Framework Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 2rem 1rem; background: #fff; color: #1a1a1a; }
+  .container { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.7rem; margin-bottom: 0.4rem; }
+  .subtitle { font-size: 0.95rem; color: #666; line-height: 1.6; margin-bottom: 1.5rem; max-width: 760px; }
+  .panel { border: 1px solid #ececec; border-radius: 16px; background: linear-gradient(180deg, #fcfcfc 0%, #f7f7f7 100%); padding: 1rem; margin-bottom: 1.25rem; overflow: hidden; }
+  svg { width: 100%; height: auto; display: block; }
+  .legend { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); margin-top: 1rem; }
+  .legend-card { border: 1px solid #eee; border-radius: 12px; padding: 0.9rem; background: #fff; }
+  .legend-card h2 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.06em; color: #777; margin-bottom: 0.35rem; }
+  .legend-card p { font-size: 0.92rem; line-height: 1.6; color: #444; }
+  .caption { font-size: 0.9rem; color: #555; line-height: 1.6; margin-top: 0.9rem; }
+  .checklist { border: 1px solid #eee; border-radius: 12px; padding: 1rem; background: #fafafa; }
+  .checklist h2 { font-size: 0.95rem; margin-bottom: 0.6rem; }
+  .checklist ul { padding-left: 1.3rem; }
+  .checklist li { font-size: 0.92rem; line-height: 1.6; color: #444; margin-bottom: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Framework Map</h1>
+  <p class="subtitle">This directed graph shows the core logic of the module. Read arrows as verbs: a problem <strong>obstructs</strong> a goal, a solution <strong>resolves</strong> a problem, a risk <strong>threatens</strong> a solution, and a mitigation solution <strong>mitigates</strong> that risk.</p>
+
+  <div class="panel">
+    <svg viewBox="0 0 920 620" role="img" aria-label="Directed graph showing goal, problem, solution, risk, and mitigation solution relationships">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"></path>
+        </marker>
+        <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+          <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.08"></feDropShadow>
+        </filter>
+      </defs>
+
+      <rect x="285" y="34" width="350" height="92" rx="18" fill="#f4efe2" stroke="#d7cda7" filter="url(#shadow)"></rect>
+      <text x="460" y="67" text-anchor="middle" font-size="18" font-weight="700" fill="#5a4a1f">Goal</text>
+      <text x="460" y="95" text-anchor="middle" font-size="15" fill="#5a4a1f">Increase successful course completion</text>
+
+      <rect x="305" y="202" width="310" height="96" rx="18" fill="#f8e6e6" stroke="#d8aaaa" filter="url(#shadow)"></rect>
+      <text x="460" y="236" text-anchor="middle" font-size="18" font-weight="700" fill="#7a2222">Problem</text>
+      <text x="460" y="264" text-anchor="middle" font-size="15" fill="#7a2222">Learners lose the thread when planning is fuzzy</text>
+
+      <rect x="150" y="392" width="310" height="102" rx="18" fill="#e5f2ea" stroke="#a8c9b2" filter="url(#shadow)"></rect>
+      <text x="305" y="426" text-anchor="middle" font-size="18" font-weight="700" fill="#24533b">Solution</text>
+      <text x="305" y="454" text-anchor="middle" font-size="15" fill="#24533b">Add a structured brief with explicit goals, problems,</text>
+      <text x="305" y="476" text-anchor="middle" font-size="15" fill="#24533b">solutions, risks, and scope</text>
+
+      <rect x="565" y="392" width="230" height="102" rx="18" fill="#f7ebda" stroke="#d8b98b" filter="url(#shadow)"></rect>
+      <text x="680" y="426" text-anchor="middle" font-size="18" font-weight="700" fill="#7a5420">Risk</text>
+      <text x="680" y="454" text-anchor="middle" font-size="15" fill="#7a5420">The framework becomes heavy</text>
+      <text x="680" y="476" text-anchor="middle" font-size="15" fill="#7a5420">and slows actual progress</text>
+
+      <rect x="565" y="536" width="230" height="56" rx="16" fill="#e5f2ea" stroke="#a8c9b2" filter="url(#shadow)"></rect>
+      <text x="680" y="570" text-anchor="middle" font-size="16" font-weight="700" fill="#24533b">Mitigation Solution</text>
+
+      <line x1="460" y1="202" x2="460" y2="126" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></line>
+      <text x="477" y="168" font-size="14" font-weight="600" fill="#444">obstructs</text>
+
+      <line x1="343" y1="392" x2="418" y2="298" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></line>
+      <text x="315" y="338" font-size="14" font-weight="600" fill="#444">resolves</text>
+
+      <path d="M 565 443 C 525 443, 505 443, 460 443" fill="none" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></path>
+      <text x="520" y="421" font-size="14" font-weight="600" fill="#444">threatens</text>
+
+      <line x1="680" y1="536" x2="680" y2="494" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></line>
+      <text x="698" y="520" font-size="14" font-weight="600" fill="#444">mitigates</text>
+
+      <text x="680" y="603" text-anchor="middle" font-size="14" fill="#24533b">Keep the brief short and decision-focused</text>
+    </svg>
+    <p class="caption">The graph is directional on purpose. A node matters because of the relationship it has to something above it or against it. If a solution points nowhere useful, it is probably misaligned. If a risk does not threaten a specific solution, it is probably too vague.</p>
+  </div>
+
+  <div class="legend">
+    <div class="legend-card">
+      <h2>Goal</h2>
+      <p>The desired state. Put it at the top so everything else has to justify its relationship to that outcome.</p>
+    </div>
+    <div class="legend-card">
+      <h2>Problem</h2>
+      <p>A current obstacle. It belongs directly beneath the goal it blocks.</p>
+    </div>
+    <div class="legend-card">
+      <h2>Solution</h2>
+      <p>An action that resolves a problem or directly advances a goal. The arrow must point somewhere defensible.</p>
+    </div>
+    <div class="legend-card">
+      <h2>Risk</h2>
+      <p>A forecasted problem caused by a chosen solution. It points against the solution it threatens.</p>
+    </div>
+    <div class="legend-card">
+      <h2>Mitigation</h2>
+      <p>A second solution aimed at reducing the probability or impact of the risk.</p>
+    </div>
+  </div>
+
+  <div class="checklist">
+    <h2>Read The Graph Like This</h2>
+    <ul>
+      <li>Ask what specific goal the problem is obstructing.</li>
+      <li>Ask whether the proposed solution actually resolves that problem.</li>
+      <li>Ask what new risk the chosen solution introduces.</li>
+      <li>Ask whether the mitigation is worth the added complexity.</li>
+    </ul>
+  </div>
+</div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 Quick Reference — CLAUDE.md</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            color: #333;
+            background: #fff;
+            line-height: 1.5;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 32px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        section {
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 12px;
+            color: #333;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 8px;
+        }
+
+        p {
+            font-size: 13px;
+            margin-bottom: 10px;
+            color: #555;
+        }
+
+        .subsection {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .subsection h3 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .subsection p {
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .subsection ul {
+            margin-left: 20px;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+
+        .subsection li {
+            margin-bottom: 4px;
+            color: #555;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+            margin: 10px 0;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background: #f5f5f5;
+            font-weight: 600;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        table td {
+            background: #fafafa;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+
+        .column {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 12px;
+        }
+
+        .column h3 {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .column ul {
+            margin-left: 20px;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .column li {
+            margin-bottom: 4px;
+            color: #555;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .callout {
+            background: #f0f7ff;
+            border-left: 3px solid #0066cc;
+            padding: 10px 12px;
+            margin: 10px 0;
+            font-size: 12px;
+            color: #333;
+        }
+
+        .key-term {
+            font-weight: 600;
+            color: #333;
+        }
+
+        code {
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            padding: 2px 6px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
+        }
+
+        @media print {
+            body {
+                padding: 20px;
+            }
+            section {
+                page-break-inside: avoid;
+            }
+            .container {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>CLAUDE.md Quick Reference</h1>
+        <p class="subtitle">Module 2 — From Concept to Delivery with Claude Code</p>
+
+        <!-- Section 1: What is CLAUDE.md? -->
+        <section>
+            <h2>What is CLAUDE.md?</h2>
+            <div class="subsection">
+                <p><span class="key-term">CLAUDE.md</span> is a plain-text Markdown file with persistent instructions for Claude Code. It's automatically read at the start of each session—no setup required—and survives across sessions (unlike conversation history). Use it to establish conventions, patterns, and team standards that should apply continuously to your project.</p>
+            </div>
+        </section>
+
+        <!-- Section 2: File Locations & Hierarchy -->
+        <section>
+            <h2>File Locations & Hierarchy</h2>
+            <p>CLAUDE.md can exist at multiple levels. More specific files override more general ones.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Path</th>
+                        <th>Scope</th>
+                        <th>Use For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Global</strong></td>
+                        <td><code>~/.claude/CLAUDE.md</code></td>
+                        <td>All projects</td>
+                        <td>Personal preferences, coding style</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project</strong></td>
+                        <td><code>./CLAUDE.md</code></td>
+                        <td>This project</td>
+                        <td>Tech stack, team conventions, architecture</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Folder</strong></td>
+                        <td><code>./src/CLAUDE.md</code></td>
+                        <td>This folder</td>
+                        <td>Specialized rules (tests, API, etc.)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="callout">
+                <strong>Override rule:</strong> Folder rules override project rules override global rules.
+            </div>
+        </section>
+
+        <!-- Section 3: CLAUDE.md vs. Prompt -->
+        <section>
+            <h2>CLAUDE.md vs. Prompt — Quick Decision</h2>
+            <div class="two-column">
+                <div class="column">
+                    <h3>Put in CLAUDE.md</h3>
+                    <ul>
+                        <li>Coding conventions</li>
+                        <li>Framework patterns</li>
+                        <li>Architecture decisions</li>
+                        <li>Team standards & SOPs</li>
+                        <li>Analysis frameworks</li>
+                        <li>Code style rules</li>
+                    </ul>
+                </div>
+                <div class="column">
+                    <h3>Put in Prompt</h3>
+                    <ul>
+                        <li>Current task</li>
+                        <li>Feature requirements</li>
+                        <li>One-off instructions</li>
+                        <li>Session-specific context</li>
+                        <li>Temporary modifications</li>
+                        <li>User questions</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Writing Effective Instructions -->
+        <section>
+            <h2>Writing Effective Instructions</h2>
+            <div class="subsection">
+                <h3>Best Practices</h3>
+                <ul>
+                    <li><strong>Be specific and actionable.</strong> Not "write good code," but "use 2-space indentation and add JSDoc for exports."</li>
+                    <li><strong>Include examples</strong> when helpful. Show what you mean.</li>
+                    <li><strong>State what TO do,</strong> not just what NOT to do. "Use async/await" is better than "don't use callbacks."</li>
+                    <li><strong>Include your analysis frameworks</strong> as standard operating procedures.</li>
+                    <li><strong>Keep it focused.</strong> Quality over quantity—concentration matters.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 5: Anti-Patterns -->
+        <section>
+            <h2>Anti-Patterns (Avoid These)</h2>
+            <div class="subsection">
+                <ul>
+                    <li><strong>Too long (500+ lines):</strong> Instructions compete for attention. Prioritize ruthlessly.</li>
+                    <li><strong>Too vague:</strong> "Be careful," "write clean code." Not actionable.</li>
+                    <li><strong>Contradictory:</strong> "Always test" + "skip non-essentials." Confuses Claude.</li>
+                    <li><strong>Task-specific content:</strong> Belongs in prompts, not CLAUDE.md.</li>
+                    <li><strong>Never updating:</strong> Review periodically as your project evolves.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Section 6: .claudeignore -->
+        <section>
+            <h2>.claudeignore</h2>
+            <div class="subsection">
+                <p>Works like <code>.gitignore</code> for Claude. Use it to keep build artifacts, generated files, logs, dependencies, and sensitive data out of context window:</p>
+                <ul>
+                    <li><code>node_modules/</code></li>
+                    <li><code>dist/</code></li>
+                    <li><code>.env</code>, <code>.env.local</code></li>
+                    <li><code>*.log</code></li>
+                    <li>Generated or compiled files</li>
+                </ul>
+            </div>
+        </section>
+
+        <div class="footer">
+            Module 2 — From Concept to Delivery with Claude Code
+        </div>
+    </div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

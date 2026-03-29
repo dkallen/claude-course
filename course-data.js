@@ -7,7 +7,7 @@ window.COURSE_DATA = {
       shortTitle: "Claude Code",
       subtitle: "A Practitioner's Course",
       description: "Learn to use Claude Code as a thinking and building partner across the full product lifecycle.",
-      syllabusHref: "claude-code-course-syllabus.md",
+      syllabusHref: "docs/claude-code-course-syllabus.md",
       progressPrefix: "claude-code-course",
       gistDescription: "Claude Code Course Progress",
       welcomeTitle: "Welcome back, David.",
@@ -29,15 +29,15 @@ window.COURSE_DATA = {
             { label: "Phase 5", title: "Bookmark for later", desc: "Reference materials you'll come back to.", items: [7, 8] }
           ],
           resources: [
-            { name: "Lesson Content", href: "module-1-lesson.html", type: "read" },
-            { name: "Concept Map", href: "module-1-diagram.svg", type: "visual" },
-            { name: "Concept Explorer", href: "module-1-explorer.html", type: "interactive" },
-            { name: "Slide Walkthrough", href: "module-1-slides.html", type: "visual" },
-            { name: "Guided Exercise", href: "module-1-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "module-1-quiz.html", type: "interactive" },
-            { name: "Flashcards", href: "module-1-flashcards.html", type: "interactive" },
-            { name: "Quick Reference", href: "module-1-reference.html", type: "reference" },
-            { name: "Capability Matrix", href: "module-1-capabilities.html", type: "reference" }
+            { name: "Lesson Content", href: "modules/module-1-lesson.html", type: "read" },
+            { name: "Concept Map", href: "modules/module-1-diagram.svg", type: "visual" },
+            { name: "Concept Explorer", href: "modules/module-1-explorer.html", type: "interactive" },
+            { name: "Slide Walkthrough", href: "modules/module-1-slides.html", type: "visual" },
+            { name: "Guided Exercise", href: "modules/module-1-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "modules/module-1-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "modules/module-1-flashcards.html", type: "interactive" },
+            { name: "Quick Reference", href: "modules/module-1-reference.html", type: "reference" },
+            { name: "Capability Matrix", href: "modules/module-1-capabilities.html", type: "reference" }
           ]},
         { num: 2, name: "CLAUDE.md — Teaching Claude Who You Are", section: 1,
           check: "Does Claude Code follow your conventions without you having to remind it every time? If your CLAUDE.md is working, Claude should apply your framework, follow your coding standards, and respect your preferences — automatically, session after session. If yes, you're ready for Module 3.",
@@ -49,13 +49,13 @@ window.COURSE_DATA = {
             { label: "Phase 5", title: "Bookmark for later", desc: "The reference card is a quick cheat sheet for when you're writing or reviewing a CLAUDE.md.", items: [6] }
           ],
           resources: [
-            { name: "Lesson Content", href: "module-2-lesson.html", type: "read" },
-            { name: "Hierarchy Diagram", href: "module-2-diagram.svg", type: "visual" },
-            { name: "CLAUDE.md Builder", href: "module-2-builder.html", type: "interactive" },
-            { name: "Guided Exercise", href: "module-2-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "module-2-quiz.html", type: "interactive" },
-            { name: "Flashcards", href: "module-2-flashcards.html", type: "interactive" },
-            { name: "Quick Reference", href: "module-2-reference.html", type: "reference" }
+            { name: "Lesson Content", href: "modules/module-2-lesson.html", type: "read" },
+            { name: "Hierarchy Diagram", href: "modules/module-2-diagram.svg", type: "visual" },
+            { name: "CLAUDE.md Builder", href: "modules/module-2-builder.html", type: "interactive" },
+            { name: "Guided Exercise", href: "modules/module-2-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "modules/module-2-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "modules/module-2-flashcards.html", type: "interactive" },
+            { name: "Quick Reference", href: "modules/module-2-reference.html", type: "reference" }
           ]},
         { num: 3, name: "The Art of the Prompt — From Ramble to Precision", section: 1,
           check: "Can you calibrate your prompting style to the complexity of the task — loose for exploration, tight for execution? If yes, you're ready for Module 4.",
@@ -67,13 +67,13 @@ window.COURSE_DATA = {
             { label: "Phase 5", title: "Bookmark for later", desc: "Keep the prompt reference nearby when you're switching between exploration and execution.", items: [6] }
           ],
           resources: [
-            { name: "Lesson Content", href: "module-3-lesson.html", type: "read" },
-            { name: "Prompt Spectrum", href: "module-3-spectrum.html", type: "visual" },
-            { name: "Prompt Calibrator", href: "module-3-calibrator.html", type: "interactive" },
-            { name: "Guided Exercise", href: "module-3-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "module-3-quiz.html", type: "interactive" },
-            { name: "Flashcards", href: "module-3-flashcards.html", type: "interactive" },
-            { name: "Quick Reference", href: "module-3-reference.html", type: "reference" }
+            { name: "Lesson Content", href: "modules/module-3-lesson.html", type: "read" },
+            { name: "Prompt Spectrum", href: "modules/module-3-spectrum.html", type: "visual" },
+            { name: "Prompt Calibrator", href: "modules/module-3-calibrator.html", type: "interactive" },
+            { name: "Guided Exercise", href: "modules/module-3-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "modules/module-3-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "modules/module-3-flashcards.html", type: "interactive" },
+            { name: "Quick Reference", href: "modules/module-3-reference.html", type: "reference" }
           ]},
         { num: 4, name: "Idea Refinement — Using Claude Code to Think", section: 1,
           check: "Do you have a clear written brief with goals, problems, aligned solutions, risks with mitigations, and explicit scope? If yes, you're ready for Module 5.",
@@ -83,11 +83,11 @@ window.COURSE_DATA = {
             { label: "Phase 3", title: "Pressure-test your understanding", desc: "Use the quiz and reference to strengthen judgment before moving into architecture.", items: [3, 4] }
           ],
           resources: [
-            { name: "Lesson Content", href: "module-4-lesson.html", type: "read" },
-            { name: "Framework Map", href: "module-4-framework.html", type: "visual" },
-            { name: "Guided Exercise", href: "module-4-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "module-4-quiz.html", type: "interactive" },
-            { name: "Quick Reference", href: "module-4-reference.html", type: "reference" }
+            { name: "Lesson Content", href: "modules/module-4-lesson.html", type: "read" },
+            { name: "Framework Map", href: "modules/module-4-framework.html", type: "visual" },
+            { name: "Guided Exercise", href: "modules/module-4-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "modules/module-4-quiz.html", type: "interactive" },
+            { name: "Quick Reference", href: "modules/module-4-reference.html", type: "reference" }
           ]},
         { num: 5, name: "Architecture — Designing Before Building", section: 1,
           check: "Do you have a proposed structure with named components, clear responsibilities, major interfaces, and explicit tradeoffs before implementation starts? If yes, you're ready for Module 6.",
@@ -97,11 +97,11 @@ window.COURSE_DATA = {
             { label: "Phase 3", title: "Pressure-test your structure", desc: "Use the quiz and reference to sharpen your judgment before you start coding.", items: [3, 4] }
           ],
           resources: [
-            { name: "Lesson Content", href: "module-5-lesson.html", type: "read" },
-            { name: "Architecture Map", href: "module-5-architecture.html", type: "visual" },
-            { name: "Guided Exercise", href: "module-5-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "module-5-quiz.html", type: "interactive" },
-            { name: "Quick Reference", href: "module-5-reference.html", type: "reference" }
+            { name: "Lesson Content", href: "modules/module-5-lesson.html", type: "read" },
+            { name: "Architecture Map", href: "modules/module-5-architecture.html", type: "visual" },
+            { name: "Guided Exercise", href: "modules/module-5-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "modules/module-5-quiz.html", type: "interactive" },
+            { name: "Quick Reference", href: "modules/module-5-reference.html", type: "reference" }
           ]},
         { num: 6, name: "Test-Driven Development with Claude Code", section: 1,
           check: "Can you turn plain-English requirements into failing tests first, catch weak tests before implementation, and use the red-green-refactor loop to drive a real change? If yes, you're ready for Module 7.",
@@ -111,13 +111,13 @@ window.COURSE_DATA = {
             { label: "Phase 3", title: "Pressure-test your judgment", desc: "Use the quiz, flashcards, and reference to sharpen your sense of good tests versus empty tests.", items: [4, 5, 6] }
           ],
           resources: [
-            { name: "Lesson Content", href: "module-6-lesson.html", type: "read" },
-            { name: "Red-Green-Refactor Map", href: "module-6-cycle.html", type: "visual" },
-            { name: "Spec-to-Tests Workbench", href: "module-6-workbench.html", type: "interactive" },
-            { name: "Guided Exercise", href: "module-6-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "module-6-quiz.html", type: "interactive" },
-            { name: "Flashcards", href: "module-6-flashcards.html", type: "interactive" },
-            { name: "Quick Reference", href: "module-6-reference.html", type: "reference" }
+            { name: "Lesson Content", href: "modules/module-6-lesson.html", type: "read" },
+            { name: "Red-Green-Refactor Map", href: "modules/module-6-cycle.html", type: "visual" },
+            { name: "Spec-to-Tests Workbench", href: "modules/module-6-workbench.html", type: "interactive" },
+            { name: "Guided Exercise", href: "modules/module-6-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "modules/module-6-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "modules/module-6-flashcards.html", type: "interactive" },
+            { name: "Quick Reference", href: "modules/module-6-reference.html", type: "reference" }
           ]},
         { num: 7, name: "Skills — Reusable Intelligence", section: 1, resources: [] },
         { num: 8, name: "MCP — Connecting Claude Code to the World", section: 1, resources: [] },
@@ -135,7 +135,7 @@ window.COURSE_DATA = {
       shortTitle: "OpenAI Codex",
       subtitle: "A Practitioner's Course",
       description: "Learn to work with the Codex app and the VS Code extension using a browser-native, multi-subject course shell.",
-      syllabusHref: "codex-course-syllabus.html",
+      syllabusHref: "codex/codex-course-syllabus.html",
       progressPrefix: "openai-codex-course",
       gistDescription: "OpenAI Codex Course Progress",
       welcomeTitle: "OpenAI Codex Prototype",
@@ -153,8 +153,8 @@ window.COURSE_DATA = {
             { label: "Phase 1", title: "Learn the mental model", desc: "Start with the lesson, then review the subject-level syllabus if you want the broader shape.", items: [0, 1] }
           ],
           resources: [
-            { name: "Lesson Content", href: "codex-module-1-lesson.html", type: "read" },
-            { name: "Course Syllabus", href: "codex-course-syllabus.html", type: "reference" }
+            { name: "Lesson Content", href: "codex/codex-module-1-lesson.html", type: "read" },
+            { name: "Course Syllabus", href: "codex/codex-course-syllabus.html", type: "reference" }
           ]},
         { num: 2, name: "AGENTS.md — Teaching Codex How You Work", section: 1,
           check: "Does Codex reliably inherit your repo conventions and verification rules without you restating them in every task? If yes, move on.",
@@ -164,11 +164,11 @@ window.COURSE_DATA = {
             { label: "Phase 3", title: "Reinforce", desc: "Use the quiz for judgment and the flashcards to lock in the durable-vs-one-off distinction.", items: [3, 4] }
           ],
           resources: [
-            { name: "Lesson Content", href: "codex-module-2-lesson.html", type: "read" },
-            { name: "Quick Reference", href: "codex-module-2-reference.html", type: "reference" },
-            { name: "Guided Exercise", href: "codex-module-2-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "codex-module-2-quiz.html", type: "interactive" },
-            { name: "Flashcards", href: "codex-module-2-flashcards.html", type: "interactive" }
+            { name: "Lesson Content", href: "codex/codex-module-2-lesson.html", type: "read" },
+            { name: "Quick Reference", href: "codex/codex-module-2-reference.html", type: "reference" },
+            { name: "Guided Exercise", href: "codex/codex-module-2-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "codex/codex-module-2-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "codex/codex-module-2-flashcards.html", type: "interactive" }
           ]},
         { num: 3, name: "Prompting and Planning", section: 1,
           check: "Can you tell when to ask Codex to plan first, when to stay direct, and how to define success so the task does not drift? If yes, you're ready for Module 4.",
@@ -178,11 +178,11 @@ window.COURSE_DATA = {
             { label: "Phase 3", title: "Reinforce", desc: "Use the quiz to distinguish fast-path tasks from plan-first work, then use flashcards to drill the planning ladder.", items: [3, 4] }
           ],
           resources: [
-            { name: "Lesson Content", href: "codex-module-3-lesson.html", type: "read" },
-            { name: "Planning Ladder", href: "codex-module-3-ladder.html", type: "visual" },
-            { name: "Guided Exercise", href: "codex-module-3-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "codex-module-3-quiz.html", type: "interactive" },
-            { name: "Flashcards", href: "codex-module-3-flashcards.html", type: "interactive" }
+            { name: "Lesson Content", href: "codex/codex-module-3-lesson.html", type: "read" },
+            { name: "Planning Ladder", href: "codex/codex-module-3-ladder.html", type: "visual" },
+            { name: "Guided Exercise", href: "codex/codex-module-3-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "codex/codex-module-3-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "codex/codex-module-3-flashcards.html", type: "interactive" }
           ]},
         { num: 4, name: "Permissions and Sandboxing", section: 1,
           check: "Can you choose the right sandbox mode and approval policy for a task without defaulting straight to full access? If yes, you're ready for Module 5.",
@@ -192,13 +192,13 @@ window.COURSE_DATA = {
             { label: "Phase 3", title: "Reinforce", desc: "Use the quiz, flashcards, and reference to lock in the safe default patterns.", items: [4, 5, 6] }
           ],
           resources: [
-            { name: "Lesson Content", href: "codex-module-4-lesson.html", type: "read" },
-            { name: "Sandbox Matrix", href: "codex-module-4-matrix.html", type: "visual" },
-            { name: "Mode Chooser", href: "codex-module-4-chooser.html", type: "interactive" },
-            { name: "Guided Exercise", href: "codex-module-4-exercise.html", type: "exercise" },
-            { name: "Scenario Quiz", href: "codex-module-4-quiz.html", type: "interactive" },
-            { name: "Flashcards", href: "codex-module-4-flashcards.html", type: "interactive" },
-            { name: "Quick Reference", href: "codex-module-4-reference.html", type: "reference" }
+            { name: "Lesson Content", href: "codex/codex-module-4-lesson.html", type: "read" },
+            { name: "Sandbox Matrix", href: "codex/codex-module-4-matrix.html", type: "visual" },
+            { name: "Mode Chooser", href: "codex/codex-module-4-chooser.html", type: "interactive" },
+            { name: "Guided Exercise", href: "codex/codex-module-4-exercise.html", type: "exercise" },
+            { name: "Scenario Quiz", href: "codex/codex-module-4-quiz.html", type: "interactive" },
+            { name: "Flashcards", href: "codex/codex-module-4-flashcards.html", type: "interactive" },
+            { name: "Quick Reference", href: "codex/codex-module-4-reference.html", type: "reference" }
           ]},
         { num: 5, name: "VS Code Workflows", section: 1, resources: [] },
         { num: 6, name: "Testing, Review, and Git Discipline", section: 1, resources: [] },

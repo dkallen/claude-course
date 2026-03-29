@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 6 — Guided Exercise</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 2rem 1rem; color: #1a1a1a; background: #fff; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; color: #555; margin: 1.6rem 0 0.6rem; }
+  p, li { font-size: 0.93rem; line-height: 1.65; color: #333; }
+  p { margin-bottom: 0.8rem; }
+  ul { padding-left: 1.4rem; margin-bottom: 0.8rem; }
+  .card { background: #fafafa; border: 1px solid #eee; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Module 6: Guided Exercise</h1>
+  <p class="subtitle">Run one complete red-green-refactor cycle with Claude Code on a real change.</p>
+  <div class="card">
+    <p><strong>Goal:</strong> Use tests as specification before implementation begins.</p>
+    <p><strong>Time estimate:</strong> 35–45 minutes</p>
+  </div>
+
+  <h2>Part 1: Pick a Small Real Change</h2>
+  <p>Choose one bug fix, one validator, or one focused behavior change. If the task is broad, TDD becomes muddy.</p>
+
+  <h2>Part 2: Write Requirements in English</h2>
+  <p>Write 3 to 5 short statements describing what the software should do. Include at least one edge case.</p>
+
+  <h2>Part 3: Ask Claude for Tests Only</h2>
+  <p>Tell Claude to generate tests from the requirements and to stop before implementation. Review the tests before you let it write code.</p>
+
+  <h2>Part 4: Review the Tests Ruthlessly</h2>
+  <ul>
+    <li>Do they fail if the feature is missing?</li>
+    <li>Are the assertions about behavior rather than implementation detail?</li>
+    <li>Is there at least one edge case that matters?</li>
+    <li>Would these tests catch a real regression?</li>
+  </ul>
+
+  <h2>Part 5: Confirm Red</h2>
+  <p>Run the tests and make sure they fail for the intended reason. If they already pass, the loop is broken.</p>
+
+  <h2>Part 6: Ask Claude for the Smallest Green</h2>
+  <p>Now ask Claude to implement the smallest coherent change that makes the tests pass. Do not combine this with refactoring yet.</p>
+
+  <h2>Part 7: Refactor Deliberately</h2>
+  <p>Once the tests are green, ask Claude to improve structure without changing behavior. Rerun the tests.</p>
+
+  <h2>Part 8: Capture the Result</h2>
+  <p>Your final artifact should include:</p>
+  <ul>
+    <li>plain-English requirements</li>
+    <li>the failing tests</li>
+    <li>the minimal implementation</li>
+    <li>the refactor pass</li>
+    <li>one note on what the tests protected that prose alone would not</li>
+  </ul>
+</div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Module 2 — Lesson: CLAUDE.md — Teaching Claude Who You Are</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+            color: #1a1a1a;
+            background: #fff;
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .back-link {
+            font-size: 0.8rem;
+            color: #888;
+            text-decoration: none;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+
+        .back-link:hover {
+            color: #555;
+        }
+
+        h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: #888;
+            margin-bottom: 1.5rem;
+        }
+
+        h2 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: #555;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-top: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            font-size: 0.92rem;
+            line-height: 1.6;
+            margin-bottom: 0.85rem;
+        }
+
+        strong {
+            font-weight: 600;
+        }
+
+        code {
+            background: #f5f5f5;
+            font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.85rem;
+            padding: 0.15rem 0.4rem;
+            border-radius: 3px;
+        }
+
+        pre {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin-bottom: 0.85rem;
+        }
+
+        pre code {
+            padding: 0;
+            background: none;
+        }
+
+        blockquote {
+            border-left: 2px solid #999;
+            padding-left: 1rem;
+            color: #444;
+            font-style: italic;
+            margin-bottom: 0.85rem;
+        }
+
+        ul, ol {
+            font-size: 0.88rem;
+            line-height: 1.6;
+            margin-bottom: 0.85rem;
+            padding-left: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.35rem;
+        }
+
+        hr {
+            border: none;
+            border-top: 1px solid #eee;
+            margin: 2rem 0;
+        }
+
+        .footer {
+            border-top: 1px solid #eee;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="module-2-index.html" class="back-link">&larr; Module 2</a>
+
+        <h1>Module 2: CLAUDE.md &mdash; Teaching Claude Who You Are</h1>
+        <p class="subtitle"><strong>From Concept to Delivery with Claude Code &mdash; A Practitioner's Course</strong></p>
+
+        <hr>
+
+        <h2>Why This Module Matters</h2>
+
+        <p>In Module 1, we talked about context window constraints and how Claude compresses information to stay in scope. CLAUDE.md solves a fundamental problem: every new session with Claude Code starts fresh. Without explicit instruction, Claude has no way to know your project conventions, your decision-making framework, or what you actually care about.</p>
+
+        <p>CLAUDE.md is how you teach Claude who you are, once, so it sticks across every interaction in your project. It's the difference between explaining your approach every time and having Claude already know what you value.</p>
+
+        <hr>
+
+        <h2>1. What CLAUDE.md Actually Is</h2>
+
+        <p>CLAUDE.md is a plain text file that Claude reads at the beginning of every session. It contains instructions, context, and conventions specific to your work. It's not a README, not documentation, not a config file &mdash; it's a conversation starter that says "here's how we work."</p>
+
+        <p>CLAUDE.md lives in three possible locations, each with different scope:</p>
+
+        <ul>
+            <li><strong><code>~/.claude/CLAUDE.md</code></strong> &mdash; Global instructions for all your projects. Things like "I prefer concise summaries" or "always check this dependency" live here.</li>
+            <li><strong><code>project-root/CLAUDE.md</code></strong> &mdash; Project-level instructions. This is where most of your custom guidance lives.</li>
+            <li><strong><code>folder/CLAUDE.md</code></strong> &mdash; Folder-level instructions for a specific subdirectory. Useful when one part of your project has different rules.</li>
+        </ul>
+
+        <p>Claude reads all three in order and applies them hierarchically. Folder-level overrides project-level, which overrides global. This lets you set sensible defaults globally and override them where needed.</p>
+
+        <hr>
+
+        <h2>2. Hierarchy and Scope</h2>
+
+        <p>Think of CLAUDE.md as nested instruction sets. You might have a global instruction like "Always suggest tests when proposing code changes," but in your <code>scripts/</code> folder, you have a CLAUDE.md that says "Skip test suggestions for one-off utility scripts."</p>
+
+        <p>The hierarchy exists because different parts of your codebase have different needs. Your main application and your build scripts don't operate under the same constraints. CLAUDE.md lets you be specific without repeating yourself.</p>
+
+        <p><strong>Pro tip:</strong> Don't abuse the hierarchy. If you find yourself creating CLAUDE.md files in every folder, you're probably being too granular. Use folder-level instructions only when the rules genuinely differ.</p>
+
+        <hr>
+
+        <h2>3. CLAUDE.md vs. Your Actual Prompt</h2>
+
+        <p>Here's a common mistake: putting everything in CLAUDE.md and nothing in your actual prompt.</p>
+
+        <p><strong>CLAUDE.md should contain:</strong></p>
+        <ul>
+            <li>Project conventions and standards</li>
+            <li>Your decision-making framework (like Goals, Problems, Solutions, Risks, Scope)</li>
+            <li>Tools and patterns you always use</li>
+            <li>Constraints that apply across most work</li>
+            <li>What NOT to do</li>
+        </ul>
+
+        <p><strong>Your prompt should contain:</strong></p>
+        <ul>
+            <li>The specific task you're asking for right now</li>
+            <li>Context that matters for this particular request</li>
+            <li>Details about what "done" looks like for this task</li>
+        </ul>
+
+        <p>If your CLAUDE.md reads like a detailed task description, it's too specific. If your prompt reads like general philosophy, it belongs in CLAUDE.md.</p>
+
+        <hr>
+
+        <h2>4. Writing Effective CLAUDE.md</h2>
+
+        <p>Good CLAUDE.md files are opinionated but not overwhelming. Here's what works:</p>
+
+        <p><strong>Start with your framework.</strong> If you use Goals-Problems-Solutions-Risks-Scope, put that in CLAUDE.md. Explain what each means in your context. When Claude understands your analytical structure, every task benefits.</p>
+
+        <p><strong>State constraints clearly.</strong> "When proposing infrastructure changes, always flag security implications" is better than "be careful about security." Specific constraints are actionable.</p>
+
+        <p><strong>Give examples.</strong> Show Claude a good code comment, a good commit message, a good task breakdown. One concrete example teaches more than five abstract rules.</p>
+
+        <p><strong>List the tools you use.</strong> If you always want Claude to check certain files first, use specific libraries, or follow certain practices &mdash; list them. "Always run tests using pytest" is more useful than "make sure it works."</p>
+
+        <p><strong>Say what to ignore.</strong> This is where <code>.claudeignore</code> comes in. If you have massive vendor folders, auto-generated files, or logs that clutter the context, tell Claude to skip them. One line in <code>.claudeignore</code> saves context window space on every session.</p>
+
+        <hr>
+
+        <h2>5. Anti-Patterns</h2>
+
+        <p>CLAUDE.md files that fail share common traits:</p>
+
+        <p><strong>Too long.</strong> If your CLAUDE.md is longer than your actual codebase documentation, something is wrong. You're using it as a manual when it should be a guide. Aim for 50-200 lines.</p>
+
+        <p><strong>Too vague.</strong> "Be helpful" and "write good code" are not instructions. Vagueness forces Claude to guess what you want, and guessing wastes the session.</p>
+
+        <p><strong>Contradictory.</strong> If your CLAUDE.md says "always ask before making changes" but also says "be autonomous and don't ask for permission," Claude will get confused. Be consistent.</p>
+
+        <p><strong>Updating constantly.</strong> If you're rewriting CLAUDE.md every week, either you haven't found your actual principles yet, or you're using it for task-specific guidance that belongs in prompts. Settle on your conventions and leave them alone.</p>
+
+        <hr>
+
+        <h2>6. The Compaction Problem Solved</h2>
+
+        <p>Remember from Module 1: every session with Claude Code has a limited context window. You can't paste your entire codebase into every conversation.</p>
+
+        <p>CLAUDE.md doesn't hold the full codebase, but it holds the <em>meta</em> &mdash; the rules, patterns, and values that let Claude make good decisions about what to look for and how to approach problems. By the time Claude starts working on your actual task, it already knows how you think.</p>
+
+        <p>This is why CLAUDE.md gets re-read at the start of every session. It's the skeleton key that lets you work efficiently across sessions without restating everything.</p>
+
+        <hr>
+
+        <h2>Tying It Together</h2>
+
+        <p>CLAUDE.md is your instruction set for how Claude should think and work within your project. It's not documentation, not a task list, and not a replacement for good prompts. It's the connective tissue between you and Claude's understanding of what matters.</p>
+
+        <p>Write it once. Update it rarely. Use it to capture what you actually believe about good work, good code, and good thinking. Then, when you start a new session, Claude already knows who you are.</p>
+
+        <hr>
+
+        <h2>Check</h2>
+
+        <p>Think about a project you're currently working on. What are three things Claude should know about how you work that you find yourself repeating in almost every interaction? Those three things belong in your CLAUDE.md.</p>
+
+        <hr>
+
+        <div class="footer">
+            From Concept to Delivery with Claude Code &mdash; A Practitioner's Course
+        </div>
+    </div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

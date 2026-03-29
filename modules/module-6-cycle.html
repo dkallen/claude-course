@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 6 — Red-Green-Refactor Map</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 2rem 1rem; background: #fff; color: #1a1a1a; }
+  .container { max-width: 980px; margin: 0 auto; }
+  h1 { font-size: 1.7rem; margin-bottom: 0.4rem; }
+  .subtitle { font-size: 0.95rem; color: #666; line-height: 1.6; margin-bottom: 1.5rem; max-width: 760px; }
+  .panel { border: 1px solid #ececec; border-radius: 16px; background: linear-gradient(180deg, #fcfcfc 0%, #f8f8f8 100%); padding: 1rem; margin-bottom: 1.25rem; overflow: hidden; }
+  svg { width: 100%; height: auto; display: block; }
+  .notes { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+  .card { border: 1px solid #eee; border-radius: 12px; padding: 0.9rem; background: #fff; }
+  .card h2 { font-size: 0.88rem; text-transform: uppercase; letter-spacing: 0.06em; color: #777; margin-bottom: 0.35rem; }
+  .card p { font-size: 0.92rem; line-height: 1.6; color: #444; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Red-Green-Refactor Map</h1>
+  <p class="subtitle">Read the cycle as a control loop. The requirement becomes a test, the test constrains implementation, and refactoring happens only after behavior is protected.</p>
+
+  <div class="panel">
+    <svg viewBox="0 0 920 560" role="img" aria-label="Red green refactor cycle for AI-assisted test-driven development">
+      <defs>
+        <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#444"></path>
+        </marker>
+      </defs>
+
+      <rect x="310" y="40" width="300" height="86" rx="18" fill="#eef2ff" stroke="#b8c2ea"></rect>
+      <text x="460" y="72" text-anchor="middle" font-size="18" font-weight="700" fill="#30406b">Requirement</text>
+      <text x="460" y="100" text-anchor="middle" font-size="15" fill="#30406b">Plain-English behavior and boundary cases</text>
+
+      <rect x="80" y="214" width="230" height="108" rx="18" fill="#fde8e8" stroke="#d7a7a7"></rect>
+      <text x="195" y="248" text-anchor="middle" font-size="18" font-weight="700" fill="#7a2222">Red</text>
+      <text x="195" y="276" text-anchor="middle" font-size="15" fill="#7a2222">Write tests first</text>
+      <text x="195" y="298" text-anchor="middle" font-size="15" fill="#7a2222">Confirm they fail for the right reason</text>
+
+      <rect x="345" y="214" width="230" height="108" rx="18" fill="#e6f4ea" stroke="#a8c9b2"></rect>
+      <text x="460" y="248" text-anchor="middle" font-size="18" font-weight="700" fill="#24533b">Green</text>
+      <text x="460" y="276" text-anchor="middle" font-size="15" fill="#24533b">Implement the smallest change</text>
+      <text x="460" y="298" text-anchor="middle" font-size="15" fill="#24533b">needed to make tests pass</text>
+
+      <rect x="610" y="214" width="230" height="108" rx="18" fill="#fff4d8" stroke="#d9c07d"></rect>
+      <text x="725" y="248" text-anchor="middle" font-size="18" font-weight="700" fill="#6f5a1a">Refactor</text>
+      <text x="725" y="276" text-anchor="middle" font-size="15" fill="#6f5a1a">Improve design after behavior</text>
+      <text x="725" y="298" text-anchor="middle" font-size="15" fill="#6f5a1a">is protected by tests</text>
+
+      <rect x="260" y="412" width="400" height="86" rx="18" fill="#f8f8f8" stroke="#ddd"></rect>
+      <text x="460" y="444" text-anchor="middle" font-size="18" font-weight="700" fill="#444">Review Gate</text>
+      <text x="460" y="472" text-anchor="middle" font-size="15" fill="#444">Reject trivial tests, missing edge cases, and implementation-shaped assertions</text>
+
+      <line x1="380" y1="126" x2="235" y2="214" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></line>
+      <line x1="310" y1="268" x2="345" y2="268" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></line>
+      <line x1="575" y1="268" x2="610" y2="268" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></line>
+      <path d="M 725 322 C 725 380, 655 390, 630 412" fill="none" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></path>
+      <path d="M 290 412 C 220 390, 195 355, 195 322" fill="none" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></path>
+      <path d="M 460 412 C 460 360, 460 344, 460 322" fill="none" stroke="#444" stroke-width="4" marker-end="url(#arrow)"></path>
+
+      <text x="285" y="176" font-size="14" font-weight="600" fill="#444">turn into tests</text>
+      <text x="325" y="248" font-size="14" font-weight="600" fill="#444">smallest step</text>
+      <text x="590" y="248" font-size="14" font-weight="600" fill="#444">cleanup later</text>
+      <text x="742" y="378" font-size="14" font-weight="600" fill="#444">review</text>
+      <text x="145" y="378" font-size="14" font-weight="600" fill="#444">loop again</text>
+    </svg>
+  </div>
+
+  <div class="notes">
+    <div class="card">
+      <h2>Red</h2>
+      <p>The test should fail because the behavior is missing, not because the setup is broken or the assertion is meaningless.</p>
+    </div>
+    <div class="card">
+      <h2>Green</h2>
+      <p>Ask Claude for the smallest coherent implementation. Do not combine implementation and cleanup in one jump.</p>
+    </div>
+    <div class="card">
+      <h2>Refactor</h2>
+      <p>Only refactor after the tests are green. Otherwise the loop loses its safety signal and turns back into guess-and-check.</p>
+    </div>
+  </div>
+</div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Module 4 — Scenario Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .card { border: 1px solid #eee; border-radius: 12px; background: #fafafa; padding: 1rem; }
+  .progress { font-size: 0.85rem; color: #777; margin-bottom: 1rem; font-weight: 600; }
+  .question { font-size: 1rem; line-height: 1.55; margin-bottom: 1rem; }
+  .options { display: grid; gap: 0.65rem; }
+  button.option { text-align: left; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; font: inherit; }
+  button.option:hover { border-color: #aaa; }
+  .feedback { margin-top: 1rem; padding: 0.85rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.55; display: none; }
+  .feedback.correct { background: #f0fdf4; color: #166534; display: block; }
+  .feedback.incorrect { background: #fef2f2; color: #991b1b; display: block; }
+  .next { margin-top: 1rem; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 0.8rem 1rem; font: inherit; cursor: pointer; display: none; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Module 4: Scenario Quiz</h1>
+  <p class="subtitle">Test whether you can choose the smallest appropriate trust boundary for a task.</p>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next" id="next-btn">Next</button>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    q: "You want Codex to inspect the repo and explain a bug, but not make changes. What is the best starting mode?",
+    options: ["read-only", "workspace-write", "danger-full-access", "any mode is equivalent"],
+    answer: 0,
+    explanation: "Inspection work should start narrow. Read-only is enough for questions and diagnosis."
+  },
+  {
+    q: "What is the difference between sandboxing and approval policy?",
+    options: ["There is no difference", "Sandboxing defines the boundary; approval policy defines when Codex pauses", "Sandboxing only affects UI files", "Approval policy only matters in the cloud"],
+    answer: 1,
+    explanation: "This distinction is the core operating model for safe local autonomy."
+  },
+  {
+    q: "What does `--full-auto` mean in the current Codex docs?",
+    options: ["No sandbox and no approvals", "workspace-write plus on-request", "read-only plus never", "danger-full-access plus untrusted"],
+    answer: 1,
+    explanation: "Full-auto is the lower-risk automation preset, not unrestricted access."
+  },
+  {
+    q: "Which combination represents true full access?",
+    options: ["workspace-write + on-request", "read-only + never", "danger-full-access + never", "workspace-write + untrusted"],
+    answer: 2,
+    explanation: "That combination removes both the sandbox boundary and the approval pauses."
+  },
+  {
+    q: "In workspace-write mode, why might a command like `git commit` still need approval?",
+    options: ["Because Git never works in Codex", "Because some environments keep areas like `.git/` protected even when the workspace is writable", "Because approvals are random", "Because only the app supports Git"],
+    answer: 1,
+    explanation: "Workspace-write is not the same as unrestricted write access to every path."
+  },
+  {
+    q: "If a task needs one special exception, what is usually better than jumping straight to full access?",
+    options: ["Do nothing and hope it works", "Use a narrower exception such as writable roots or rules", "Always use `--yolo`", "Disable approvals globally"],
+    answer: 1,
+    explanation: "Specific exceptions keep the trust boundary legible and reduce unnecessary risk."
+  }
+];
+
+let current = 0;
+let locked = false;
+
+function renderQuestion() {
+  locked = false;
+  const item = questions[current];
+  document.getElementById("progress").textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById("question").textContent = item.q;
+  const optionsEl = document.getElementById("options");
+  optionsEl.innerHTML = "";
+  item.options.forEach((option, idx) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = option;
+    button.addEventListener("click", () => answer(idx));
+    optionsEl.appendChild(button);
+  });
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("next-btn").style.display = "none";
+}
+
+function answer(idx) {
+  if (locked) return;
+  locked = true;
+  const item = questions[current];
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback " + (idx === item.answer ? "correct" : "incorrect");
+  feedback.textContent = item.explanation;
+  document.getElementById("next-btn").style.display = "inline-block";
+}
+
+document.getElementById("next-btn").addEventListener("click", () => {
+  current += 1;
+  if (current >= questions.length) {
+    document.querySelector(".card").innerHTML = "<h2 style='margin-bottom:0.5rem;'>Quiz complete</h2><p style='line-height:1.6;color:#444;'>Good permissions judgment means not over-permissioning by habit. Start narrow, then widen deliberately when the task proves it needs more room.</p>";
+    return;
+  }
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex Module 1: Orientation — What Codex Is and Where It Runs</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.9rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+  .course-title { font-size: 0.9rem; color: #999; margin-bottom: 1.25rem; }
+  .intro { font-size: 0.98rem; color: #555; line-height: 1.7; margin-bottom: 2rem; }
+  .phase { margin-bottom: 2rem; }
+  .phase-header { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.35rem; }
+  .phase-number { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; }
+  .phase-title { font-size: 1.08rem; font-weight: 600; }
+  .phase-desc { font-size: 0.88rem; color: #777; line-height: 1.55; margin-bottom: 0.9rem; }
+  .resource { display: flex; gap: 1rem; align-items: flex-start; padding: 0.95rem 1rem; background: #fafafa; border: 1px solid #eee; border-radius: 8px; margin-bottom: 0.6rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+  .resource:hover { border-color: #ccc; background: #f5f5f5; }
+  .resource.planned { cursor: default; opacity: 0.78; }
+  .resource-icon { font-size: 1.15rem; flex-shrink: 0; width: 28px; text-align: center; margin-top: 1px; }
+  .resource-body { flex: 1; }
+  .resource-name { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.15rem; }
+  .resource-meta { display: flex; gap: 0.8rem; align-items: center; flex-wrap: wrap; }
+  .resource-type { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.1rem 0.4rem; border-radius: 3px; }
+  .type-passive { background: #f0f0f0; color: #888; }
+  .type-interactive { background: #1a1a1a; color: #fff; }
+  .type-planned { background: #ece7db; color: #8a6d3b; }
+  .resource-desc { font-size: 0.82rem; color: #888; }
+  .resource-time { font-size: 0.78rem; color: #bbb; margin-top: 0.2rem; }
+  .note { font-size: 0.88rem; color: #666; line-height: 1.65; margin-top: 2rem; padding: 1rem; background: #fafafa; border-radius: 8px; border-left: 3px solid #ddd; }
+</style>
+</head>
+<body>
+<div class="container">
+  <p class="course-title">Working Effectively with OpenAI Codex</p>
+  <h1>Module 1: Orientation</h1>
+  <p class="intro">This first Codex module establishes the mental model for the app and the VS Code extension: where Codex runs, what local mode means, how sandboxing and approvals work, and why `AGENTS.md`, `config.toml`, and Git checkpoints matter early. Only the lesson is fully drafted in this pass; the remaining module components are sketched to show the intended shape.</p>
+
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-number">Phase 1</span>
+      <span class="phase-title">Learn the mental model</span>
+    </div>
+    <p class="phase-desc">Start with the core lesson. This is the written foundation for the rest of the course.</p>
+
+    <a class="resource" href="codex-module-1-lesson.html">
+      <div class="resource-icon">1</div>
+      <div class="resource-body">
+        <div class="resource-name">Lesson Content</div>
+        <div class="resource-meta">
+          <span class="resource-type type-passive">Passive</span>
+          <span class="resource-desc">App, VS Code extension, local vs cloud, sandboxing, approvals, durable setup</span>
+        </div>
+        <div class="resource-time">~15 min read</div>
+      </div>
+    </a>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-number">Phase 2</span>
+      <span class="phase-title">Practice in a real project</span>
+    </div>
+    <p class="phase-desc">The next build pass should add a hands-on exercise that uses either the Codex app or the VS Code extension on a safe repo.</p>
+
+    <div class="resource planned">
+      <div class="resource-icon">2</div>
+      <div class="resource-body">
+        <div class="resource-name">Guided Exercise</div>
+        <div class="resource-meta">
+          <span class="resource-type type-planned">Planned</span>
+          <span class="resource-desc">Open a repo, inspect what Codex can see, make a small change, and observe approvals</span>
+        </div>
+        <div class="resource-time">Planned for next pass</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header">
+      <span class="phase-number">Phase 3</span>
+      <span class="phase-title">Reinforce and review</span>
+    </div>
+    <p class="phase-desc">This module likely wants the same reinforcement pattern as the Claude course, but only after the core lesson voice is approved.</p>
+
+    <div class="resource planned">
+      <div class="resource-icon">3</div>
+      <div class="resource-body">
+        <div class="resource-name">Scenario Quiz</div>
+        <div class="resource-meta">
+          <span class="resource-type type-planned">Planned</span>
+          <span class="resource-desc">Distinguish local vs cloud, sandbox vs approvals, and setup problems vs prompt problems</span>
+        </div>
+        <div class="resource-time">Planned</div>
+      </div>
+    </div>
+
+    <div class="resource planned">
+      <div class="resource-icon">4</div>
+      <div class="resource-body">
+        <div class="resource-name">Quick Reference</div>
+        <div class="resource-meta">
+          <span class="resource-type type-planned">Planned</span>
+          <span class="resource-desc">One-page reminder of surfaces, trust boundaries, and durable setup files</span>
+        </div>
+        <div class="resource-time">Planned</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Module 1 check:</strong> Can you explain the difference between local and cloud Codex, between sandboxing and approvals, and between durable setup (`AGENTS.md`, `config.toml`) and one-off prompting? If yes, Module 2 should be `AGENTS.md`.
+  </div>
+</div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>

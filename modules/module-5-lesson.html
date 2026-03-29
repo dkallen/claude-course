@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 5 — Lesson: Architecture</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1a1a1a; background: #fff; font-size: 0.92rem; line-height: 1.6; }
+  .container { max-width: 680px; margin: 0 auto; padding: 2rem 1rem; }
+  .back-link { font-size: 0.8rem; color: #888; text-decoration: none; display: inline-block; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+  .subtitle { font-size: 0.88rem; color: #555; margin-bottom: 1.5rem; font-style: italic; }
+  h2 { font-size: 1.05rem; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2rem; margin-bottom: 0.75rem; }
+  h3 { font-size: 0.95rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  p, li { font-size: 0.92rem; line-height: 1.6; }
+  p { margin-bottom: 0.75rem; }
+  ul, ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+  blockquote { border-left: 2px solid #999; padding-left: 1rem; color: #444; font-style: italic; margin-bottom: 0.75rem; }
+  hr { border: none; border-top: 1px solid #eee; margin: 2rem 0; }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="module-5-index.html" class="back-link">&larr; Module 5</a>
+  <h1>Module 5: Architecture &mdash; Designing Before Building</h1>
+  <p class="subtitle">From Concept to Delivery with Claude Code &mdash; A Practitioner's Course</p>
+
+  <hr>
+  <h2>Why This Module Matters</h2>
+  <p>Once the idea is clear, the next failure mode is building too soon. Teams jump from a good brief straight into implementation and then discover, in code, that nobody agreed on structure, boundaries, or tradeoffs. Architecture is the stage where that confusion becomes visible before it becomes expensive.</p>
+  <p>Claude Code is useful here because it can help you decompose a system, compare options, and expose assumptions. It is not useful if you ask it to produce architecture theater: boxes with no responsibilities, layers with no purpose, or diagrams that do not constrain implementation.</p>
+
+  <h2>1. Architecture Is About Responsibility</h2>
+  <p>The first architecture question is not “what technology should we use?” It is “what responsibilities exist, and how should they be separated?”</p>
+  <p>If responsibilities are unclear, everything else becomes premature. The right database does not save a design where business rules, orchestration, state management, and UI concerns are mixed together.</p>
+  <blockquote>Good architecture starts by deciding what each part of the system is allowed to own.</blockquote>
+
+  <h2>2. Start From the Brief, Not From the Stack</h2>
+  <p>Your Module 4 brief should drive the architecture. Goals tell you what matters. Problems tell you where pressure exists. Risks tell you where the design must be defensive. Scope tells you what not to optimize for yet.</p>
+  <p>If you start with the stack instead, architecture turns into preference projection. You end up selecting tools before you have named the shape of the work.</p>
+
+  <h2>3. Components Need Crisp Jobs</h2>
+  <p>A component is only useful if you can describe its job in one sentence. “Backend,” “frontend,” or “service layer” is not enough. The useful question is: what responsibility lives here that should not live elsewhere?</p>
+  <ul>
+    <li>where is state created, stored, and updated?</li>
+    <li>where do business rules live?</li>
+    <li>where does orchestration happen?</li>
+    <li>where are external dependencies isolated?</li>
+  </ul>
+  <p>If the same rule appears in three places, architecture has already failed.</p>
+
+  <h2>4. Interfaces Are Commitments</h2>
+  <p>Every boundary creates an interface, even if it is informal. The interface might be a function contract, a data shape, an event, or a network endpoint. The point is the same: one part of the system is making promises to another.</p>
+  <p>Bad architecture leaves those promises vague. Good architecture names the important ones early enough that implementation can align around them.</p>
+
+  <h2>5. Architecture Is Mostly Tradeoffs</h2>
+  <p>There is no architecture without tradeoffs. Simplicity may reduce flexibility. Isolation may add coordination cost. Speed of delivery may narrow future options. If the design discussion contains no tradeoffs, it is probably still operating at slogan level.</p>
+  <p>Claude is valuable here because it can force explicit comparison:</p>
+  <ul>
+    <li>what does this design make easier?</li>
+    <li>what does it make harder?</li>
+    <li>what risks does it reduce?</li>
+    <li>what complexity does it introduce?</li>
+  </ul>
+
+  <h2>6. Keep the First Pass Coarse</h2>
+  <p>Early architecture should be coarse-grained. You are defining major components, major flows, and major constraints. If you jump immediately into class diagrams, exact schemas, or file-level organization, you are often using detail to avoid uncertainty.</p>
+  <p>The first pass should be simple enough to explain aloud and strong enough to guide implementation choices.</p>
+
+  <h2>7. What Claude Helps With</h2>
+  <ul>
+    <li>proposing decompositions from a written brief</li>
+    <li>challenging component boundaries</li>
+    <li>comparing architecture options against the stated goals</li>
+    <li>surfacing hidden interfaces and coordination costs</li>
+    <li>turning rough diagrams into a reusable architecture brief</li>
+  </ul>
+  <p>The main failure mode is letting Claude generate structure without pressure. Make it justify every major boundary.</p>
+
+  <h2>8. A Good Output for This Stage</h2>
+  <p>Before coding begins, you want a short architecture brief that names:</p>
+  <ol>
+    <li>the core components</li>
+    <li>the responsibility of each component</li>
+    <li>the key interfaces between them</li>
+    <li>the main tradeoffs and open questions</li>
+    <li>the risks the design is trying to manage</li>
+  </ol>
+  <p>That is enough to constrain implementation without pretending every detail is settled.</p>
+
+  <hr>
+  <h2>Check</h2>
+  <p>If you can turn a refined idea into a structure with named responsibilities, clear boundaries, and explicit tradeoffs, you are ready to move into implementation discipline.</p>
+</div>
+<script src="../notes-widget.js"></script>
+</body>
+</html>
