@@ -89,6 +89,29 @@
   .modal-actions { display: flex; gap: 0.6rem; margin-top: 1.2rem; }
   .modal-btn { padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-size: 0.9rem; }
   .modal-btn.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  .subject-link { border: none; cursor: pointer; font: inherit; }
+  .mc-resource-wrap { margin-bottom: 0.5rem; }
+  .mc-resource-wrap .mc-resource-link { margin-bottom: 0; }
+  .mc-resource-wrap.note-open .mc-resource-link { border-radius: 8px 8px 0 0; border-bottom: none; }
+  .mc-resource-wrap .mc-note-area { display: none; background: #fafafa; border: 1px solid #eee; border-top: none; border-radius: 0 0 8px 8px; padding: 0.4rem 0.9rem 0.6rem; }
+  .mc-resource-wrap.note-open .mc-note-area { display: block; }
+  .note-btn { background: none; border: none; cursor: pointer; font-size: 0.9rem; color: #ddd; padding: 0.2rem 0.25rem; flex-shrink: 0; align-self: center; line-height: 1; transition: color 0.1s; }
+  .note-btn:hover { color: #888; }
+  .note-btn.has-note { color: #999; }
+  .mc-note-textarea { width: 100%; min-height: 72px; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.45rem 0.5rem; font-family: inherit; font-size: 0.82rem; resize: vertical; background: #fff; color: #333; line-height: 1.5; }
+  .mc-note-textarea:focus { outline: none; border-color: #aaa; }
+  .notes-view { max-width: 740px; }
+  .notes-view h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.01em; }
+  .notes-view-empty { font-size: 0.9rem; color: #aaa; }
+  .notes-view-module { margin-bottom: 2rem; }
+  .notes-view-module-name { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #aaa; margin-bottom: 0.6rem; }
+  .notes-view-item { margin-bottom: 0.75rem; background: #fafafa; border: 1px solid #eee; border-radius: 8px; padding: 0.75rem 0.9rem; }
+  .notes-view-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.4rem; }
+  .notes-view-res-name { font-size: 0.85rem; font-weight: 600; }
+  .notes-view-res-link { font-size: 0.75rem; color: #aaa; text-decoration: none; }
+  .notes-view-res-link:hover { color: #555; }
+  .notes-view-textarea { width: 100%; min-height: 80px; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.45rem 0.5rem; font-family: inherit; font-size: 0.82rem; resize: vertical; background: #fff; color: #333; line-height: 1.5; }
+  .notes-view-textarea:focus { outline: none; border-color: #aaa; }
   @media (max-width: 900px) {
     .sidebar { position: fixed; z-index: 80; background: #fff; }
     .sidebar.collapsed { margin-left: -320px; }
@@ -107,6 +130,7 @@
     <div class="subject-links">
       <a class="subject-link" href="index.html">All Subjects</a>
       <a class="subject-link" id="syllabus-link" href="#">Syllabus</a>
+      <button class="subject-link" onclick="showNotesPanel()">Notes</button>
     </div>
   </div>
   <div id="toc-sections"></div>
@@ -161,6 +185,7 @@ if (!subjectMap[subjectSlug]) subjectSlug = window.COURSE_DATA.defaultSubject;
 let subject = subjectMap[subjectSlug];
 let modules = subject.modules;
 let progress = {};
+let notes = {};
 let expandedModule = null;
 let gistToken = null;
 let gistId = null;
@@ -169,6 +194,88 @@ function storageKey() { return subject.progressPrefix + "-progress"; }
 function gistTokenKey() { return subject.progressPrefix + "-gist-token"; }
 function gistIdKey() { return subject.progressPrefix + "-gist-id"; }
 function gistFilename() { return subject.progressPrefix + "-progress.json"; }
+
+function loadNotes() {
+  try {
+    const stored = localStorage.getItem("course-notes");
+    notes = stored ? JSON.parse(stored) : {};
+  } catch (e) {
+    notes = {};
+  }
+}
+
+function saveNote(href, text) {
+  if (text.trim() === "") {
+    delete notes[href];
+  } else {
+    notes[href] = text;
+  }
+  localStorage.setItem("course-notes", JSON.stringify(notes));
+}
+
+const noteTimers = {};
+function scheduleNoteSave(href, text) {
+  clearTimeout(noteTimers[href]);
+  noteTimers[href] = setTimeout(() => saveNote(href, text), 600);
+}
+
+function toggleNote(wrapId, href, event) {
+  event.preventDefault();
+  event.stopPropagation();
+  const wrap = document.getElementById(wrapId);
+  if (!wrap) return;
+  wrap.classList.toggle("note-open");
+  if (wrap.classList.contains("note-open")) {
+    wrap.querySelector(".mc-note-textarea").focus();
+  }
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function showNotesPanel() {
+  document.getElementById("placeholder").style.display = "none";
+  const panel = document.getElementById("module-panel");
+  panel.style.display = "block";
+  expandedModule = null;
+  renderTOC();
+
+  let html = `<div class="notes-view"><h2>Notes</h2>`;
+  let hasAnyNote = false;
+
+  modules.forEach(module => {
+    if (!module.resources) return;
+    const moduleNotes = module.resources
+      .map((r, idx) => ({ resource: r, idx, note: notes[r.href] }))
+      .filter(x => x.note);
+    if (moduleNotes.length === 0) return;
+    hasAnyNote = true;
+    html += `<div class="notes-view-module">`;
+    html += `<div class="notes-view-module-name">Module ${module.num}: ${module.name}</div>`;
+    moduleNotes.forEach(({ resource, note }) => {
+      html += `<div class="notes-view-item">`;
+      html += `<div class="notes-view-item-header">`;
+      html += `<span class="notes-view-res-name">${escapeHtml(resource.name)}</span>`;
+      html += `<a class="notes-view-res-link" href="${escapeHtml(resource.href)}" target="_blank">open ↗</a>`;
+      html += `</div>`;
+      html += `<textarea class="notes-view-textarea" oninput="scheduleNoteSave('${escapeHtml(resource.href)}', this.value)">${escapeHtml(note)}</textarea>`;
+      html += `</div>`;
+    });
+    html += `</div>`;
+  });
+
+  if (!hasAnyNote) {
+    html += `<div class="notes-view-empty">No notes yet. Open a module and click ✎ next to a resource to add a note.</div>`;
+  }
+
+  html += `</div>`;
+  panel.innerHTML = html;
+}
 
 function loadLocalProgress() {
   try {
@@ -386,7 +493,18 @@ function showModulePanel(num) {
         const resource = module.resources[idx];
         const tagClass = typeMap[resource.type] || "passive";
         const rChecked = !!progress["r" + num + "-" + idx];
-        html += `<a class="mc-resource-link" href="${resource.href}" target="_blank"><div class="mc-res-num">${idx + 1}</div><div class="mc-res-body"><div class="mc-res-name">${resource.name}</div><div class="mc-res-meta"><span class="mc-res-tag ${tagClass}">${tagClass}</span>${resource.type}</div></div><input class="resource-check" type="checkbox" ${rChecked ? "checked" : ""} onclick="toggleResourceCheck('${num}', ${idx}, event)"></a>`;
+        const existingNote = notes[resource.href] || "";
+        const hasNote = !!existingNote;
+        const wrapId = "nw-" + num + "-" + idx;
+        html += `<div class="mc-resource-wrap${hasNote ? " note-open" : ""}" id="${wrapId}">`;
+        html += `<a class="mc-resource-link" href="${resource.href}" target="_blank">`;
+        html += `<div class="mc-res-num">${idx + 1}</div>`;
+        html += `<div class="mc-res-body"><div class="mc-res-name">${resource.name}</div><div class="mc-res-meta"><span class="mc-res-tag ${tagClass}">${tagClass}</span>${resource.type}</div></div>`;
+        html += `<button class="note-btn${hasNote ? " has-note" : ""}" onclick="toggleNote('${wrapId}', '${resource.href}', event)" title="Note">✎</button>`;
+        html += `<input class="resource-check" type="checkbox" ${rChecked ? "checked" : ""} onclick="toggleResourceCheck('${num}', ${idx}, event)">`;
+        html += `</a>`;
+        html += `<div class="mc-note-area"><textarea class="mc-note-textarea" placeholder="Notes..." oninput="scheduleNoteSave('${resource.href}', this.value)">${escapeHtml(existingNote)}</textarea></div>`;
+        html += `</div>`;
       }
     });
     html += `</div>`;
@@ -486,6 +604,7 @@ function renderSubjectMeta() {
 function init() {
   renderSubjectMeta();
   loadLocalProgress();
+  loadNotes();
   gistToken = localStorage.getItem(gistTokenKey());
   gistId = localStorage.getItem(gistIdKey());
   setSyncStatus(gistToken ? "syncing" : "offline", gistToken ? "Syncing…" : "Not connected");
