@@ -1,569 +1,198 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Module 2 Quiz - CLAUDE.md Mastery</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 2 — Scenario Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .card { border: 1px solid #eee; border-radius: 12px; background: #fafafa; padding: 1rem; }
+  .progress { font-size: 0.85rem; color: #777; margin-bottom: 1rem; font-weight: 600; }
+  .scenario-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; margin-bottom: 0.4rem; }
+  .scenario { background: #f4f4f4; border: 1px solid #e8e8e8; border-radius: 8px; padding: 0.85rem; font-size: 0.9rem; line-height: 1.6; color: #444; margin-bottom: 1rem; }
+  .question { font-size: 1rem; font-weight: 600; line-height: 1.5; margin-bottom: 1rem; }
+  .options { display: grid; gap: 0.65rem; }
+  button.option { text-align: left; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; font: inherit; font-size: 0.9rem; line-height: 1.5; }
+  button.option:hover { border-color: #aaa; }
+  .feedback { margin-top: 1rem; padding: 0.85rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.55; display: none; }
+  .feedback.correct { background: #f0fdf4; color: #166534; display: block; }
+  .feedback.incorrect { background: #fef2f2; color: #991b1b; display: block; }
+  .next { margin-top: 1rem; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 0.8rem 1rem; font: inherit; cursor: pointer; display: none; }
+</style>
 </head>
 <body>
-  <div id="root"></div>
+<div class="container">
+  <h1>Module 2: Scenario Quiz</h1>
+  <p class="subtitle">CLAUDE.md — the decisions that persist.</p>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+    <div class="scenario-label" id="scenario-label" style="display:none">Scenario</div>
+    <div class="scenario" id="scenario" style="display:none"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next" id="next-btn">Next</button>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    scenario: "You're writing your first CLAUDE.md. You include your preferred coding style, the project's tech stack, testing conventions — and a detailed walkthrough of the feature you're about to build this session.",
+    q: "What's wrong with this CLAUDE.md?",
+    options: [
+      "The feature walkthrough doesn't belong — CLAUDE.md is for persistent conventions, not session-specific tasks. Put the feature details in your prompt instead.",
+      "Tech stack information doesn't belong — CLAUDE.md should focus on style conventions, not stack choices.",
+      "Nothing is wrong — the more context Claude has upfront, the more accurate its work will be.",
+      "The file is too short — CLAUDE.md should cover every possible edge case and convention."
+    ],
+    answer: 0,
+    explanation: "CLAUDE.md should contain conventions, patterns, and rules that apply across your entire project — not one-time instructions for a specific feature. Session-specific details belong in your prompt for that session. If you put them in CLAUDE.md, they'll clutter every future session and the feature context will quickly become stale."
+  },
+  {
+    scenario: "You have a global CLAUDE.md at ~/.claude/CLAUDE.md that says 'Always use TypeScript.' Your project CLAUDE.md says 'This project uses JavaScript.' You ask Claude to create a new utility function.",
+    q: "What language will Claude use?",
+    options: [
+      "TypeScript — global instructions establish the baseline and project files can only add to them, not override them.",
+      "JavaScript — project-level instructions override global ones for that project context.",
+      "Claude will ask you which language to use, since the instructions conflict.",
+      "It depends on the file extension of the file currently open in the editor."
+    ],
+    answer: 1,
+    explanation: "Project-level CLAUDE.md files take precedence over global ones. When both exist, the closer (more specific) file wins. This allows teams to override personal preferences with project conventions — exactly the right behavior when joining a project that uses a different stack than your default."
+  },
+  {
+    scenario: "Your CLAUDE.md is 500 lines long — every convention, edge case, and preference you can think of. Claude follows some rules consistently but ignores others seemingly at random.",
+    q: "What's most likely the issue?",
+    options: [
+      "Claude has a hard 500-line limit on CLAUDE.md files and is truncating the rest.",
+      "The file has contradictory rules, and Claude is arbitrarily choosing between them.",
+      "The CLAUDE.md is too long — important conventions get diluted in the noise. Claude processes it like any other context.",
+      "CLAUDE.md rules are advisory, not enforced — Claude always uses its own judgment over file instructions."
+    ],
+    answer: 2,
+    explanation: "While there's no hard line limit, an overly long CLAUDE.md suffers from context dilution — important rules get buried in noise. Focus on the 20–30 conventions that matter most and express them clearly. A concise, coherent file outperforms an exhaustive one."
+  },
+  {
+    scenario: "You add to your CLAUDE.md: 'When analyzing any new idea or feature request, apply this framework: start with Goals, identify Problems, propose Solutions, assess Risks, define Scope.' You then say: 'I'm thinking about adding a dark mode feature.'",
+    q: "What should you expect?",
+    options: [
+      "Claude should apply the framework automatically — starting with goals for dark mode, identifying problems, etc. — without you having to ask for it explicitly.",
+      "Claude will apply the framework only if you explicitly say 'use the framework from CLAUDE.md' in your message.",
+      "Claude will ask you to confirm which framework you want before proceeding.",
+      "Claude will apply the framework to coding tasks but not to product discussions, since the instruction lacks that context."
+    ],
+    answer: 0,
+    explanation: "CLAUDE.md defines persistent behaviors, including thinking frameworks. When you define a framework for analyzing ideas, Claude applies it to relevant requests automatically — that's the point of persistent conventions. You don't have to re-invoke it in every message."
+  },
+  {
+    scenario: "Your CLAUDE.md contains two rules: 'Always write tests for new functions' and 'Move fast — skip anything that isn't strictly necessary for the feature to work.'",
+    q: "What will likely happen?",
+    options: [
+      "Claude will always write tests — explicit rules override implicit speed preferences.",
+      "Claude will always skip tests — the second rule is more recent and takes precedence.",
+      "Claude will be inconsistent — sometimes writing tests, sometimes not — because the rules contradict each other.",
+      "Claude will flag the contradiction and ask you to resolve it before proceeding."
+    ],
+    answer: 2,
+    explanation: "Contradictory instructions produce inconsistent behavior. Claude will try to satisfy both, which means it will sometimes favor one and sometimes the other depending on how it parses the request. Resolve it by making priority explicit: 'Write tests for production functions; skip for quick experiments' removes the ambiguity."
+  },
+  {
+    scenario: "You're working on a monorepo with a React frontend and a Python backend. You want different conventions for each part.",
+    q: "What's the best CLAUDE.md setup?",
+    options: [
+      "One root CLAUDE.md with all conventions for both parts, clearly labeled with headers for each.",
+      "One project-root CLAUDE.md for shared conventions, plus folder-level CLAUDE.md files in frontend/ and backend/ for their specific rules.",
+      "Put everything in the global ~/.claude/CLAUDE.md so conventions are consistent across all your projects.",
+      "Two separate Claude Code projects — monorepos don't work well with a single CLAUDE.md."
+    ],
+    answer: 1,
+    explanation: "The hierarchy works: root CLAUDE.md carries shared conventions (code style, testing approach, git workflow), while folder-level files carry tech-specific rules that override as needed. Claude reads the most specific file first and inherits from parents. This keeps shared rules DRY while allowing each part of the repo to have its own conventions."
+  },
+  {
+    scenario: "You've used CLAUDE.md successfully for a week. A new teammate asks: 'Do I need to install a plugin or configure anything to get CLAUDE.md working?'",
+    q: "What do you tell them?",
+    options: [
+      "They need to copy the file to their ~/.claude/ directory so it applies to their Claude Code sessions.",
+      "They need to enable CLAUDE.md support in Claude Code settings — it's off by default for new installations.",
+      "No setup needed — Claude Code reads CLAUDE.md automatically from the project. Just make sure it's committed to the repo.",
+      "They need to reference the file explicitly in their first prompt of each session."
+    ],
+    answer: 2,
+    explanation: "CLAUDE.md is automatic — no installation, plugin, or explicit invocation needed. Claude Code looks for CLAUDE.md files when you're in a project directory and applies them transparently. Committing the file to your repo ensures the whole team benefits without any per-person configuration."
+  },
+  {
+    scenario: "Claude keeps using console.log for debugging in your codebase, but your team uses a structured logging utility instead.",
+    q: "Where's the best place to put the rule: 'Never use console.log — use the project logging utility at src/lib/logger.ts'?",
+    options: [
+      "In your global ~/.claude/CLAUDE.md, so it applies across all your projects.",
+      "In the project CLAUDE.md — this is a project-level convention that should apply to everyone on the team.",
+      "In your prompt each session, so it stays fresh in Claude's context.",
+      "In a separate .claude-rules file — CLAUDE.md should be reserved for architecture and style conventions."
+    ],
+    answer: 1,
+    explanation: "Project conventions belong in the project CLAUDE.md. This is exactly the use case: a team-wide rule that should persist across all sessions and apply to everyone. Putting it in the global file would pollute your other projects; re-stating it in every prompt is tedious and easy to forget."
+  }
+];
 
-  <script type="text/babel">
-    const { useState } = React;
+let current = 0;
+let locked = false;
 
-    const s = {
-      container: {
-        fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif",
-        maxWidth: 700,
-        margin: "0 auto",
-        padding: "2rem 1rem",
-        color: "#1a1a1a",
-      },
-      header: {
-        marginBottom: "2rem",
-      },
-      title: {
-        fontSize: "2rem",
-        fontWeight: 700,
-        marginBottom: "0.5rem",
-      },
-      subtitle: {
-        fontSize: "1rem",
-        color: "#666",
-      },
-      progressContainer: {
-        position: "absolute",
-        top: "2rem",
-        right: "1rem",
-        fontSize: "0.875rem",
-        color: "#666",
-      },
-      scenario: {
-        backgroundColor: "#f5f5f5",
-        border: "1px solid #e0e0e0",
-        borderRadius: "6px",
-        padding: "1rem",
-        marginBottom: "1.5rem",
-        fontSize: "0.95rem",
-        lineHeight: 1.6,
-      },
-      scenarioLabel: {
-        fontWeight: 600,
-        marginBottom: "0.5rem",
-        fontSize: "0.875rem",
-        textTransform: "uppercase",
-        letterSpacing: "0.5px",
-        color: "#999",
-      },
-      questionContainer: {
-        marginBottom: "1.5rem",
-      },
-      question: {
-        fontSize: "1.1rem",
-        fontWeight: 600,
-        marginBottom: "1rem",
-      },
-      optionsContainer: {
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.75rem",
-      },
-      option: {
-        padding: "1rem",
-        border: "2px solid #ddd",
-        borderRadius: "6px",
-        cursor: "pointer",
-        backgroundColor: "#fff",
-        transition: "all 0.2s ease",
-        fontSize: "0.95rem",
-        lineHeight: 1.5,
-      },
-      optionHover: {
-        borderColor: "#999",
-        backgroundColor: "#fafafa",
-      },
-      optionSelected: {
-        borderColor: "#1a1a1a",
-        backgroundColor: "#f9f9f9",
-      },
-      optionCorrect: {
-        backgroundColor: "#f0f7f0",
-        borderColor: "#b8d4b8",
-      },
-      optionWrong: {
-        backgroundColor: "#fdf0f0",
-        borderColor: "#dbb",
-      },
-      explanation: {
-        marginTop: "1.5rem",
-        padding: "1rem",
-        backgroundColor: "#f9f9f9",
-        border: "1px solid #e0e0e0",
-        borderRadius: "6px",
-        fontSize: "0.95rem",
-        lineHeight: 1.6,
-      },
-      explanationLabel: {
-        fontWeight: 600,
-        marginBottom: "0.5rem",
-        fontSize: "0.875rem",
-        textTransform: "uppercase",
-        letterSpacing: "0.5px",
-        color: "#999",
-      },
-      button: {
-        marginTop: "1.5rem",
-        padding: "0.75rem 1.5rem",
-        backgroundColor: "#1a1a1a",
-        color: "white",
-        border: "none",
-        borderRadius: "6px",
-        fontSize: "0.95rem",
-        fontWeight: 600,
-        cursor: "pointer",
-        transition: "all 0.2s ease",
-      },
-      buttonHover: {
-        backgroundColor: "#333",
-      },
-      resultsContainer: {
-        textAlign: "center",
-      },
-      score: {
-        fontSize: "3rem",
-        fontWeight: 700,
-        marginBottom: "0.5rem",
-      },
-      percentage: {
-        fontSize: "1.5rem",
-        color: "#666",
-        marginBottom: "1.5rem",
-      },
-      message: {
-        fontSize: "1rem",
-        lineHeight: 1.8,
-        color: "#333",
-        marginBottom: "2rem",
-        maxWidth: "90%",
-        marginLeft: "auto",
-        marginRight: "auto",
-      },
-      messageExcellent: {
-        color: "#2d6b2d",
-      },
-      messageGood: {
-        color: "#666",
-      },
-      messagePoor: {
-        color: "#8b4545",
-      },
-    };
+function renderQuestion() {
+  locked = false;
+  const item = questions[current];
+  document.getElementById("progress").textContent = `Question ${current + 1} of ${questions.length}`;
 
-    const questions = [
-      {
-        id: 1,
-        scenario: "You're starting a new project and writing your first CLAUDE.md. You include your preferred coding style, the project's tech stack, your team's testing conventions, AND a detailed walkthrough of the feature you're about to build.",
-        question: "What's wrong with this CLAUDE.md?",
-        options: [
-          {
-            text: "The feature walkthrough doesn't belong — CLAUDE.md is for persistent conventions, not session-specific tasks. Put the feature details in your prompt instead.",
-            isCorrect: true,
-          },
-          {
-            text: "It's too short",
-            isCorrect: false,
-          },
-          {
-            text: "The tech stack doesn't belong",
-            isCorrect: false,
-          },
-          {
-            text: "Nothing is wrong",
-            isCorrect: false,
-          },
-        ],
-        explanation: "CLAUDE.md should contain conventions, patterns, and rules that apply across your entire project — not one-time instructions for a specific feature. Session-specific details belong in your prompt for that session.",
-      },
-      {
-        id: 2,
-        scenario: "You have a global CLAUDE.md at ~/.claude/CLAUDE.md that says 'Always use TypeScript.' Your project CLAUDE.md says 'This project uses JavaScript.' You ask Claude to create a new utility function.",
-        question: "What language will Claude use?",
-        options: [
-          {
-            text: "JavaScript — project-level instructions override global for this project context.",
-            isCorrect: true,
-          },
-          {
-            text: "TypeScript (global takes precedence)",
-            isCorrect: false,
-          },
-          {
-            text: "It will ask which one",
-            isCorrect: false,
-          },
-          {
-            text: "It depends on the file extension",
-            isCorrect: false,
-          },
-        ],
-        explanation: "Project-level CLAUDE.md files take precedence over global ones. When both exist, the closer (more specific) file wins. This allows teams to override personal preferences with project conventions.",
-      },
-      {
-        id: 3,
-        scenario: "Your CLAUDE.md is 500 lines long. It covers every possible convention, edge case, and preference you can think of. Claude seems to follow some rules but ignore others inconsistently.",
-        question: "What's most likely the issue?",
-        options: [
-          {
-            text: "The CLAUDE.md is too long — Claude processes it like any other context, and an overly long file means some instructions get less attention. Keep it focused.",
-            isCorrect: true,
-          },
-          {
-            text: "500 lines exceeds a hard limit",
-            isCorrect: false,
-          },
-          {
-            text: "Claude randomly ignores instructions",
-            isCorrect: false,
-          },
-          {
-            text: "You need to number each rule",
-            isCorrect: false,
-          },
-        ],
-        explanation: "While there's no hard limit, overly long CLAUDE.md files suffer from context dilution — important conventions get lost in the noise. Focus on 20–30 high-impact rules rather than exhaustive coverage. Quality over quantity.",
-      },
-      {
-        id: 4,
-        scenario: "You add to your CLAUDE.md: 'When analyzing any new idea or feature request, apply this framework: start with Goals, identify Problems, propose Solutions, assess Risks, define Scope.' You then ask Claude: 'I'm thinking about adding a dark mode feature.'",
-        question: "What should you expect?",
-        options: [
-          {
-            text: "Claude should structure its response using the framework — starting with goals for dark mode, identifying problems it solves, proposing solutions, etc. — without you having to ask for the framework explicitly.",
-            isCorrect: true,
-          },
-          {
-            text: "Claude will ignore it (CLAUDE.md doesn't affect chat)",
-            isCorrect: false,
-          },
-          {
-            text: "Claude will ask you which framework to use",
-            isCorrect: false,
-          },
-          {
-            text: "Claude will refuse because it's not a coding task",
-            isCorrect: false,
-          },
-        ],
-        explanation: "CLAUDE.md defines your thinking patterns, analysis frameworks, and problem-solving approaches. When you define a framework, Claude will apply it to relevant questions automatically — that's the power of persistent conventions.",
-      },
-      {
-        id: 5,
-        scenario: "Your CLAUDE.md says 'Always write tests for new functions' and also says 'Move fast — skip anything that isn't strictly necessary for the feature to work.'",
-        question: "What will likely happen?",
-        options: [
-          {
-            text: "Claude will be inconsistent — sometimes writing tests, sometimes skipping them — because the instructions contradict each other. Contradictory CLAUDE.md instructions are a common anti-pattern.",
-            isCorrect: true,
-          },
-          {
-            text: "Claude will always write tests (explicit beats implicit)",
-            isCorrect: false,
-          },
-          {
-            text: "Claude will always skip tests (the second rule overrides)",
-            isCorrect: false,
-          },
-          {
-            text: "Claude will ask for clarification each time",
-            isCorrect: false,
-          },
-        ],
-        explanation: "Contradictory instructions create confusion and inconsistency. Your CLAUDE.md should be coherent — resolve conflicts by choosing priorities. For example: 'Write tests for critical functions, but skip for quick experiments' clarifies the rule.",
-      },
-      {
-        id: 6,
-        scenario: "You're working on a monorepo with a React frontend and a Python backend. You want different conventions for each.",
-        question: "What's the best CLAUDE.md setup?",
-        options: [
-          {
-            text: "One project-root CLAUDE.md with shared conventions, plus folder-level CLAUDE.md files in frontend/ and backend/ with their specific rules.",
-            isCorrect: true,
-          },
-          {
-            text: "One giant CLAUDE.md with everything",
-            isCorrect: false,
-          },
-          {
-            text: "Two separate projects",
-            isCorrect: false,
-          },
-          {
-            text: "Put all rules in the global CLAUDE.md",
-            isCorrect: false,
-          },
-        ],
-        explanation: "Hierarchy matters. Use a root CLAUDE.md for shared conventions (code style, testing approach, git workflow) and folder-level files to override with tech-specific rules. Claude finds and reads the most specific file first.",
-      },
-      {
-        id: 7,
-        scenario: "You've been using CLAUDE.md successfully for a week. A colleague joins the project and asks 'do I need to install anything special for this CLAUDE.md thing to work?'",
-        question: "What do you tell them?",
-        options: [
-          {
-            text: "No installation needed — Claude Code automatically reads CLAUDE.md files from the project. Just make sure the file is committed to the repo so everyone gets the same conventions.",
-            isCorrect: true,
-          },
-          {
-            text: "They need to enable it in settings",
-            isCorrect: false,
-          },
-          {
-            text: "They need to copy it to their ~/.claude/ folder",
-            isCorrect: false,
-          },
-          {
-            text: "CLAUDE.md only works for the person who created it",
-            isCorrect: false,
-          },
-        ],
-        explanation: "CLAUDE.md is automatic — no installation or configuration needed. Claude Code looks for CLAUDE.md files when you're in a project directory and applies them transparently. Commit to your repo so the whole team benefits.",
-      },
-      {
-        id: 8,
-        scenario: "You notice Claude keeps using console.log for debugging in your production code. You want to stop this.",
-        question: "Where should you put the instruction 'Never use console.log in production code — use the project's logging utility instead'?",
-        options: [
-          {
-            text: "In the project CLAUDE.md — this is a project-level convention that should persist across all sessions and apply to everyone on the team.",
-            isCorrect: true,
-          },
-          {
-            text: "In your prompt each time",
-            isCorrect: false,
-          },
-          {
-            text: "In the global CLAUDE.md",
-            isCorrect: false,
-          },
-          {
-            text: "In a .claudeignore file",
-            isCorrect: false,
-          },
-        ],
-        explanation: "Project conventions belong in the project CLAUDE.md — that's exactly the use case. This way, everyone on the team follows the same logging rule without having to mention it in every prompt.",
-      },
-    ];
+  const scenarioEl = document.getElementById("scenario");
+  const scenarioLabel = document.getElementById("scenario-label");
+  if (item.scenario) {
+    scenarioEl.textContent = item.scenario;
+    scenarioEl.style.display = "block";
+    scenarioLabel.style.display = "block";
+  } else {
+    scenarioEl.style.display = "none";
+    scenarioLabel.style.display = "none";
+  }
 
-    function QuizApp() {
-      const [currentQuestion, setCurrentQuestion] = useState(0);
-      const [selectedOption, setSelectedOption] = useState(null);
-      const [answered, setAnswered] = useState(false);
-      const [score, setScore] = useState(0);
-      const [completed, setCompleted] = useState(false);
+  document.getElementById("question").textContent = item.q;
+  const optionsEl = document.getElementById("options");
+  optionsEl.innerHTML = "";
+  item.options.forEach((option, idx) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = option;
+    button.addEventListener("click", () => answer(idx));
+    optionsEl.appendChild(button);
+  });
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("next-btn").style.display = "none";
+}
 
-      const handleOptionClick = (index) => {
-        if (answered) return;
-        setSelectedOption(index);
-      };
+function answer(idx) {
+  if (locked) return;
+  locked = true;
+  const item = questions[current];
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback " + (idx === item.answer ? "correct" : "incorrect");
+  feedback.textContent = item.explanation;
+  document.getElementById("next-btn").style.display = "inline-block";
+}
 
-      const handleSubmit = () => {
-        if (selectedOption === null) return;
-        setAnswered(true);
+document.getElementById("next-btn").addEventListener("click", () => {
+  current += 1;
+  if (current >= questions.length) {
+    document.querySelector(".card").innerHTML = "<h2 style='margin-bottom:0.5rem;'>Quiz complete</h2><p style='line-height:1.6;color:#444;'>The most common mistakes here involve hierarchy and scope — when to use global vs project vs folder level, and what belongs in CLAUDE.md vs a prompt. If those tripped you up, re-read the lesson.</p>";
+    return;
+  }
+  renderQuestion();
+});
 
-        const question = questions[currentQuestion];
-        if (question.options[selectedOption].isCorrect) {
-          setScore(score + 1);
-        }
-      };
-
-      const handleNext = () => {
-        if (currentQuestion < questions.length - 1) {
-          setCurrentQuestion(currentQuestion + 1);
-          setSelectedOption(null);
-          setAnswered(false);
-        } else {
-          setCompleted(true);
-        }
-      };
-
-      const handleTryAgain = () => {
-        setCurrentQuestion(0);
-        setSelectedOption(null);
-        setAnswered(false);
-        setScore(0);
-        setCompleted(false);
-      };
-
-      if (completed) {
-        const percentage = Math.round((score / questions.length) * 100);
-        let messageText = "";
-        let messageStyle = s.messageGood;
-
-        if (percentage >= 88) {
-          messageText =
-            "Excellent. You understand how to configure Claude's persistent memory. You're ready to start writing effective CLAUDE.md files.";
-          messageStyle = s.messageExcellent;
-        } else if (percentage >= 63) {
-          messageText =
-            "Good foundation. Review the explanations for the ones you missed — the nuances about hierarchy and anti-patterns matter.";
-          messageStyle = s.messageGood;
-        } else {
-          messageText =
-            "Worth revisiting the lesson before moving on. Understanding CLAUDE.md is foundational — it affects everything you do with Claude Code.";
-          messageStyle = s.messagePoor;
-        }
-
-        return (
-          <div style={s.container}>
-            <div style={s.header}>
-              <div style={s.title}>Quiz Complete</div>
-            </div>
-
-            <div style={s.resultsContainer}>
-              <div style={s.score}>
-                {score}/{questions.length}
-              </div>
-              <div style={s.percentage}>{percentage}%</div>
-              <div style={{ ...s.message, ...messageStyle }}>{messageText}</div>
-
-              <button
-                style={s.button}
-                onMouseEnter={(e) =>
-                  (e.target.style.backgroundColor = s.buttonHover.backgroundColor)
-                }
-                onMouseLeave={(e) =>
-                  (e.target.style.backgroundColor = s.button.backgroundColor)
-                }
-                onClick={handleTryAgain}
-              >
-                Try Again
-              </button>
-            </div>
-          </div>
-        );
-      }
-
-      const question = questions[currentQuestion];
-      const buttonDisabled = selectedOption === null || answered;
-
-      return (
-        <div style={s.container}>
-          <div style={s.progressContainer}>
-            {currentQuestion + 1} of {questions.length}
-          </div>
-
-          <div style={s.header}>
-            <div style={s.title}>Module 2 Quiz</div>
-            <div style={s.subtitle}>CLAUDE.md Mastery</div>
-          </div>
-
-          <div style={s.scenario}>
-            <div style={s.scenarioLabel}>Scenario</div>
-            <div>{question.scenario}</div>
-          </div>
-
-          <div style={s.questionContainer}>
-            <div style={s.question}>{question.question}</div>
-
-            <div style={s.optionsContainer}>
-              {question.options.map((option, index) => {
-                let optionStyle = { ...s.option };
-
-                if (answered) {
-                  if (option.isCorrect) {
-                    optionStyle = { ...optionStyle, ...s.optionCorrect };
-                  } else if (selectedOption === index) {
-                    optionStyle = { ...optionStyle, ...s.optionWrong };
-                  }
-                } else if (selectedOption === index) {
-                  optionStyle = { ...optionStyle, ...s.optionSelected };
-                }
-
-                return (
-                  <div
-                    key={index}
-                    style={optionStyle}
-                    onClick={() => handleOptionClick(index)}
-                    onMouseEnter={(e) => {
-                      if (!answered && selectedOption !== index) {
-                        e.currentTarget.style.borderColor =
-                          s.optionHover.borderColor;
-                        e.currentTarget.style.backgroundColor =
-                          s.optionHover.backgroundColor;
-                      }
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!answered && selectedOption !== index) {
-                        e.currentTarget.style.borderColor = "#ddd";
-                        e.currentTarget.style.backgroundColor = "#fff";
-                      }
-                    }}
-                  >
-                    {option.text}
-                  </div>
-                );
-              })}
-            </div>
-
-            {!answered && (
-              <button
-                style={{
-                  ...s.button,
-                  opacity: buttonDisabled ? 0.5 : 1,
-                  cursor: buttonDisabled ? "not-allowed" : "pointer",
-                }}
-                onMouseEnter={(e) => {
-                  if (!buttonDisabled) {
-                    e.target.style.backgroundColor =
-                      s.buttonHover.backgroundColor;
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  if (!buttonDisabled) {
-                    e.target.style.backgroundColor = s.button.backgroundColor;
-                  }
-                }}
-                onClick={handleSubmit}
-                disabled={buttonDisabled}
-              >
-                Submit
-              </button>
-            )}
-
-            {answered && (
-              <>
-                <div style={s.explanation}>
-                  <div style={s.explanationLabel}>Explanation</div>
-                  <div>{question.explanation}</div>
-                </div>
-
-                <button
-                  style={s.button}
-                  onMouseEnter={(e) =>
-                    (e.target.style.backgroundColor =
-                      s.buttonHover.backgroundColor)
-                  }
-                  onMouseLeave={(e) =>
-                    (e.target.style.backgroundColor = s.button.backgroundColor)
-                  }
-                  onClick={handleNext}
-                >
-                  {currentQuestion === questions.length - 1
-                    ? "See Results"
-                    : "Next Question"}
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      );
-    }
-
-    ReactDOM.render(<QuizApp />, document.getElementById("root"));
-  </script>
+renderQuestion();
+</script>
 <script src="../notes-widget.js"></script>
 <script src="../feedback-widget.js"></script>
 </body>

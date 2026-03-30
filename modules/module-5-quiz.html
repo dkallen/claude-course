@@ -7,75 +7,157 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
-  .container { max-width: 760px; margin: 0 auto; }
-  h1 { font-size: 1.5rem; margin-bottom: 0.4rem; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
   .subtitle { color: #666; margin-bottom: 1.5rem; }
-  .question { border: 1px solid #ececec; border-radius: 12px; padding: 1rem; margin-bottom: 1rem; background: #fafafa; }
-  .question h2 { font-size: 1rem; margin-bottom: 0.5rem; }
-  .question p, .question li { font-size: 0.92rem; line-height: 1.6; color: #333; }
-  ul { padding-left: 1.3rem; margin-top: 0.5rem; }
-  .answer { margin-top: 0.8rem; color: #555; }
+  .card { border: 1px solid #eee; border-radius: 12px; background: #fafafa; padding: 1rem; }
+  .progress { font-size: 0.85rem; color: #777; margin-bottom: 1rem; font-weight: 600; }
+  .question { font-size: 1rem; line-height: 1.55; margin-bottom: 1rem; }
+  .options { display: grid; gap: 0.65rem; }
+  button.option { text-align: left; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; font: inherit; font-size: 0.9rem; line-height: 1.5; }
+  button.option:hover { border-color: #aaa; }
+  .feedback { margin-top: 1rem; padding: 0.85rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.55; display: none; }
+  .feedback.correct { background: #f0fdf4; color: #166534; display: block; }
+  .feedback.incorrect { background: #fef2f2; color: #991b1b; display: block; }
+  .next { margin-top: 1rem; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 0.8rem 1rem; font: inherit; cursor: pointer; display: none; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>Module 5: Scenario Quiz</h1>
-  <p class="subtitle">Use these questions to test whether you can distinguish architecture work from implementation detail.</p>
-
-  <div class="question">
-    <h2>1. Which statement is architecture?</h2>
-    <ul>
-      <li>A. Use hooks in every form file</li>
-      <li>B. Keep validation rules owned by a single domain component and consumed by the UI</li>
-    </ul>
-    <p class="answer"><strong>Answer:</strong> B. It defines a responsibility boundary, not a local coding tactic.</p>
-  </div>
-
-  <div class="question">
-    <h2>2. What is the clearest sign a component boundary is weak?</h2>
-    <ul>
-      <li>A. The component has a short name</li>
-      <li>B. Business rules are duplicated on both sides of the boundary</li>
-    </ul>
-    <p class="answer"><strong>Answer:</strong> B. Duplication usually means the ownership split is unclear.</p>
-  </div>
-
-  <div class="question">
-    <h2>3. Why keep first-pass architecture coarse?</h2>
-    <ul>
-      <li>A. To avoid pretending detail decisions are already settled</li>
-      <li>B. Because detail is never useful</li>
-    </ul>
-    <p class="answer"><strong>Answer:</strong> A. Early detail often hides unresolved structure questions.</p>
-  </div>
-
-  <div class="question">
-    <h2>4. Which is the better interface question?</h2>
-    <ul>
-      <li>A. What CSS classes should this component use?</li>
-      <li>B. What promises does this component make to the rest of the system?</li>
-    </ul>
-    <p class="answer"><strong>Answer:</strong> B. Interfaces are commitments across boundaries.</p>
-  </div>
-
-  <div class="question">
-    <h2>5. If the design discussion includes no tradeoffs, what is the likely problem?</h2>
-    <ul>
-      <li>A. The system is unusually simple</li>
-      <li>B. The discussion is still too vague to be real architecture</li>
-    </ul>
-    <p class="answer"><strong>Answer:</strong> B. Real architecture always makes some things easier and some harder.</p>
-  </div>
-
-  <div class="question">
-    <h2>6. What should the output of this stage be?</h2>
-    <ul>
-      <li>A. A short architecture brief that constrains implementation</li>
-      <li>B. Every class, endpoint, and table finalized</li>
-    </ul>
-    <p class="answer"><strong>Answer:</strong> A. You want enough structure to guide the build, not false precision.</p>
+  <p class="subtitle">Distinguish architecture work from implementation detail.</p>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next" id="next-btn">Next</button>
   </div>
 </div>
+<script>
+const questions = [
+  {
+    q: "A team has named their components: AuthService, UserService, EmailService, and NotificationService. Each one handles logic, data access, and some UI rendering. Which statement is most accurate?",
+    options: [
+      "The naming is good — services are a well-understood architectural pattern that communicates responsibility clearly.",
+      "The boundaries look reasonable, but the services should be further split by HTTP vs event-driven communication.",
+      "The names describe topics, not responsibilities. Mixing logic, data access, and UI in the same component means the responsibility question was never properly answered.",
+      "This is fine for now — responsibility separation can be refactored once the feature set stabilizes."
+    ],
+    answer: 2,
+    explanation: "Naming components after domains (Auth, User, Email) is common but often avoids the harder question: what is this component allowed to own? If each service handles logic, data access, and UI concerns, the responsibility boundaries are by topic, not by function. That leads to components that grow without principled limits and business rules scattered across layers."
+  },
+  {
+    q: "Which of these statements is architecture, and which is implementation detail?  A: 'Use React hooks for all state in form components.'  B: 'Validation rules are owned by a single domain layer and consumed by the UI — the UI never duplicates them.'",
+    options: [
+      "A is architecture because it defines a technical standard; B is implementation detail because it only affects form components.",
+      "Both are architecture — they both constrain how the system is built.",
+      "B is architecture — it defines a responsibility boundary that constrains what lives where. A is an implementation tactic within one layer.",
+      "Neither is architecture — architecture decisions are about infrastructure choices, not code organization."
+    ],
+    answer: 2,
+    explanation: "Statement B defines a responsibility boundary: validation logic lives in one place, and UI components consume it rather than duplicate it. That constraint shapes where code can and cannot be written — that is architecture. Statement A is an implementation tactic within the UI layer. Choosing hooks over class components doesn't change the shape of the system."
+  },
+  {
+    q: "A team's architecture document names four components but does not explain what any of them are responsible for or how they communicate. The team uses it as the starting point for implementation. What is the likely outcome?",
+    options: [
+      "The implementation will fill in the gaps naturally — developers make good local decisions when they understand the domain.",
+      "Each developer will interpret the boundaries differently. Business logic, state management, and data access will end up scattered in ways the document didn't intend.",
+      "The document is fine as a first pass — architecture details should emerge during implementation, not be over-specified upfront.",
+      "The team should add a technology choice to each component box before implementation begins."
+    ],
+    answer: 1,
+    explanation: "Components without stated responsibilities don't constrain anything. Each developer will make reasonable local decisions that collectively produce an incoherent structure — business rules in the UI, data access in the domain layer, state management everywhere. The architecture document existed but did no architectural work."
+  },
+  {
+    q: "You ask Claude to design an architecture for a new feature. It produces a detailed diagram with ten components, named data flows, database tables, and class hierarchies. The feature brief is one paragraph long. What's the problem?",
+    options: [
+      "Ten components may be too many — most features can be handled with three to five components at most.",
+      "Claude has jumped to implementation detail before the structure is clear. The first pass should be coarse enough to expose uncertainty, not hide it under false precision.",
+      "The class hierarchies are premature, but the component diagram and data flows are appropriate for this stage.",
+      "No problem — detailed architecture reduces implementation risk by leaving fewer decisions to chance."
+    ],
+    answer: 1,
+    explanation: "Early architecture should be coarse-grained. A one-paragraph brief does not contain enough resolved thinking to justify ten components, exact schemas, and class hierarchies. That level of detail often means Claude pattern-matched to a common design rather than reasoning from your specific problem. The first pass should be simple enough to expose uncertainty — class diagrams and exact schemas are ways of using detail to avoid resolving structural questions."
+  },
+  {
+    q: "The team is debating two architecture options. One team member says: 'Option A is clearly better — there are no downsides to that approach.' What does this tell you?",
+    options: [
+      "Option A probably is better — experienced engineers can often identify dominant solutions where one option is strictly superior.",
+      "The team member may be right, but it's worth pressure-testing: every architectural decision makes some things easier and some things harder.",
+      "The design discussion has not reached real architecture yet. Genuine tradeoffs always exist — if none are visible, the options haven't been compared at the right level.",
+      "This is a sign the team should move to implementation quickly before the discussion stalls on hypothetical tradeoffs."
+    ],
+    answer: 2,
+    explanation: "Architecture without tradeoffs is still at slogan level. Simplicity adds coordination cost when scale requires distribution. Isolation creates interface overhead. Flexibility defers decisions that might have been cheaper to make early. If Option A appears to have no downsides, the comparison is either not yet complete or not operating at the level of concrete constraints. Real architecture always makes some things easier and some things harder — surfacing those tradeoffs is the work."
+  },
+  {
+    q: "You ask Claude to help design an architecture and it generates a structure that doesn't map to any goal or problem in your Module 4 brief. It looks reasonable in the abstract. What should you do?",
+    options: [
+      "Accept it — Claude's architectural patterns are generally sound and can be adapted to your specific requirements during implementation.",
+      "Ask Claude to justify each major boundary against the brief. If it cannot trace components back to goals, problems, or risks, the structure may be sound in general but wrong for this problem.",
+      "Reject it and ask for a simpler structure — a mismatch with the brief usually means Claude over-engineered the solution.",
+      "Use it as a starting point but adjust the component names to match your domain — the structure is likely right even if the naming doesn't fit."
+    ],
+    answer: 1,
+    explanation: "Your Module 4 brief defines what matters: the goals you're pursuing, the problems you're solving, and the risks you're managing. Architecture should be derived from that brief, not from general best practices. If Claude's structure doesn't trace back to your goals and risks, it may be technically coherent but wrong for your problem. Make it justify every major boundary — that pressure is where the useful architecture work happens."
+  },
+  {
+    q: "A good architecture brief produced at this stage should contain which of the following?",
+    options: [
+      "Every class, function signature, database table, and endpoint — enough that implementation requires no further design decisions.",
+      "Core components and their responsibilities, key interfaces between them, main tradeoffs, and open questions — enough to constrain implementation without pretending every detail is settled.",
+      "A technology stack decision, a deployment diagram, and estimated timelines for each component.",
+      "A single diagram with component boxes — further documentation can be added as the implementation reveals what needs to be specified."
+    ],
+    answer: 1,
+    explanation: "The brief's job is to constrain implementation, not to specify it. You want named responsibilities (so developers know what belongs where), key interfaces (so the parts can be built independently), tradeoffs (so future decisions understand what was chosen and why), and open questions (so unknowns are visible rather than silently deferred). Anything more detailed is either premature or working out what should be resolved in the brief first."
+  }
+];
+
+let current = 0;
+let locked = false;
+
+function renderQuestion() {
+  locked = false;
+  const item = questions[current];
+  document.getElementById("progress").textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById("question").textContent = item.q;
+  const optionsEl = document.getElementById("options");
+  optionsEl.innerHTML = "";
+  item.options.forEach((option, idx) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = option;
+    button.addEventListener("click", () => answer(idx));
+    optionsEl.appendChild(button);
+  });
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("next-btn").style.display = "none";
+}
+
+function answer(idx) {
+  if (locked) return;
+  locked = true;
+  const item = questions[current];
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback " + (idx === item.answer ? "correct" : "incorrect");
+  feedback.textContent = item.explanation;
+  document.getElementById("next-btn").style.display = "inline-block";
+}
+
+document.getElementById("next-btn").addEventListener("click", () => {
+  current += 1;
+  if (current >= questions.length) {
+    document.querySelector(".card").innerHTML = "<h2 style='margin-bottom:0.5rem;'>Quiz complete</h2><p style='line-height:1.6;color:#444;'>The recurring theme: architecture is about responsibility and tradeoffs, not boxes and names. If questions about coarse-grained vs detailed design tripped you up, re-read sections 5 and 6 of the lesson.</p>";
+    return;
+  }
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
 <script src="../notes-widget.js"></script>
 <script src="../feedback-widget.js"></script>
 </body>

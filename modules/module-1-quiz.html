@@ -4,222 +4,194 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Module 1 — Scenario Quiz</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: #fff; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .card { border: 1px solid #eee; border-radius: 12px; background: #fafafa; padding: 1rem; }
+  .progress { font-size: 0.85rem; color: #777; margin-bottom: 1rem; font-weight: 600; }
+  .scenario-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #bbb; margin-bottom: 0.4rem; }
+  .scenario { background: #f4f4f4; border: 1px solid #e8e8e8; border-radius: 8px; padding: 0.85rem; font-size: 0.9rem; line-height: 1.6; color: #444; margin-bottom: 1rem; }
+  .question { font-size: 1rem; font-weight: 600; line-height: 1.5; margin-bottom: 1rem; }
+  .options { display: grid; gap: 0.65rem; }
+  button.option { text-align: left; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; font: inherit; font-size: 0.9rem; line-height: 1.5; }
+  button.option:hover { border-color: #aaa; }
+  .feedback { margin-top: 1rem; padding: 0.85rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.55; display: none; }
+  .feedback.correct { background: #f0fdf4; color: #166534; display: block; }
+  .feedback.incorrect { background: #fef2f2; color: #991b1b; display: block; }
+  .next { margin-top: 1rem; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 0.8rem 1rem; font: inherit; cursor: pointer; display: none; }
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const { useState } = React;
-
+<div class="container">
+  <h1>Module 1: Scenario Quiz</h1>
+  <p class="subtitle">Test your calibration, not just your memory.</p>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+    <div class="scenario-label" id="scenario-label" style="display:none">Scenario</div>
+    <div class="scenario" id="scenario" style="display:none"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next" id="next-btn">Next</button>
+  </div>
+</div>
+<script>
 const questions = [
   {
     scenario: "You ask Claude Code to rename a variable from `usr` to `user` across your entire project (47 files).",
-    question: "How confident should you be in the result?",
+    q: "How confident should you be in the result?",
     options: [
-      { text: "Very confident — this is a mechanical refactoring task with clear intent", correct: true },
-      { text: "Somewhat confident — renaming is tricky because of scope issues", correct: false },
-      { text: "Not confident — 47 files is too many for Claude to handle reliably", correct: false },
-      { text: "It depends on the programming language", correct: false }
+      "Very confident — mechanical refactoring with clear intent is a Claude Code strength",
+      "Somewhat confident — renaming across files is risky because of scope and shadowing issues",
+      "Not confident — 47 files is too large a surface area for reliable AI-assisted changes",
+      "It depends on the programming language and whether it's compiled or interpreted"
     ],
-    explanation: "Refactoring with clear intent is one of Claude Code's strongest capabilities. It excels at mechanical transformations — rename, extract, convert — because the rules are clear and the task is well-defined. Multi-file coordination is also a strength. You should verify the result, but trust is high here."
+    answer: 0,
+    explanation: "Refactoring with clear, unambiguous intent is one of Claude Code's strongest capabilities. Multi-file mechanical transformations — rename, extract, convert — are well-suited to it. The rules are clear and the task pattern-matches strongly to training data. You should still verify the result, but your trust level here is appropriately high."
   },
   {
     scenario: "You've been working with Claude Code for 45 minutes on a complex feature. You ask it to update the API endpoint, but it proposes an approach that contradicts an architectural decision you both agreed on 30 minutes ago.",
-    question: "What's most likely happening?",
+    q: "What's most likely happening?",
     options: [
-      { text: "Claude changed its mind about the architecture", correct: false },
-      { text: "Compaction has kicked in — the earlier decision has been summarized or lost from the context window", correct: true },
-      { text: "Claude is testing whether you really committed to that decision", correct: false },
-      { text: "The API endpoint task is too complex for Claude", correct: false }
+      "Claude is exploring alternatives and wants you to reconsider the earlier decision",
+      "Compaction has kicked in — the earlier decision has been summarized or dropped from the context window",
+      "The API endpoint task is more complex than the earlier work and requires a different approach",
+      "Claude is inconsistent by design to avoid over-constraining solutions"
     ],
-    explanation: "This is a classic compaction symptom. After 45 minutes of back-and-forth, the context window is likely full or near-full. Earlier decisions get summarized or dropped during compaction. Claude isn't being careless — it literally can't see the earlier conversation anymore. The fix: re-state the architectural decision, or start a fresh session with the key decisions in your CLAUDE.md."
+    answer: 1,
+    explanation: "This is a classic compaction symptom. After 45 minutes of back-and-forth, the context window is likely near-full. Earlier decisions get summarized or lost during compaction — Claude isn't being careless, it literally cannot see the earlier conversation anymore. The fix: re-state the architectural decision, or start a fresh session with the key decisions in your CLAUDE.md."
   },
   {
-    scenario: "You need to implement a custom sorting algorithm that handles a unique business rule: items are sorted by priority, but items from the same department must stay grouped together, and within each group they're sorted by deadline.",
-    question: "How should you approach this with Claude Code?",
+    scenario: "You need to implement a custom sorting algorithm: items are sorted by priority, but items from the same department must stay grouped, and within each group they're sorted by deadline.",
+    q: "How should you approach this with Claude Code?",
     options: [
-      { text: "Describe the requirements and let Claude implement it — sorting is a common programming task", correct: false },
-      { text: "Write the algorithm yourself — Claude can't handle any sorting logic", correct: false },
-      { text: "Describe the requirements clearly, let Claude try, then carefully verify the logic — this is near the jagged edge where novel business logic can have subtle bugs", correct: true },
-      { text: "Ask Claude to find a library that does this", correct: false }
+      "Describe the requirements and trust the result — sorting is a common programming task",
+      "Write the algorithm yourself — novel business logic is outside Claude's reliable range",
+      "Describe the requirements clearly, let Claude implement it, then carefully verify the logic at edge cases — this is near the jagged frontier",
+      "Break it into two separate prompts: one for priority sort, one for department grouping"
     ],
-    explanation: "This is near the jagged edge. While sorting itself is a common pattern, the specific business rules (group-then-sort with priority overrides) require novel logic that can't be directly pattern-matched from training data. Claude will likely produce something that looks correct but may have edge-case bugs. The right approach: let it try (it'll get you 80-90% there), then carefully verify the logic, especially edge cases."
+    answer: 2,
+    explanation: "This sits near the jagged frontier. Sorting itself is a common pattern, but the specific business rules (group-then-sort with priority overrides) require novel logic that can't be directly pattern-matched from training data. Claude will likely get you 80–90% there, but edge cases can have subtle bugs. Let it try, then verify carefully — especially boundary conditions between departments."
   },
   {
-    scenario: "You're using Claude Code in the terminal CLI to build a feature. Your colleague mentions they use Claude Code in VS Code and says it's \"smarter\" there.",
-    question: "Are they right?",
+    scenario: "Your colleague uses Claude Code in VS Code and says it's \"smarter\" than the CLI version you use in the terminal.",
+    q: "Are they right?",
     options: [
-      { text: "Yes — VS Code gives Claude access to more powerful AI models", correct: false },
-      { text: "No — it's the same model everywhere. VS Code just gives Claude richer context (open files, cursor position) which can lead to better results", correct: true },
-      { text: "Yes — the VS Code extension has special capabilities the CLI doesn't have", correct: false },
-      { text: "It depends on what kind of task you're doing", correct: false }
+      "Yes — the VS Code extension uses a larger, more capable model than the CLI",
+      "Partially — VS Code can access your screen content, giving it more signals to work with",
+      "No — it's the same model everywhere. VS Code provides richer context (open files, cursor position) which can produce better results for the same underlying intelligence",
+      "It depends on the task — VS Code is better for UI work, CLI is better for backend work"
     ],
+    answer: 2,
     explanation: "The model behind all environments is identical. What differs is the context surface — what Claude can see and act on. VS Code provides extra signals (which file is open, where the cursor is, recent edits) that help Claude understand what you're working on without you having to explain it. This can make it seem smarter, but it's the same intelligence with better input."
   },
   {
-    scenario: "You ask Claude Code: \"Is this the right database schema for our application?\" Claude responds with a detailed, confident analysis saying the schema looks good with minor suggestions.",
-    question: "How should you interpret this response?",
+    scenario: "You ask Claude Code: \"Is this the right database schema for our application?\" Claude responds with a detailed, confident analysis saying the schema looks solid with a few minor suggestions.",
+    q: "How should you interpret this response?",
     options: [
-      { text: "Trust it — Claude is excellent at database schema analysis", correct: false },
-      { text: "Ignore it — Claude can't evaluate database schemas", correct: false },
-      { text: "Treat it as a starting point but verify critically — Claude's confidence level stays high even when it's guessing, and 'right for our application' requires domain judgment it may not have", correct: true },
-      { text: "Ask it to run the schema against a test database first", correct: false }
+      "Trust it — database schema analysis is a technical task Claude handles reliably",
+      "Treat it as a starting point but verify critically — Claude's confidence stays high even when it's guessing, and 'right for our application' requires domain judgment it may not have",
+      "Ignore it — Claude cannot evaluate database design without knowing query patterns and load",
+      "Ask it to run the schema against a test database to validate its analysis"
     ],
-    explanation: "This is a trust calibration question. Claude can analyze schema structure (that's a common pattern — high trust), but \"right for our application\" requires judgment about your specific business domain, scale requirements, and future needs — which is near the jagged edge. The dangerous part: Claude's confidence will be the same whether it's giving you great advice or mediocre advice. Always verify judgment-based assessments."
+    answer: 1,
+    explanation: "This is a trust calibration question. Claude can analyze schema structure well — that's a common technical pattern. But 'right for our application' requires judgment about your specific domain, scale, and future needs — which is near the jagged frontier. The dangerous part: Claude's confidence level is the same whether it's giving great advice or mediocre advice. Always verify judgment-based assessments."
   },
   {
-    scenario: "Claude Code makes an error while implementing a feature — it writes an import statement for a module that doesn't exist in your project. You notice it immediately catches the error and fixes it.",
-    question: "What just happened?",
+    scenario: "Claude Code makes an error while implementing a feature — it writes an import statement for a module that doesn't exist. You watch it immediately catch the error and correct it.",
+    q: "What just happened?",
     options: [
-      { text: "Claude got lucky and guessed the right fix", correct: false },
-      { text: "The agentic loop's Verify phase caught the error, triggering a new Read-Plan-Act cycle to fix it", correct: true },
-      { text: "You need to worry — if it made one error, there are probably more", correct: false },
-      { text: "This means Claude didn't plan properly before acting", correct: false }
+      "Claude got lucky — it happened to guess the correct import path on the retry",
+      "The agentic loop's Verify phase caught the error and triggered a new Read-Plan-Act cycle to fix it",
+      "This is a warning sign — one self-corrected error usually means there are more uncorrected errors elsewhere",
+      "Claude didn't plan adequately before acting, which is why an error occurred"
     ],
-    explanation: "This is the agentic loop working as designed. The Verify phase checks the result, finds an error (missing module), and triggers a new mini-cycle: Read the error → Plan the fix → Act (correct the import) → Verify again. Self-correction on concrete errors (syntax, imports, type mismatches) is one of the loop's strongest behaviors. One error that gets self-corrected is normal and expected — not a warning sign."
+    answer: 1,
+    explanation: "This is the agentic loop working as designed. The Verify phase checks the result, finds a concrete error (missing module), and triggers a new mini-cycle: Read the error → Plan the fix → Act → Verify again. Self-correction on concrete errors — syntax, imports, type mismatches — is one of the loop's strongest behaviors. One error that gets self-corrected is normal and expected, not a warning sign."
   },
   {
-    scenario: "You want to use Claude Code to redesign your application's user interface. You ask it to \"make the dashboard look more modern and professional.\"",
-    question: "What should you expect?",
+    scenario: "You ask Claude Code to \"make the dashboard look more modern and professional.\"",
+    q: "What should you expect?",
     options: [
-      { text: "A beautiful, well-designed dashboard — Claude is great at UI design", correct: false },
-      { text: "Something functional but generic — Claude can write UI code but lacks design taste, and 'modern and professional' is a judgment call it's not great at", correct: true },
-      { text: "Nothing useful — Claude can't work with UI code", correct: false },
-      { text: "A perfect result if you're more specific about what 'modern' means", correct: false }
+      "A well-designed dashboard — Claude has strong aesthetic judgment from training on design systems",
+      "Something functional but generic — Claude can write UI code but 'modern and professional' is an aesthetic judgment it struggles with",
+      "Nothing useful — Claude cannot work with UI layout or visual design",
+      "A good result if you add reference screenshots to be more specific about 'modern'"
     ],
-    explanation: "UI/UX judgment is on the 'struggles' side of the jagged frontier. Claude can absolutely write UI code — components, layouts, responsive design — but it optimizes for 'works' not 'feels right.' It'll produce something functional and competent but rarely beautiful. Being more specific helps (colors, spacing, reference designs), but the aesthetic judgment gap remains. This is a task where Claude does the implementation and you (or a designer) provide the taste."
+    answer: 1,
+    explanation: "UI/UX aesthetic judgment is on the 'struggles' side of the jagged frontier. Claude can absolutely write UI code — components, layouts, responsive design — but it optimizes for 'works' not 'feels right.' It'll produce something functional and competent but rarely beautiful without strong guidance. Being more specific helps, but the fundamental aesthetic judgment gap remains — you or a designer still need to provide the taste."
   },
   {
-    scenario: "You're about to start a new project. You're deciding between using Claude Code on the web (claude.ai) or installing the CLI on your local machine.",
-    question: "When would the web version be the better choice?",
+    scenario: "You're deciding between claude.ai in the browser or the Claude Code CLI for a new project.",
+    q: "When would the web version be the better choice?",
     options: [
-      { text: "When you need maximum performance and speed", correct: false },
-      { text: "When you need access to your project files and dependencies", correct: false },
-      { text: "When you want a quick prototype or code snippet without setting up your local environment — and you don't need your specific project context", correct: true },
-      { text: "The web version is always better because it's easier to use", correct: false }
+      "When you need maximum model performance — the web interface has priority access to the latest models",
+      "When you need to access your project files and run your test suite alongside the conversation",
+      "When you want a quick prototype or snippet without your project context — and don't need your local environment",
+      "The web version is always preferable because it's easier to set up"
     ],
-    explanation: "The web version runs in a cloud sandbox with no access to your local filesystem, MCP servers, or project configuration. It's ideal for quick, self-contained tasks — a prototype, a code snippet, a one-off script. But for real project work, you want the CLI or VS Code, which give Claude your full project context. The model is the same; the difference is what it can see."
+    answer: 2,
+    explanation: "The web version runs in a cloud sandbox with no access to your local filesystem, MCP servers, or project configuration. It's ideal for quick, self-contained tasks — a prototype, a one-off script, a question about a code snippet. For real project work you want the CLI or VS Code extension, which give Claude your full project context. The model is the same; the difference is what it can see."
   }
 ];
 
-function Quiz() {
-  const [current, setCurrent] = useState(0);
-  const [selected, setSelected] = useState(null);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [score, setScore] = useState(0);
-  const [completed, setCompleted] = useState(false);
-  const [answers, setAnswers] = useState([]);
+let current = 0;
+let locked = false;
 
-  const q = questions[current];
+function renderQuestion() {
+  locked = false;
+  const item = questions[current];
+  document.getElementById("progress").textContent = `Question ${current + 1} of ${questions.length}`;
 
-  const handleSelect = (index) => {
-    if (showExplanation) return;
-    setSelected(index);
-    setShowExplanation(true);
-    const isCorrect = q.options[index].correct;
-    if (isCorrect) setScore(s => s + 1);
-    setAnswers(prev => [...prev, { question: current, selected: index, correct: isCorrect }]);
-  };
-
-  const handleNext = () => {
-    if (current < questions.length - 1) {
-      setCurrent(c => c + 1);
-      setSelected(null);
-      setShowExplanation(false);
-    } else {
-      setCompleted(true);
-    }
-  };
-
-  const handleRestart = () => {
-    setCurrent(0);
-    setSelected(null);
-    setShowExplanation(false);
-    setScore(0);
-    setCompleted(false);
-    setAnswers([]);
-  };
-
-  const s = {
-    container: { fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif", maxWidth: 700, margin: "0 auto", padding: "2rem 1rem", color: "#1a1a1a" },
-    header: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "2rem" },
-    title: { fontSize: "1.4rem", fontWeight: 700 },
-    progress: { fontSize: "0.85rem", color: "#999" },
-    scenario: { background: "#f9f9f9", border: "1px solid #e8e8e8", borderRadius: 8, padding: "1.2rem", marginBottom: "1rem", fontSize: "0.92rem", lineHeight: 1.6, color: "#444" },
-    scenarioLabel: { fontSize: "0.75rem", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.05em", color: "#aaa", marginBottom: "0.5rem" },
-    question: { fontSize: "1.05rem", fontWeight: 600, marginBottom: "1rem" },
-    option: (index) => {
-      let bg = "#fff";
-      let border = "1px solid #e0e0e0";
-      let color = "#333";
-      if (showExplanation) {
-        if (q.options[index].correct) { bg = "#f0f7f0"; border = "1px solid #b8d4b8"; }
-        else if (index === selected && !q.options[index].correct) { bg = "#fdf0f0"; border = "1px solid #dbb"; }
-      } else if (index === selected) { bg = "#f5f5f5"; border = "1px solid #ccc"; }
-      return { background: bg, border, borderRadius: 8, padding: "0.8rem 1rem", marginBottom: "0.5rem", cursor: showExplanation ? "default" : "pointer", fontSize: "0.9rem", lineHeight: 1.5, color, transition: "all 0.15s" };
-    },
-    explanation: { background: "#f7f7f7", borderLeft: "3px solid #555", borderRadius: "0 6px 6px 0", padding: "1rem 1.2rem", marginTop: "1rem", fontSize: "0.88rem", lineHeight: 1.65, color: "#444" },
-    nextBtn: { background: "#1a1a1a", color: "#fff", border: "none", borderRadius: 6, padding: "0.6rem 1.5rem", fontSize: "0.9rem", cursor: "pointer", marginTop: "1.5rem" },
-    resultBox: { textAlign: "center", padding: "3rem 1rem" },
-    resultScore: { fontSize: "3rem", fontWeight: 700, color: "#1a1a1a" },
-    resultLabel: { fontSize: "1rem", color: "#777", marginTop: "0.5rem" },
-    resultMsg: { fontSize: "1rem", color: "#555", lineHeight: 1.6, maxWidth: 500, margin: "1.5rem auto 0" },
-  };
-
-  if (completed) {
-    const pct = Math.round((score / questions.length) * 100);
-    let msg = "";
-    if (pct >= 88) msg = "Excellent. You have a strong mental model of how Claude Code works. You're ready for Module 2.";
-    else if (pct >= 63) msg = "Good foundation. Review the explanations for the ones you missed — the nuances matter for later modules.";
-    else msg = "Worth revisiting the lesson material before moving on. The mental model this module builds is the foundation for everything else in the course.";
-
-    return (
-      <div style={s.container}>
-        <div style={s.resultBox}>
-          <div style={s.resultScore}>{score}/{questions.length}</div>
-          <div style={s.resultLabel}>{pct}% correct</div>
-          <p style={s.resultMsg}>{msg}</p>
-          <button style={{ ...s.nextBtn, marginTop: "2rem" }} onClick={handleRestart}>Try again</button>
-        </div>
-      </div>
-    );
+  const scenarioEl = document.getElementById("scenario");
+  const scenarioLabel = document.getElementById("scenario-label");
+  if (item.scenario) {
+    scenarioEl.textContent = item.scenario;
+    scenarioEl.style.display = "block";
+    scenarioLabel.style.display = "block";
+  } else {
+    scenarioEl.style.display = "none";
+    scenarioLabel.style.display = "none";
   }
 
-  return (
-    <div style={s.container}>
-      <div style={s.header}>
-        <div style={s.title}>Module 1 Quiz</div>
-        <div style={s.progress}>{current + 1} of {questions.length}</div>
-      </div>
-      <div style={s.scenario}>
-        <div style={s.scenarioLabel}>Scenario</div>
-        {q.scenario}
-      </div>
-      <div style={s.question}>{q.question}</div>
-      {q.options.map((opt, i) => (
-        <div key={i} style={s.option(i)} onClick={() => handleSelect(i)}>
-          {opt.text}
-        </div>
-      ))}
-      {showExplanation && (
-        <div>
-          <div style={s.explanation}>{q.explanation}</div>
-          <button style={s.nextBtn} onClick={handleNext}>
-            {current < questions.length - 1 ? "Next question" : "See results"}
-          </button>
-        </div>
-      )}
-    </div>
-  );
+  document.getElementById("question").textContent = item.q;
+  const optionsEl = document.getElementById("options");
+  optionsEl.innerHTML = "";
+  item.options.forEach((option, idx) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = option;
+    button.addEventListener("click", () => answer(idx));
+    optionsEl.appendChild(button);
+  });
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("next-btn").style.display = "none";
 }
 
-ReactDOM.createRoot(document.getElementById("root")).render(<Quiz />);
+function answer(idx) {
+  if (locked) return;
+  locked = true;
+  const item = questions[current];
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback " + (idx === item.answer ? "correct" : "incorrect");
+  feedback.textContent = item.explanation;
+  document.getElementById("next-btn").style.display = "inline-block";
+}
+
+document.getElementById("next-btn").addEventListener("click", () => {
+  current += 1;
+  if (current >= questions.length) {
+    document.querySelector(".card").innerHTML = "<h2 style='margin-bottom:0.5rem;'>Quiz complete</h2><p style='line-height:1.6;color:#444;'>The core skill this module builds is calibration — knowing when to trust Claude, when to verify, and why. If the jagged frontier questions tripped you up, re-read that section of the lesson.</p>";
+    return;
+  }
+  renderQuestion();
+});
+
+renderQuestion();
 </script>
 <script src="../notes-widget.js"></script>
 <script src="../feedback-widget.js"></script>
