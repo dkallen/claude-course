@@ -7,23 +7,168 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
-  .container { max-width: 700px; margin: 0 auto; }
-  h1 { font-size: 1.6rem; margin-bottom: 1rem; }
-  .item { border: 1px solid #eee; border-radius: 10px; background: #fafafa; padding: 1rem; margin-bottom: 1rem; }
-  h2 { font-size: 0.95rem; margin-bottom: 0.5rem; }
-  p { font-size: 0.92rem; line-height: 1.6; color: #444; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .card { border: 1px solid #eee; border-radius: 12px; background: #fafafa; padding: 1rem; }
+  .progress { font-size: 0.85rem; color: #777; margin-bottom: 1rem; font-weight: 600; }
+  .question { font-size: 1rem; line-height: 1.55; margin-bottom: 1rem; }
+  .options { display: grid; gap: 0.65rem; }
+  button.option { text-align: left; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; font: inherit; }
+  button.option:hover { border-color: #aaa; }
+  .feedback { margin-top: 1rem; padding: 0.85rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.55; display: none; }
+  .feedback.correct { background: #f0fdf4; color: #166534; display: block; }
+  .feedback.incorrect { background: #fef2f2; color: #991b1b; display: block; }
+  .next { margin-top: 1rem; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 0.8rem 1rem; font: inherit; cursor: pointer; display: none; }
 </style>
 </head>
 <body>
 <div class="container">
   <h1>Module 4: Scenario Quiz</h1>
-  <div class="item"><h2>1. A team says “build analytics dashboards” but cannot name the goal. What is missing?</h2><p>The desired state. The feature may still be useful, but without a named goal you cannot judge alignment or scope.</p></div>
-  <div class="item"><h2>2. A proposed solution does not resolve a problem or advance a goal. What should happen?</h2><p>Run the alignment check. Either reveal the hidden goal/problem behind it or discard/defer it.</p></div>
-  <div class="item"><h2>3. Why is scope not optional?</h2><p>Because many good ideas are still out of bounds for the current initiative. Scope is what turns thinking into a real brief.</p></div>
-  <div class="item"><h2>4. What is the difference between a problem and a risk?</h2><p>A problem exists now; a risk is a forecasted future problem caused by a chosen solution.</p></div>
-  <div class="item"><h2>5. Why distinguish root cause problems from effect problems?</h2><p>Because solving symptoms can create motion without progress.</p></div>
-  <div class="item"><h2>6. What is Claude best used for in this module?</h2><p>Surfacing assumptions, testing alignment, and helping turn informal thinking into an explicit brief.</p></div>
+  <p class="subtitle">Apply the reasoning, not just the vocabulary.</p>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next" id="next-btn">Next</button>
+  </div>
 </div>
+<script>
+const questions = [
+  {
+    q: "A product team says their goal is to \"add an analytics dashboard.\" What is wrong with this?",
+    options: [
+      "It is too technically specific — the team should focus on user stories instead.",
+      "It is a feature, not a goal. A goal names a desired state, not the work to get there.",
+      "Analytics dashboards are out of scope for most products.",
+      "Nothing. Naming a deliverable is a valid way to express a goal."
+    ],
+    answer: 1,
+    explanation: "A goal describes the outcome you want to make true — reduced friction, increased revenue, faster diagnosis. \"Build X\" is a solution hypothesis dressed up as a goal. Until you name the actual desired state, you cannot judge whether the dashboard is the right solution."
+  },
+  {
+    q: "A proposed solution does not resolve any identified problem and does not directly advance any stated goal. What should you do?",
+    options: [
+      "Defer it to a future sprint — good ideas should not be lost.",
+      "Keep it if it is technically feasible and the team is excited about it.",
+      "Run an alignment check: look for an unstated goal or problem behind it. If none exists, discard or defer.",
+      "Treat it as a risk mitigation and add it to the risk register."
+    ],
+    answer: 2,
+    explanation: "The alignment check is the framework's core discipline. An attractive idea without a goal or problem trace is a distraction. You either surface what it is actually for, or you drop it. Deferring without tracing the reason keeps the clutter alive."
+  },
+  {
+    q: "Your team identifies that \"users churn because the onboarding is confusing.\" Is this a root cause or a symptom?",
+    options: [
+      "Root cause — churn is the outcome that matters most.",
+      "Symptom — confusing onboarding is likely caused by deeper issues like unclear value proposition or missing defaults.",
+      "Neither — churn is a risk, not a problem.",
+      "Root cause — it names a specific part of the product, which is precise enough."
+    ],
+    answer: 1,
+    explanation: "Confusing onboarding is itself an effect. The root causes might be: unclear value proposition, too many required fields, no defaults for common cases, or a mismatch between the promised outcome and the first experience. Treating the symptom as the root cause leads to shallow fixes like redesigning UI without changing what the product actually does."
+  },
+  {
+    q: "What is the practical difference between a problem and a risk?",
+    options: [
+      "Problems are technical; risks are organizational.",
+      "Problems are things the team caused; risks are things the market might cause.",
+      "A problem is a current obstacle. A risk is a forecasted obstacle that a chosen solution might create.",
+      "Risks are optional to document; problems are mandatory."
+    ],
+    answer: 2,
+    explanation: "The framework keeps these distinct because they require different responses. A problem is blocking you now and demands a solution. A risk is a future problem that a proposed solution might cause — it demands a mitigation. Conflating them makes both harder to act on."
+  },
+  {
+    q: "A stakeholder insists that six different things are \"all top priority\" and all must be in scope. What is the most important thing to do?",
+    options: [
+      "Accept them all — stakeholders own scope, not you.",
+      "Build a timeline showing why six priorities will slow delivery.",
+      "Force an explicit out-of-scope list. If nothing is excluded, scope has no meaning.",
+      "Prioritize them yourself and present a ranked list for approval."
+    ],
+    answer: 2,
+    explanation: "Scope only does work when it excludes things. A scope statement that contains everything is not a scope statement — it is a wish list. The hard conversation is not \"what matters\" but \"what is out of bounds for this initiative.\" Without that boundary, every good idea stays in the conversation forever."
+  },
+  {
+    q: "You ask Claude to help refine a project idea. It agrees with everything you say and elaborates enthusiastically. What is missing?",
+    options: [
+      "Claude is probably out of context and needs more information.",
+      "You are using Claude as a passive encourager rather than a structured adversary.",
+      "The model version is too old and does not support critical thinking.",
+      "Claude is working correctly — agreement means your reasoning is sound."
+    ],
+    answer: 1,
+    explanation: "Claude's value in idea refinement comes from surfacing assumptions, challenging alignment, and forcing explicit decisions. If it is only elaborating and affirming, you are not getting the diagnostic benefit. Prompt it to steelman the opposite, stress-test your goal hierarchy, or identify what you are assuming without evidence."
+  },
+  {
+    q: "A solution resolves a named problem but the problem is a symptom, not the root cause. What is the likely outcome?",
+    options: [
+      "The solution is still valid — resolving any problem advances the goal.",
+      "The solution will create new risks that offset its benefit.",
+      "Motion without progress. The symptom recurs or a new symptom appears.",
+      "The solution is misaligned and should be discarded entirely."
+    ],
+    answer: 2,
+    explanation: "Solving a symptom can produce measurable output — shipping a fix, reducing a metric — while the underlying cause continues to generate new symptoms. This is why root cause tracing is worth the time before committing to a solution."
+  },
+  {
+    q: "When is drawing a diagram of goals, problems, and solutions most useful?",
+    options: [
+      "After the solution is shipped, to document what was built.",
+      "When the team is large enough that communication is a bottleneck.",
+      "When confusion is visible — orphaned nodes or tangled connections reveal where reasoning has gone soft.",
+      "Only for complex multi-team projects where accountability is unclear."
+    ],
+    answer: 2,
+    explanation: "The diagram is a diagnostic tool, not a documentation ritual. Its value appears when you draw it and immediately see: a solution pointing nowhere, a problem with no goal it obstructs, or scope that contains everything. Those visual gaps are exactly what you need Claude to help you resolve."
+  }
+];
+
+let current = 0;
+let locked = false;
+
+function renderQuestion() {
+  locked = false;
+  const item = questions[current];
+  document.getElementById("progress").textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById("question").textContent = item.q;
+  const optionsEl = document.getElementById("options");
+  optionsEl.innerHTML = "";
+  item.options.forEach((option, idx) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = option;
+    button.addEventListener("click", () => answer(idx));
+    optionsEl.appendChild(button);
+  });
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("next-btn").style.display = "none";
+}
+
+function answer(idx) {
+  if (locked) return;
+  locked = true;
+  const item = questions[current];
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback " + (idx === item.answer ? "correct" : "incorrect");
+  feedback.textContent = item.explanation;
+  document.getElementById("next-btn").style.display = "inline-block";
+}
+
+document.getElementById("next-btn").addEventListener("click", () => {
+  current += 1;
+  if (current >= questions.length) {
+    document.querySelector(".card").innerHTML = "<h2 style='margin-bottom:0.5rem;'>Quiz complete</h2><p style='line-height:1.6;color:#444;'>The most common failure mode in this module is treating symptoms as root causes and features as goals. If you missed those, re-read the lesson with that lens.</p>";
+    return;
+  }
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
 <script src="../notes-widget.js"></script>
 <script src="../feedback-widget.js"></script>
 </body>
