@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Concept to Delivery with Claude Code — Syllabus</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1a1a1a; background: #fff; }
+  .container { max-width: 760px; margin: 0 auto; padding: 2rem 1rem 3rem; }
+  h1 { font-size: 1.75rem; line-height: 1.25; margin-bottom: 0.25rem; }
+  .subtitle { font-size: 0.95rem; color: #666; margin-bottom: 1.5rem; }
+  h2 { font-size: 1.05rem; font-weight: 700; margin-top: 2rem; margin-bottom: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; color: #555; }
+  h3 { font-size: 1rem; font-weight: 600; margin-top: 1.2rem; margin-bottom: 0.45rem; }
+  p { font-size: 0.95rem; line-height: 1.65; margin-bottom: 0.8rem; }
+  ul, ol { padding-left: 1.4rem; margin-bottom: 0.9rem; }
+  li { font-size: 0.93rem; line-height: 1.6; margin-bottom: 0.35rem; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.25rem; }
+  th, td { text-align: left; padding: 0.7rem 0.6rem; border-bottom: 1px solid #eee; vertical-align: top; font-size: 0.92rem; line-height: 1.5; }
+  th { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; color: #777; }
+  code { background: #f5f5f5; padding: 0.15rem 0.4rem; border-radius: 4px; font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; font-size: 0.86rem; }
+  .module-block { margin-top: 2.5rem; padding-top: 1.5rem; border-top: 1px solid #f0f0f0; }
+  .module-block h2 { margin-top: 0; }
+  .module-goal { font-size: 0.93rem; color: #555; line-height: 1.6; margin-bottom: 0.8rem; font-style: italic; }
+  .check { font-size: 0.88rem; color: #888; line-height: 1.6; margin-top: 1rem; padding: 0.8rem 1rem; background: #fafafa; border-radius: 8px; border-left: 3px solid #ddd; }
+  .section-note { font-size: 0.88rem; color: #999; font-style: italic; margin-top: 0.5rem; }
+  a { color: #1a1a1a; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>From Concept to Delivery with Claude Code</h1>
+  <p class="subtitle">A Practitioner's Course &middot; Draft 1.2 &middot; March 2026</p>
+
+  <h2>Course Philosophy</h2>
+  <p>This is not a software development course. It's a course about using Claude Code as a <strong>thinking and building partner</strong> across the full lifecycle &mdash; from a loosely-formed idea to a working, delivered product. Every module is grounded in a structured business analysis framework built on five interconnected concepts: <strong>Goals</strong> (the desired state), <strong>Problems</strong> (obstacles blocking those goals), <strong>Solutions</strong> (actions that resolve problems or advance goals directly), <strong>Risks</strong> (forecasted problems arising from solutions), and <strong>Scope</strong> (the boundaries that determine what's in and what's out). Solutions that target Risks are Mitigations &mdash; they aren't a separate category, just Solutions pointed at a different kind of problem.</p>
+  <p>Claude Code's capabilities are jagged. This course teaches you where they're strong, where they're weak, and how to work <em>with</em> the grain of the tool rather than against it.</p>
+
+  <h2>Prerequisites</h2>
+  <ul>
+    <li>A Claude subscription (Pro or Max) with Claude Code access</li>
+    <li>Basic comfort with a terminal or VS Code</li>
+    <li>No prior Claude Code experience required &mdash; we start from zero</li>
+  </ul>
+
+  <h2>Course Outline</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Module</th>
+        <th>Focus</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Orientation &mdash; What Claude Code Actually Is</td><td>Mental model, environments, jagged capabilities</td></tr>
+      <tr><td>2</td><td>CLAUDE.md &mdash; Teaching Claude Who You Are</td><td>Persistent context, project conventions</td></tr>
+      <tr><td>3</td><td>The Art of the Prompt &mdash; From Ramble to Precision</td><td>Prompt calibration, Director Mode, effort levels</td></tr>
+      <tr><td>4</td><td>Idea Refinement &mdash; Using Claude Code to Think</td><td>Full business analysis framework, scope, alignment checks, diagramming</td></tr>
+      <tr><td>5</td><td>Architecture &mdash; Designing Before Building</td><td>Trade-off analysis, scaffolding, ADRs</td></tr>
+      <tr><td>6</td><td>Test-Driven Development with Claude Code</td><td>Tests as specification, red-green-refactor</td></tr>
+      <tr><td>7</td><td>Skills &mdash; Reusable Intelligence</td><td>SKILL.md files, triggers, testing, composition</td></tr>
+      <tr><td>8</td><td>MCP &mdash; Connecting Claude Code to the World</td><td>External tools, data sources, security</td></tr>
+      <tr><td>9</td><td>Multi-Agent Workflows &mdash; Orchestration at Scale</td><td>Subagents, worktrees, parallel development</td></tr>
+      <tr><td>10</td><td>Scheduled Tasks &mdash; Putting Claude on Autopilot</td><td><code>/loop</code>, Desktop scheduling, recurring automation</td></tr>
+      <tr><td>11</td><td>Remote Control &mdash; Claude Code from Your Pocket</td><td><code>claude rc</code>, mobile control, local execution</td></tr>
+      <tr><td>12</td><td>Channels &mdash; Claude Code Meets You Where You Are</td><td>Telegram, Discord, event-driven workflows</td></tr>
+      <tr><td>13</td><td>Delivery &mdash; From Working Code to Shipped Product</td><td>Docs, release notes, CI/CD, shipping</td></tr>
+      <tr><td>&mdash;</td><td>Capstone: Build Something Real</td><td>Full pipeline on a real project</td></tr>
+    </tbody>
+  </table>
+  <p class="section-note">Modules 1&ndash;9: Working with Claude Code at your desk.<br>Modules 10&ndash;12: Claude Code working for you when you're not.<br>Module 13: Shipping.</p>
+
+  <div class="module-block">
+    <h2>Module 1: Orientation &mdash; What Claude Code Actually Is</h2>
+    <p class="module-goal">Build an accurate mental model of how Claude Code works so you stop being surprised by what it can and can't do.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>The agentic loop: how Claude Code reads, plans, acts, and verifies</li>
+      <li>Environments: terminal CLI, VS Code extension, desktop app, web, and how they differ</li>
+      <li>Context windows and compaction &mdash; why Claude "forgets" and what to do about it</li>
+      <li>The jagged capability frontier: what Claude Code excels at vs. where it falls flat</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Install Claude Code (or confirm your existing setup). Run it against a small project folder. Ask it to explain what it sees. Then ask it a question it can't answer from the codebase alone. Notice the difference.</p>
+    <div class="check"><strong>Check:</strong> Can you explain to someone else <em>why</em> Claude Code sometimes nails a task and sometimes misses completely? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 2: CLAUDE.md &mdash; Teaching Claude Who You Are</h2>
+    <p class="module-goal">Learn to give Claude Code persistent context about your project, your standards, and your way of working.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>What CLAUDE.md is and where it lives (project root, <code>~/.claude/</code>, folder-level)</li>
+      <li>The hierarchy: global &rarr; project &rarr; folder instructions</li>
+      <li>What belongs in CLAUDE.md vs. what belongs in a prompt</li>
+      <li>Writing effective instructions: constraints, conventions, and examples</li>
+      <li>Anti-patterns: CLAUDE.md files that are too long, too vague, or contradictory</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Write a CLAUDE.md for a real or practice project. Include your business analysis framework (Goals, Problems, Solutions, Risks, Scope) as a standard operating procedure. Test it by giving Claude a vague task and seeing whether it follows your framework unprompted.</p>
+    <div class="check"><strong>Check:</strong> Does Claude Code follow your conventions without you having to remind it every time? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 3: The Art of the Prompt &mdash; From Ramble to Precision</h2>
+    <p class="module-goal">Learn to translate loosely-formed ideas into prompts that get Claude Code to do what you actually mean.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>Why Claude Code is exceptionally good at interpreting rambly, well-intentioned instructions &mdash; and why that's both a strength and a trap</li>
+      <li>The spectrum from "do exactly this" to "figure out what I need"</li>
+      <li>Director Mode: describing outcomes instead of steps</li>
+      <li>Structured prompting: when to add constraints, examples, and anti-examples</li>
+      <li>The "ultrathink" keyword and effort levels (<code>/effort</code> command)</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Take a real problem you're facing. First, describe it to Claude Code the way you'd describe it to a colleague over coffee. Note what it does. Then refine the prompt with explicit constraints and success criteria. Compare the outputs. Which approach worked better, and why?</p>
+    <div class="check"><strong>Check:</strong> Can you calibrate your prompting style to the complexity of the task &mdash; loose for exploration, tight for execution? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 4: Idea Refinement &mdash; Using Claude Code to Think</h2>
+    <p class="module-goal">Use Claude Code as a thinking partner to apply the structured business analysis framework &mdash; clarifying goals, surfacing problems, proposing solutions, identifying risks, and defining scope &mdash; before writing any code.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li><strong>Goal hierarchies:</strong> Goals exist in a strict hierarchy where lower-level goals contribute directly to higher-level ones. Use Claude Code to help articulate and structure this hierarchy from vision down to actionable targets</li>
+      <li><strong>Problems as obstacles:</strong> Problems are the current undesirable conditions blocking specific goals. They have their own causal hierarchy &mdash; root cause problems trigger effect problems. Use Claude to trace causality rather than just listing symptoms</li>
+      <li><strong>The dual purpose of Solutions:</strong> Solutions both <em>resolve identified problems</em> and <em>advance goals directly</em> even when no explicit problem has been identified (e.g., proactive innovation)</li>
+      <li><strong>The Solution Alignment Check:</strong> Every proposed solution must pass a test &mdash; is it resolving an identified problem that obstructs a goal? Is it furthering a goal directly? If neither, the framework becomes a <em>thinking tool</em> to reveal an unexpressed goal or problem, or the solution should be discarded</li>
+      <li><strong>Risks as forecasted problems:</strong> Risks are potential unintended consequences of implementing a specific solution. Mitigations are just solutions that target risks</li>
+      <li><strong>Scope as the critical boundary:</strong> Scope defines which goals, problems, and solutions are relevant to the current initiative. Many important goals and problems exist outside the boundaries and must be explicitly declared out of scope</li>
+      <li><strong>Diagramming as a diagnostic tool:</strong> Visualizing the connections as a directed graph (goals at top, solutions at bottom, arrows pointing upward) reveals confusion, validates alignment, and ensures strategic focus</li>
+      <li>Using Claude to challenge your assumptions (adversarial prompting)</li>
+      <li>When to use Chat vs. Claude Code for thinking work</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Pick an idea you've been sitting on &mdash; something you want to build but haven't started. Walk Claude Code through the full framework: Start with the goal hierarchy. Identify the problems obstructing each goal and trace their causal relationships. Propose solutions. Run the Solution Alignment Check on each one. Identify risks and propose mitigations. Define the scope explicitly. Finally, have Claude generate a directed graph diagram of the whole structure. Capture the output as a structured brief.</p>
+    <div class="check"><strong>Check:</strong> Do you have a clear, written brief with a goal hierarchy, identified problems, aligned solutions, risks with mitigations, and an explicit scope boundary? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 5: Architecture &mdash; Designing Before Building</h2>
+    <p class="module-goal">Use Claude Code to make architectural decisions before committing to code.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>Describing the system you want: components, data flow, boundaries</li>
+      <li>Having Claude Code generate architectural options and trade-off analyses</li>
+      <li>File and folder structure decisions</li>
+      <li>Technology selection with Claude's help (and awareness of its biases)</li>
+      <li>Creating an architecture decision record (ADR)</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Using the brief from Module 4, ask Claude Code to propose two or three architectural approaches. For each, ask it to identify risks and trade-offs. Pick one. Have Claude generate a project scaffold (folder structure, placeholder files, README). Review it critically &mdash; does the structure make sense?</p>
+    <div class="check"><strong>Check:</strong> Do you have a project scaffold that reflects deliberate architectural choices, not just whatever Claude defaulted to? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 6: Test-Driven Development with Claude Code</h2>
+    <p class="module-goal">Use Claude Code to write tests <em>first</em>, then implement code that passes them.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>Why TDD matters more with AI: tests are your specification, not just verification</li>
+      <li>Having Claude Code write tests from your requirements</li>
+      <li>The red-green-refactor cycle with Claude as the implementer</li>
+      <li>When Claude writes tests that pass trivially (and how to catch it)</li>
+      <li>Integration tests vs. unit tests: what to ask Claude for when</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Take one feature from your project. Write the requirements in plain English. Have Claude Code generate tests for those requirements <em>before</em> any implementation exists. Review the tests &mdash; do they actually test what matters? Then have Claude implement the code to make them pass.</p>
+    <div class="check"><strong>Check:</strong> Did the tests catch a real issue during implementation? If yes, you're experiencing the value. Move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 7: Skills &mdash; Reusable Intelligence</h2>
+    <p class="module-goal">Create custom skills that encode your domain knowledge and workflows for Claude Code to use repeatedly.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>What skills are: SKILL.md files that teach Claude Code how to do specific things</li>
+      <li>Skill anatomy: description, triggers, instructions, examples</li>
+      <li>When to write a skill vs. when to just prompt</li>
+      <li>Skill composition: skills that reference other skills</li>
+      <li>Testing and iterating on skills</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Identify a task you do repeatedly. Write a skill for it. Test it three times with different inputs. Refine based on what Claude gets wrong.</p>
+    <div class="check"><strong>Check:</strong> Does your skill produce consistent, high-quality output across different inputs without you having to re-explain things? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 8: MCP &mdash; Connecting Claude Code to the World</h2>
+    <p class="module-goal">Extend Claude Code's reach by connecting it to external tools and data sources.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>What MCP (Model Context Protocol) is and why it matters</li>
+      <li>Installing and configuring MCP servers (GitHub, filesystem, databases, etc.)</li>
+      <li>Using MCP to give Claude Code access to your actual tools and data</li>
+      <li>Security considerations: what you're granting access to</li>
+      <li>Building custom MCP servers (overview &mdash; not a deep dive)</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Install one MCP server that's relevant to your work. Give Claude Code a task that requires that external data. Observe how it uses the MCP connection vs. how it would have handled the task without it.</p>
+    <div class="check"><strong>Check:</strong> Has Claude Code successfully used external data through MCP to complete a task it couldn't have done from the codebase alone? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 9: Multi-Agent Workflows &mdash; Orchestration at Scale</h2>
+    <p class="module-goal">Understand how to use subagents and agent teams for complex, multi-step work.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>When a single Claude Code session isn't enough</li>
+      <li>Subagents: what they are and when to spawn them</li>
+      <li>Worktrees: isolated Git environments for parallel work</li>
+      <li>Coordinating multiple agents on different aspects of a project</li>
+      <li>Context management across agents</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Take your project and identify two features that could be developed in parallel. Set up worktrees for each. Have Claude Code work on both simultaneously. Merge the results. Reflect on what went smoothly and what was awkward.</p>
+    <div class="check"><strong>Check:</strong> Can you articulate when multi-agent workflows help vs. when a single session is more efficient? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 10: Scheduled Tasks &mdash; Putting Claude on Autopilot</h2>
+    <p class="module-goal">Learn to set up recurring and one-shot tasks so Claude Code works on your behalf without you sitting at the terminal.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>Two flavors of scheduling: CLI session-scoped (<code>/loop</code>) vs. Desktop persistent (Cowork <code>/schedule</code>)</li>
+      <li>The <code>/loop</code> command: syntax, intervals, and when to use it</li>
+      <li>Underlying cron tools: CronCreate, CronList, CronDelete &mdash; and the 5-field cron expression format</li>
+      <li>Desktop scheduled tasks: creating durable tasks via the Cowork sidebar or <code>/schedule</code> that survive restarts</li>
+      <li>Session-scoped limits: tasks only fire while Claude Code is running and idle; 3-day auto-expiry; no catch-up for missed fires</li>
+      <li>Practical patterns: deployment monitoring, daily PR summaries, weekly documentation updates, morning briefings</li>
+      <li>Security and permissions: tasks inherit your environment but permission prompts can stall unattended sessions</li>
+      <li>When to use <code>/loop</code> vs. Desktop scheduled tasks vs. GitHub Actions for CI/CD automation</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Set up two scheduled tasks for your project. First, use <code>/loop</code> in the CLI to monitor something in real time. Second, create a persistent Desktop scheduled task that runs weekly. Compare the experience &mdash; which felt more useful, and why?</p>
+    <div class="check"><strong>Check:</strong> Can you set up a recurring task that runs without your intervention and delivers useful output when you come back? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 11: Remote Control &mdash; Claude Code from Your Pocket</h2>
+    <p class="module-goal">Learn to start a Claude Code session at your desk, then continue controlling it from your phone, tablet, or any browser.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>What Remote Control is: a secure bridge between your local terminal session and claude.ai/code or the Claude mobile app</li>
+      <li>The key architectural distinction: your code never leaves your machine &mdash; the phone is just a window into the local session</li>
+      <li>Starting a session: <code>claude remote-control</code> (or <code>claude rc</code>) from a fresh terminal, or <code>/rc</code> mid-session to preserve conversation history</li>
+      <li>Connecting: session URL, QR code scanning, or the session list in the Claude app</li>
+      <li>What stays available remotely: your filesystem, MCP servers, tools, project configuration, full conversation context</li>
+      <li>Auto-reconnect: if your laptop sleeps or the network drops, the session reconnects when your machine comes back</li>
+      <li>Current limitations: one session per Claude Code instance, terminal must stay running, ~10-minute network timeout, permission prompts still require approval</li>
+      <li>Remote Control vs. Claude Code on the web: local execution vs. cloud execution &mdash; why this distinction matters for security and environment access</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Start a non-trivial Claude Code task at your desk. Run <code>/rc</code>, scan the QR code with your phone, and walk away from your desk. Monitor progress from your phone. Send a follow-up instruction from mobile. Notice what works well and where the experience is rough.</p>
+    <div class="check"><strong>Check:</strong> Did you successfully control a Claude Code session from a device other than the one running it? Did your local environment remain fully available? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 12: Channels &mdash; Claude Code Meets You Where You Are</h2>
+    <p class="module-goal">Control your Claude Code sessions through messaging platforms like Telegram and Discord, turning Claude into an async, event-driven partner.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>What channels are: MCP servers that push events <em>into</em> your running Claude Code session &mdash; not tools Claude calls, but bridges that let the outside world reach Claude</li>
+      <li>The two-way flow: you message the bot, the event arrives in your session, Claude processes it using your full local environment, and replies back through the same channel</li>
+      <li>Supported platforms: Telegram and Discord (research preview), with a plugin architecture designed for community expansion</li>
+      <li>Setup flow: install the plugin, configure your bot token, launch with <code>--channels</code>, pair via DM with a pairing code</li>
+      <li>Security model: sender allowlists (only paired user IDs can push events), the <code>--channels</code> flag as an explicit opt-in per session</li>
+      <li>Telegram vs. Discord: Telegram is faster to set up; Discord adds message history, guild channels, and attachment downloads</li>
+      <li>The Fakechat quickstart: a local demo channel for testing the flow before connecting a real platform</li>
+      <li>Channels vs. Remote Control: Remote Control gives you the full claude.ai interface; Channels gives you a hackable, extensible system through messaging apps you already use</li>
+      <li>The "always-on" caveat: events only arrive while the session is open &mdash; for persistent operation, run Claude in a background process or persistent terminal</li>
+      <li>Known limitation: permission prompts stall sessions silently &mdash; Claude can't be unblocked remotely</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Pick either Telegram or Discord. Follow the setup: create a bot, install the plugin, configure the token, launch with <code>--channels</code>, and pair your account. Send your bot a real task. Watch the reply come back through the messaging app. Then try the Fakechat demo to understand the underlying flow without external dependencies.</p>
+    <div class="check"><strong>Check:</strong> Did you successfully send a task to Claude Code through a messaging platform and receive a useful reply? Do you understand when you'd use Channels vs. Remote Control vs. just sitting at your terminal? If yes, move on.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Module 13: Delivery &mdash; From Working Code to Shipped Product</h2>
+    <p class="module-goal">Use Claude Code to handle the "last mile" &mdash; documentation, deployment prep, release notes, and handoff.</p>
+    <h3>Key Concepts</h3>
+    <ul>
+      <li>Generating documentation from code (README, API docs, user guides)</li>
+      <li>Writing release notes and changelogs with Claude</li>
+      <li>Git workflows: branching, committing, PR creation with Claude Code</li>
+      <li>CI/CD integration: using Claude in GitHub Actions or GitLab CI</li>
+      <li>Code review automation with <code>@claude</code> on GitHub</li>
+      <li>The handoff: what to check before declaring "done"</li>
+    </ul>
+    <h3>Exercise</h3>
+    <p>Take your project to a shippable state. Have Claude Code generate a README, write release notes, create a PR with a meaningful description, and run any automated checks. Review everything critically. Ship it.</p>
+    <div class="check"><strong>Check:</strong> Did you go from working code to a shipped, documented deliverable with Claude Code handling the tedious parts? If yes, congratulations &mdash; you've completed the pipeline.</div>
+  </div>
+
+  <div class="module-block">
+    <h2>Capstone: Build Something Real</h2>
+    <p>Put it all together. Choose a real project &mdash; something you actually want to exist in the world. Walk the entire pipeline:</p>
+    <ol>
+      <li><strong>Idea refinement</strong> (Module 4): Clarify the goal, problems, solutions, risks</li>
+      <li><strong>Architecture</strong> (Module 5): Design before building</li>
+      <li><strong>TDD</strong> (Module 6): Write tests first</li>
+      <li><strong>Skills</strong> (Module 7): Create reusable skills for repeated patterns</li>
+      <li><strong>MCP</strong> (Module 8): Connect to external tools you need</li>
+      <li><strong>Multi-agent</strong> (Module 9): Parallelize where it makes sense</li>
+      <li><strong>Scheduled tasks</strong> (Module 10): Automate recurring work</li>
+      <li><strong>Remote Control + Channels</strong> (Modules 11&ndash;12): Stay connected on the go</li>
+      <li><strong>Delivery</strong> (Module 13): Document, review, ship</li>
+    </ol>
+    <p>Document your experience &mdash; what worked, what didn't, where Claude Code's jagged capabilities showed up, and how you adapted.</p>
+  </div>
+
+  <div class="module-block">
+    <h2>Appendices</h2>
+    <h3>A: Common Claude Code Commands</h3>
+    <p>Quick reference for /commands, slash commands, and keyboard shortcuts.</p>
+    <h3>B: Troubleshooting Jagged Capabilities</h3>
+    <p>A growing list of known weak spots and workarounds, populated as you discover them throughout the course.</p>
+    <h3>C: Your Personal CLAUDE.md Library</h3>
+    <p>A collection of the CLAUDE.md files and skills you build during the course, organized for reuse.</p>
+    <h3>D: Resources</h3>
+    <ul>
+      <li>Official Claude Code docs</li>
+      <li>Anthropic Academy (free courses)</li>
+      <li>Community resources: r/ClaudeAI, ClaudeLog, roadmap.sh/claude-code</li>
+    </ul>
+  </div>
+</div>
+<script src="../notes-widget.js"></script>
+<script src="../feedback-widget.js"></script>
+</body>
+</html>

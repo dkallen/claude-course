@@ -43,12 +43,20 @@
         '#nw-textarea:focus { outline: none; border-color: #999; }' +
         '#nw-saved { font-size: 0.7rem; color: #aaa; margin-top: 0.3rem; min-height: 1rem;' +
         '  text-align: right;' +
-        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }';
+        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
+        '[data-tooltip] { position: relative; }' +
+        '[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: 100%;' +
+        '  right: 0; padding: 0.35rem 0.55rem; background: #333;' +
+        '  color: #fff; font-size: 0.72rem; font-weight: 400; line-height: 1.4;' +
+        '  border-radius: 4px; white-space: nowrap; pointer-events: none;' +
+        '  opacity: 0; transition: opacity 0.15s; margin-bottom: 6px; }' +
+        '[data-tooltip]:hover::after { opacity: 1; transition-delay: 0.2s; }';
     document.head.appendChild(style);
 
     var btn = document.createElement('button');
     btn.id = 'nw-btn';
     btn.textContent = 'Notes';
+    btn.setAttribute('data-tooltip', 'Jot down personal notes about this page. Click to toggle.');
 
     var panel = document.createElement('div');
     panel.id = 'nw-panel';

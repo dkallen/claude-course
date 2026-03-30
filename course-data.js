@@ -7,7 +7,7 @@ window.COURSE_DATA = {
       shortTitle: "Claude Code",
       subtitle: "A Practitioner's Course",
       description: "Learn to use Claude Code as a thinking and building partner across the full product lifecycle.",
-      syllabusHref: "docs/claude-code-course-syllabus.md",
+      syllabusHref: "docs/claude-code-course-syllabus.html",
       progressPrefix: "claude-code-course",
       gistDescription: "Claude Code Course Progress",
       welcomeTitle: "Welcome back, David.",
