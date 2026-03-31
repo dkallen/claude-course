@@ -1,7 +1,7 @@
 # Implementation Handoff: User Identity, Data Persistence, and Learner Feedback
 
 **Date:** 2026-03-31
-**Status:** In progress — step 1 of 6 complete
+**Status:** In progress — steps 1–2 of 6 complete
 
 ---
 
@@ -35,7 +35,7 @@ Read the design package first — it has the component diagram, interface contra
 | Step | Description | Status | Commit |
 |------|-------------|--------|--------|
 | 1 | S4: Make course.html responsive, retire course-mobile.html | Done | `8b59e17` |
-| 2 | Add stable resource IDs to course-data.js, add data attributes to resource pages | Not started | |
+| 2 | Add stable resource IDs to course-data.js, add data attributes to resource pages | Done | |
 | 3 | S1: Supabase project setup, schema, RLS, supabase-client.js, auth gate on course.html | Not started | |
 | 4 | S1: Persistence — notes and progress read/write via Supabase | Not started | |
 | 5 | S3: Remove all Gist integration code | Not started | |
