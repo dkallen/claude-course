@@ -13,7 +13,6 @@
 - `claude-code-course-syllabus.md` — The full 13-module + capstone syllabus. This is the source of truth for module topics, key concepts, exercises, and checks.
 - `Structured Business Analysis.md` — David's framework (Goals, Problems, Solutions, Risks, Scope). Referenced throughout the syllabus, especially Module 4. Read this before building Module 4.
 - `course.html` — The course shell with collapsible sidebar, module TOC with checkboxes, and localStorage persistence for progress tracking. Has export/import for backup. This is the main entry point for the course.
-- `enterprise-search.plugin` — A plugin file David has in the folder. Not related to course content.
 
 ### Module 1: Orientation — What Claude Code Actually Is
 All files follow the naming pattern `module-1-[type].[ext]`:

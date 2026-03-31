@@ -105,8 +105,6 @@ That means:
 
 ### Tools & Extensions
 
-- **enterprise-search.plugin** — Claude Code plugin for searching across multiple data sources (useful for real-world projects)
-
 ### Project Files
 
 - **LICENSE** — Course license and usage terms
