@@ -86,11 +86,10 @@ Each module includes multiple learning formats:
 - **Exercise** (e.g., `module-1-exercise.html`) — Hands-on practice with real scenarios
 - **Builder** (e.g., `module-2-builder.html`) — Interactive tool to build or configure concepts
 
-### Responsive Versions
+### Course Shell
 
 - **index.html** — Multi-subject landing page for the whole course library
-- **course.html** — Full course experience
-- **course-mobile.html** — Mobile-friendly version for learning on the go
+- **course.html** — Responsive course shell (works on desktop and mobile)
 
 ### Presentation Direction
 
@@ -132,7 +131,7 @@ That means:
 
 ### For Instructors
 
-Print or share `course.html` (desktop) or `course-mobile.html` (mobile) as your main delivery mechanism. All content is self-contained — no external dependencies beyond the HTML/SVG files.
+Share `course.html` as the main delivery mechanism. The shell is responsive and works on any device. All content is self-contained — no external dependencies beyond the HTML/SVG files.
 
 ### Architecture Direction
 

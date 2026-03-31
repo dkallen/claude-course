@@ -29,11 +29,11 @@
 <div class="container">
   <div class="eyebrow">Multi-Subject Course Platform</div>
   <h1>Interactive courses for learning how to work effectively with coding agents.</h1>
-  <p class="intro">This repository now supports multiple subjects through a shared course model. The current subjects are Claude Code and OpenAI Codex. Use this page as the entry point, then open the desktop or mobile shell for the subject you want to review.</p>
+  <p class="intro">This platform supports multiple subjects through a shared course model. The current subjects are Claude Code and OpenAI Codex. Use this page as the entry point, then open the course shell for the subject you want to study.</p>
 
   <div class="grid" id="subject-grid"></div>
 
-  <p class="footer">The shell now reads shared subject data from <code>course-data.js</code>. Learner-facing material is moving toward standalone HTML and SVG so the course works directly in the browser on desktop and mobile without a Markdown extension.</p>
+  <p class="footer">The course shell reads shared subject data from <code>course-data.js</code>. Learner-facing material is standalone HTML and SVG, so the course works directly in the browser on any device.</p>
 </div>
 
 <script src="course-data.js"></script>
@@ -52,9 +52,8 @@
         <span class="pill">${completedModules} with materials</span>
       </div>
       <div class="actions">
-        <a class="btn primary" href="course.html?subject=${subject.slug}">Open Desktop Shell</a>
-        <a class="btn secondary" href="course-mobile.html?subject=${subject.slug}">Open Mobile Shell</a>
-        <a class="btn secondary" href="${subject.syllabusHref}">Open Syllabus</a>
+        <a class="btn primary" href="course.html?subject=${subject.slug}">Open Course</a>
+        <a class="btn secondary" href="${subject.syllabusHref}">View Syllabus</a>
       </div>
     `;
     grid.appendChild(card);

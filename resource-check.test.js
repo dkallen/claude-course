@@ -4,7 +4,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 
-// Pure logic extracted from course.html / course-mobile.html
+// Pure logic extracted from course.html
 
 function resourceKey(moduleNum, idx) {
     return "r" + moduleNum + "-" + idx;

@@ -40,11 +40,13 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
 | P4 | Gist sync has no error recovery or conflict resolution — sync failures may silently lose data | G1.3 | Goes away if Gist is replaced |
 | P5 | No low-friction mechanism for learners to give feedback, and no easy way for the author to review it | G4 | |
 | P6 | Investment must be calibrated — too little investment turns off early users before demand can be validated; too much is wasted if demand doesn't materialize | G1, G2, G3, G4 | Constrains the solution space globally |
+| P7 | Two separate course shells (desktop and mobile) with duplicated logic — every new feature must be implemented twice or the mobile version falls behind | G1 (all), G2 (all), G4 | Multiplies implementation cost of S1, S2, and S3. Mobile shell already lacks notes widget and Gist sync, demonstrating the drift. |
 
 **Causal relationships:**
 - P3 AND P1 → conjunctive: even moving notes to a server doesn't help without identity to link them to a user
 - P3 → P2: Gist/PAT exists *because* there is no proper identity system
 - P4 is secondary: it goes away entirely when Gist is replaced
+- P7 is a cost multiplier: every solution in this enhancement touches course shell code, so P7 amplifies P6
 
 ---
 
@@ -84,6 +86,17 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
     - Strip all Gist-related code: PAT setup modal, gistFetch(), createGist(), loadFromGist(), saveToGist(), disconnectGist(), and all Gist-related localStorage keys.
     - No data migration needed — sole current user (the author) has no data of value to preserve.
 
+### S4: Consolidate to a single responsive course shell
+
+- **Classification:** Cleanup/Build (small)
+- **Resolves:** P7
+- **Advances:** G1 (all), G2 (all), G4 (indirectly — ensures feedback widget reaches all users)
+- **Description:**
+    - Make course.html responsive via CSS media queries so it works well on both desktop and mobile viewports.
+    - Retire course-mobile.html and update all links that reference it (index.html, course.html).
+    - Must be done before or alongside S1/S2/S3 to avoid implementing new features in two shells.
+    - The mobile shell is 186 lines with a subset of desktop functionality — the responsive CSS work is smaller than maintaining two codebases.
+
 ---
 
 ## 4. Risk Register
@@ -100,6 +113,7 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
 | R8 | Brute force / credential stuffing attacks | S1 | Low-Medium | Medium | Supabase auth rate-limits per IP. hCaptcha integration available (backlogged). Monitor for anomalies via Supabase dashboard. |
 | R9 | Broader web application security (XSS, CSRF, injection) | S1, S2 | Low-Medium | High | WAF (e.g., Cloudflare free tier) backlogged. Supabase JS SDK uses parameterized queries (no injection). Standard browser security headers should be reviewed. |
 | R10 | Supabase API keys exposed in client-side JS | S1, S2 | Certain (by design) | Low (if mitigated) | The anon key is designed to be public. Row-level security (RLS) is the actual security boundary. RLS policies must be thorough and tested before launch. |
+| R11 | Responsive redesign introduces layout regressions | S4 | Medium | Low | Test on multiple viewport sizes before retiring mobile shell. Keep mobile shell available on a branch until responsive version is validated. |
 
 ---
 
@@ -117,6 +131,7 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
 - Feedback auto-captures: subject, module, page/resource, user identity, author display name, timestamp
 - Author reviews feedback via Supabase dashboard
 - Remove all Gist integration code
+- Make course.html responsive and retire course-mobile.html
 - Verify Supabase built-in auth rate limiting is enabled
 
 ### Out of scope (deferred)
@@ -142,6 +157,7 @@ graph BT
     S2[S2: Feedback widget] --> P5
     S3[S3: Remove Gist] --> P2
     S3 --> P4
+    S4[S4: Responsive shell] --> P7
 
     P1 --> G1.1
     P1 --> G1.2
@@ -155,6 +171,10 @@ graph BT
     P3 --> G2.2
     P4 --> G1.3
     P5 --> G4
+    P7 --> G1.1
+    P7 --> G1.2
+    P7 --> G1.3
+    P7 --> G4
 
     G1.1 --> G1[G1: Persist data]
     G1.2 --> G1
@@ -171,6 +191,7 @@ graph BT
     P6[P6: constrains all] -.-> S1
     P6 -.-> S2
     P6 -.-> S3
+    P6 -.-> S4
 ```
 
 *P6 (calibrated investment) constrains the solution space — all solutions satisfy it by minimizing build scope and using free-tier services.*
@@ -188,6 +209,7 @@ graph BT
 | S1 → G3.1, G3.2 | **Pass.** Supabase free tier: 50,000 MAU, no fixed cost, pay-as-you-go beyond free tier. Well within budget for < 50 learners. |
 | S2 → G4 | **Pass.** Thumbs + optional comments with automatic context gives the author actionable signal with zero custom admin work. |
 | S3 → P2, P4 | **Pass.** Removing Gist eliminates the PAT requirement and all Gist-related reliability issues. |
+| S4 → P7 | **Pass.** Single responsive shell eliminates duplicated code. New features (auth, persistence, feedback) only need one implementation. |
 
 ### Neutralization Test (Sub-Goal → Problem)
 
@@ -204,6 +226,12 @@ graph BT
 | G1.1 + G1.2 + G1.3 → G1? | **Pass.** All three categories of user data (notes, feedback, progress) are covered. Flashcard state excluded by deliberate decision — low value, no user-created content at risk. |
 | G2.1 + G2.2 → G2? | **Pass.** No technical prerequisites, familiar auth flows. |
 | G3.1 + G3.2 → G3? | **Pass.** Free tier, no fixed cost, scales proportionally. |
+
+### Implementation Dependency Test
+
+| Check | Result |
+|-------|--------|
+| S4 before S1, S2, S3? | **Recommended.** Consolidating to one shell first avoids implementing auth, persistence, and feedback in two places. S4 is a prerequisite for efficient delivery of the other solutions. |
 
 ### Flagged items
 

@@ -113,9 +113,29 @@
   .notes-view-textarea { width: 100%; min-height: 80px; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.45rem 0.5rem; font-family: inherit; font-size: 0.82rem; resize: vertical; background: #fff; color: #333; line-height: 1.5; }
   .notes-view-textarea:focus { outline: none; border-color: #aaa; }
   @media (max-width: 900px) {
-    .sidebar { position: fixed; z-index: 80; background: #fff; }
+    .sidebar { position: fixed; z-index: 80; background: #fff; height: 100vh; }
     .sidebar.collapsed { margin-left: -320px; }
-    .main { padding: 4rem 1rem 1.5rem; }
+    .main { padding: 3.5rem 1rem 2rem; }
+    .main-placeholder h1 { font-size: 1.3rem; }
+    .main-placeholder p { font-size: 0.88rem; }
+    .module-content h2 { font-size: 1.15rem; }
+    .module-content .mc-subtitle { font-size: 0.82rem; margin-bottom: 1rem; }
+    .module-content .mc-phase-title { font-size: 0.92rem; }
+    .module-content .mc-phase-desc { font-size: 0.82rem; }
+    .mc-resource-link { padding: 0.6rem 0.7rem; gap: 0.6rem; }
+    .mc-res-name { font-size: 0.84rem; }
+    .mc-res-meta { font-size: 0.74rem; }
+    .mc-check { font-size: 0.82rem; padding: 0.8rem; }
+    .notes-view h2 { font-size: 1.15rem; }
+  }
+  @media (max-width: 480px) {
+    .sidebar { width: 280px; min-width: 280px; }
+    .sidebar.collapsed { margin-left: -280px; }
+    .sidebar-open .sidebar-toggle { left: 292px; }
+    .main { padding: 3rem 0.75rem 1.5rem; }
+    .module-content { padding: 0; }
+    .mc-resource-link { border-radius: 6px; }
+    .modal { padding: 1.5rem; width: 95%; }
   }
 </style>
 </head>
