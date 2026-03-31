@@ -1,15 +1,12 @@
 // Unit tests for resource checkbox logic
-// Run with: node resource-check.test.js
+// Run with: node --test tests/
 
-import { test } from "node:test";
-import assert from "node:assert/strict";
+const { test } = require("node:test");
+const assert = require("node:assert/strict");
+const { resourceKey } = require("../course-logic.js");
 
-// Pure logic extracted from course.html
-
-function resourceKey(moduleNum, idx) {
-    return "r" + moduleNum + "-" + idx;
-}
-
+// Toggle logic — uses shared resourceKey, keeps mutation logic local
+// (this mirrors the pattern in course.html's toggleResourceCheck)
 function toggleResourceInProgress(progress, moduleNum, idx) {
     const key = resourceKey(moduleNum, idx);
     progress[key] = !progress[key];

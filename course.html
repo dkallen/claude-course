@@ -198,6 +198,7 @@
 </div>
 
 <script src="course-data.js"></script>
+<script src="course-logic.js"></script>
 <script>
 const subjectMap = Object.fromEntries(window.COURSE_DATA.subjects.map(subject => [subject.slug, subject]));
 const params = new URLSearchParams(window.location.search);
@@ -211,7 +212,8 @@ let expandedModule = null;
 let gistToken = null;
 let gistId = null;
 
-function storageKey() { return subject.progressPrefix + "-progress"; }
+// storageKey(prefix) provided by course-logic.js; this wrapper closes over subject
+function subjectStorageKey() { return storageKey(subject.progressPrefix); }
 function gistTokenKey() { return subject.progressPrefix + "-gist-token"; }
 function gistIdKey() { return subject.progressPrefix + "-gist-id"; }
 function gistFilename() { return subject.progressPrefix + "-progress.json"; }
@@ -251,13 +253,7 @@ function toggleNote(wrapId, href, event) {
   }
 }
 
-function escapeHtml(str) {
-  return String(str)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
+// escapeHtml() provided by course-logic.js
 
 function showNotesPanel() {
   document.getElementById("placeholder").style.display = "none";
@@ -334,7 +330,7 @@ function showFeedbackPanel() {
 
 function loadLocalProgress() {
   try {
-    const stored = localStorage.getItem(storageKey());
+    const stored = localStorage.getItem(subjectStorageKey());
     progress = stored ? JSON.parse(stored) : {};
   } catch (e) {
     progress = {};
@@ -342,7 +338,7 @@ function loadLocalProgress() {
 }
 
 function saveLocalProgress() {
-  localStorage.setItem(storageKey(), JSON.stringify(progress));
+  localStorage.setItem(subjectStorageKey(), JSON.stringify(progress));
 }
 
 function setSyncStatus(state, text) {
@@ -491,7 +487,7 @@ function disconnectGist() {
 
 function toggleCheck(num, event) {
   event.stopPropagation();
-  const key = "m" + num;
+  const key = moduleKey(num);
   progress[key] = !progress[key];
   saveProgress();
   renderTOC();
@@ -500,7 +496,7 @@ function toggleCheck(num, event) {
 
 function toggleResourceCheck(moduleNum, idx, event) {
   event.stopPropagation();
-  const key = "r" + moduleNum + "-" + idx;
+  const key = resourceKey(moduleNum, idx);
   progress[key] = !progress[key];
   saveProgress();
 }
@@ -547,7 +543,7 @@ function showModulePanel(num) {
       if (idx < module.resources.length) {
         const resource = module.resources[idx];
         const tagClass = typeMap[resource.type] || "passive";
-        const rChecked = !!progress["r" + num + "-" + idx];
+        const rChecked = !!progress[resourceKey(num, idx)];
         const existingNote = notes[resource.href] || "";
         const hasNote = !!existingNote;
         const wrapId = "nw-" + num + "-" + idx;
@@ -571,10 +567,9 @@ function showModulePanel(num) {
 }
 
 function updateProgress() {
-  const total = modules.length;
-  const done = modules.filter(module => progress["m" + module.num]).length;
-  document.getElementById("progress-label").textContent = `${done} / ${total} complete`;
-  document.getElementById("progress-fill").style.width = `${Math.round((done / total) * 100)}%`;
+  const p = calculateProgress(modules, progress);
+  document.getElementById("progress-label").textContent = `${p.done} / ${p.total} complete`;
+  document.getElementById("progress-fill").style.width = `${p.percent}%`;
 }
 
 function renderTOC() {
@@ -599,7 +594,7 @@ function renderTOC() {
       const item = document.createElement("div");
       item.className = "module-item" + (expandedModule === module.num ? " active" : "") + ((!module.resources || module.resources.length === 0) ? " disabled" : "");
       item.onclick = () => loadModule(module.num);
-      const checked = !!progress["m" + module.num];
+      const checked = !!progress[moduleKey(module.num)];
       item.innerHTML = `
         <input class="module-check" type="checkbox" ${checked ? "checked" : ""} onclick="toggleCheck('${module.num}', event)">
         <div class="module-info">
