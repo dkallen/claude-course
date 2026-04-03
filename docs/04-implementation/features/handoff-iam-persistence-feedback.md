@@ -13,8 +13,8 @@ An enhancement to the course platform that adds user authentication, server-side
 
 | Document | Path | Status |
 |----------|------|--------|
-| GPSR Analysis | `docs/analysis/gpsr-iam-persistence-feedback.md` | Approved |
-| Design Package | `docs/design/design-iam-persistence-feedback.md` | Approved |
+| GPSR Analysis | `docs/02-analysis/gpsr-iam-persistence-feedback.md` | Approved |
+| Design Package | `docs/03-design/design-iam-persistence-feedback.md` | Approved |
 | Backlog | `docs/plans/backlog.md` | Updated with deferred items |
 
 Read the design package first — it has the component diagram, interface contracts, database schema, ADRs, implementation order, and traceability matrix.

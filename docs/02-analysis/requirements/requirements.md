@@ -115,4 +115,4 @@ This document captures the functional and non-functional requirements for delive
 
 ---
 
-*Architectural decision: [ADR-001 — Custom Platform over LMS](docs/adr/001-custom-platform-over-lms.md)*
+*Architectural decision: [ADR-001 — Custom Platform over LMS](../../03-design/adr/001-custom-platform-over-lms.md)*

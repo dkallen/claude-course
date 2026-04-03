@@ -15,7 +15,7 @@ The course platform was originally built as a custom static HTML/CSS/JS applicat
 
 This raised the question of whether to migrate to an established Learning Management System (Teachable, Thinkific, Moodle, Open edX, LearnDash, etc.) or continue building on the custom platform.
 
-A formal requirements analysis was conducted (see [requirements.md](../../requirements.md)) and the following tensions were evaluated.
+A formal requirements analysis was conducted (see [requirements.md](../../02-analysis/requirements/requirements.md)) and the following tensions were evaluated.
 
 ## Tensions Evaluated
 
@@ -74,4 +74,4 @@ A formal requirements analysis was conducted (see [requirements.md](../../requir
 
 ## References
 
-- [requirements.md](../../requirements.md) — Full platform requirements analysis
+- [requirements.md](../../02-analysis/requirements/requirements.md) — Full platform requirements analysis

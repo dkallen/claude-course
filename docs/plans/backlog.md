@@ -29,4 +29,6 @@ Internet-facing auth and data storage opens attack surface. Evaluate Cloudflare 
 
 Needed to support user identity, authentication, and feedback collection. Must be in place before launching IAM and feedback features.
 
+### add pre-commit hook for running tests 
+
 ## Resolved ideas
