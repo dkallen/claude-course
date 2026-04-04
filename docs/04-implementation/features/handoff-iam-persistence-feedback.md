@@ -36,7 +36,7 @@ Read the design package first — it has the component diagram, interface contra
 |------|-------------|--------|--------|
 | 1 | S4: Make course.html responsive, retire course-mobile.html | Done | `8b59e17` |
 | 2 | Add stable resource IDs to course-data.js, add data attributes to resource pages | Done | |
-| 3 | S1: Supabase project setup, schema, RLS, supabase-client.js, auth gate on course.html | Not started | |
+| 3 | S1: Supabase project setup, schema, RLS, supabase-client.js, auth gate on course.html | In progress — schema SQL written, supabase-client.js written, auth gate + login UI added to course.html. **Pending:** run schema SQL in Supabase dashboard, configure OAuth providers (Google, GitHub) in Supabase Auth settings, verify auth flow end-to-end. | |
 | 4 | S1: Persistence — notes and progress read/write via Supabase | Not started | |
 | 5 | S3: Remove all Gist integration code | Not started | |
 | 6 | S2: Replace feedback-widget.js with thumbs up/down + optional comment | Not started | |

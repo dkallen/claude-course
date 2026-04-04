@@ -137,9 +137,74 @@
     .mc-resource-link { border-radius: 6px; }
     .modal { padding: 1.5rem; width: 95%; }
   }
+  /* Auth gate */
+  #auth-gate { display: none; position: fixed; inset: 0; background: #fff; z-index: 500; align-items: center; justify-content: center; }
+  #auth-gate.visible { display: flex; }
+  .auth-box { width: 100%; max-width: 380px; padding: 2.5rem 2rem; }
+  .auth-box h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.3rem; letter-spacing: -0.01em; }
+  .auth-box .auth-subtitle { font-size: 0.88rem; color: #888; margin-bottom: 2rem; line-height: 1.5; }
+  .auth-tabs { display: flex; gap: 0; border-bottom: 1px solid #eee; margin-bottom: 1.5rem; }
+  .auth-tab { background: none; border: none; padding: 0.5rem 1rem 0.6rem; font: inherit; font-size: 0.85rem; color: #aaa; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; }
+  .auth-tab.active { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 600; }
+  .auth-field { margin-bottom: 0.9rem; }
+  .auth-field label { display: block; font-size: 0.8rem; font-weight: 600; color: #555; margin-bottom: 0.3rem; }
+  .auth-field input { width: 100%; padding: 0.65rem 0.75rem; border: 1px solid #ddd; border-radius: 6px; font: inherit; font-size: 0.9rem; }
+  .auth-field input:focus { outline: none; border-color: #999; }
+  .auth-btn { width: 100%; padding: 0.7rem; background: #1a1a1a; color: #fff; border: none; border-radius: 6px; font: inherit; font-size: 0.9rem; font-weight: 600; cursor: pointer; margin-top: 0.4rem; }
+  .auth-btn:hover { background: #333; }
+  .auth-btn:disabled { background: #ccc; cursor: default; }
+  .auth-divider { text-align: center; font-size: 0.78rem; color: #bbb; margin: 1.2rem 0; position: relative; }
+  .auth-divider::before, .auth-divider::after { content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: #eee; }
+  .auth-divider::before { left: 0; }
+  .auth-divider::after { right: 0; }
+  .auth-social { display: flex; gap: 0.6rem; }
+  .auth-social-btn { flex: 1; padding: 0.6rem; border: 1px solid #ddd; border-radius: 6px; background: #fff; font: inherit; font-size: 0.82rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.4rem; }
+  .auth-social-btn:hover { background: #f9f9f9; }
+  .auth-msg { font-size: 0.82rem; margin-top: 0.8rem; min-height: 1.2rem; color: #888; }
+  .auth-msg.error { color: #e53e3e; }
+  .auth-msg.success { color: #2f855a; }
 </style>
 </head>
 <body class="sidebar-open">
+
+<div id="auth-gate">
+  <div class="auth-box">
+    <h1>Course Platform</h1>
+    <p class="auth-subtitle">Sign in to access your course, track progress, and save notes.</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('signin')">Sign in</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">Sign up</button>
+      <button class="auth-tab" onclick="switchAuthTab('magic')">Magic link</button>
+    </div>
+    <form id="auth-panel-signin" onsubmit="event.preventDefault(); authSignIn();">
+      <div class="auth-field"><label for="auth-email-si">Email</label><input type="email" id="auth-email-si" name="email" autocomplete="username" placeholder="you@example.com"></div>
+      <div class="auth-field"><label for="auth-password-si">Password</label><input type="password" id="auth-password-si" name="password" autocomplete="current-password" placeholder="••••••••"></div>
+      <button class="auth-btn" type="submit">Sign in</button>
+    </form>
+    <form id="auth-panel-signup" style="display:none;" onsubmit="event.preventDefault(); authSignUp();">
+      <div class="auth-field"><label for="auth-email-su">Email</label><input type="email" id="auth-email-su" name="email" autocomplete="username" placeholder="you@example.com"></div>
+      <div class="auth-field"><label for="auth-password-su">Password</label><input type="password" id="auth-password-su" name="new-password" autocomplete="new-password" placeholder="At least 6 characters"></div>
+      <button class="auth-btn" type="submit">Create account</button>
+    </form>
+    <form id="auth-panel-magic" style="display:none;" onsubmit="event.preventDefault(); authMagicLink();">
+      <div class="auth-field"><label for="auth-email-ml">Email</label><input type="email" id="auth-email-ml" name="email" autocomplete="username" placeholder="you@example.com"></div>
+      <button class="auth-btn" type="submit">Send magic link</button>
+    </form>
+    <div class="auth-divider">or continue with</div>
+    <div class="auth-social">
+      <button class="auth-social-btn" onclick="authSocial('google')">
+        <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Google
+      </button>
+      <button class="auth-social-btn" onclick="authSocial('github')">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a1a1a"><path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
+        GitHub
+      </button>
+    </div>
+    <div class="auth-msg" id="auth-msg"></div>
+  </div>
+</div>
+
 <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
 
 <aside class="sidebar" id="sidebar">
@@ -197,6 +262,8 @@
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
 <script src="course-data.js"></script>
 <script src="course-logic.js"></script>
 <script>
@@ -663,7 +730,82 @@ function init() {
   if (gistToken) loadFromGist();
 }
 
-init();
+// Auth gate
+
+function showAuthGate() {
+  document.getElementById("auth-gate").classList.add("visible");
+}
+
+function hideAuthGate() {
+  document.getElementById("auth-gate").classList.remove("visible");
+}
+
+function authMsg(text, type) {
+  const el = document.getElementById("auth-msg");
+  el.textContent = text;
+  el.className = "auth-msg" + (type ? " " + type : "");
+}
+
+function switchAuthTab(tab) {
+  ["signin", "signup", "magic"].forEach(function(t) {
+    document.getElementById("auth-panel-" + t).style.display = t === tab ? "" : "none";
+    document.querySelectorAll(".auth-tab")[["signin","signup","magic"].indexOf(t)].classList.toggle("active", t === tab);
+  });
+  authMsg("");
+}
+
+async function authSignIn() {
+  const email = document.getElementById("auth-email-si").value.trim();
+  const password = document.getElementById("auth-password-si").value;
+  if (!email || !password) { authMsg("Email and password required.", "error"); return; }
+  authMsg("Signing in…");
+  const { error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
+  if (error) { authMsg(error.message, "error"); return; }
+  hideAuthGate();
+  init();
+}
+
+async function authSignUp() {
+  const email = document.getElementById("auth-email-su").value.trim();
+  const password = document.getElementById("auth-password-su").value;
+  if (!email || !password) { authMsg("Email and password required.", "error"); return; }
+  if (password.length < 6) { authMsg("Password must be at least 6 characters.", "error"); return; }
+  authMsg("Creating account…");
+  const { error } = await window.supabaseClient.auth.signUp({ email, password });
+  if (error) { authMsg(error.message, "error"); return; }
+  authMsg("Check your email to confirm your account.", "success");
+}
+
+async function authMagicLink() {
+  const email = document.getElementById("auth-email-ml").value.trim();
+  if (!email) { authMsg("Email required.", "error"); return; }
+  authMsg("Sending magic link…");
+  const { error } = await window.supabaseClient.auth.signInWithOtp({ email });
+  if (error) { authMsg(error.message, "error"); return; }
+  authMsg("Magic link sent — check your email.", "success");
+}
+
+async function authSocial(provider) {
+  const { error } = await window.supabaseClient.auth.signInWithOAuth({ provider });
+  if (error) { authMsg(error.message, "error"); }
+}
+
+// Listen for auth state changes (handles magic link and OAuth redirects)
+window.supabaseClient.auth.onAuthStateChange(function(event, session) {
+  if (session && document.getElementById("auth-gate").classList.contains("visible")) {
+    hideAuthGate();
+    init();
+  }
+});
+
+// Boot: check session, show auth gate or init
+window.supabaseReady.then(function(user) {
+  if (user) {
+    init();
+  } else {
+    showAuthGate();
+  }
+});
 </script>
 <script src="feedback-widget.js"></script>
 </body>

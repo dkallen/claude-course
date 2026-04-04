@@ -1,0 +1,7 @@
+{
+  "name": "claude-course",
+  "private": true,
+  "scripts": {
+    "start": "./bin/serve.sh"
+  }
+}
