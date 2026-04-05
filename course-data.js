@@ -119,7 +119,21 @@ window.COURSE_DATA = {
             { id: "m6-flashcards", name: "Flashcards", href: "subjects/claude-code/module-6-flashcards.html", type: "interactive" },
             { id: "m6-reference", name: "Quick Reference", href: "subjects/claude-code/module-6-reference.html", type: "reference" }
           ]},
-        { num: 7, name: "Skills — Reusable Intelligence", section: 1, resources: [] },
+        { num: 7, name: "Skills — Reusable Intelligence", section: 1,
+          check: "Can you explain how a slash command connects to the file on disk? Does your skill fire on intended inputs and behave consistently across different ones? If yes, you're ready for Module 8.",
+          phases: [
+            { label: "Phase 1", title: "Understand the skill system", desc: "Read the lesson to understand skill anatomy, file locations, $ARGUMENTS, and what distinguishes a skill that holds up from one that doesn't.", items: [0] },
+            { label: "Phase 2", title: "Build and test", desc: "Use the builder to construct a skill file with live preview, then run the exercise to write and stress-test a real skill in Claude Code.", items: [1, 2] },
+            { label: "Phase 3", title: "Pressure-test your understanding", desc: "The quiz tests judgment on placement and instruction quality. Flashcards and reference lock in the terminology.", items: [3, 4, 5] }
+          ],
+          resources: [
+            { id: "m7-lesson", name: "Lesson Content", href: "subjects/claude-code/module-7-lesson.html", type: "read" },
+            { id: "m7-builder", name: "Skill Builder", href: "subjects/claude-code/module-7-builder.html", type: "interactive" },
+            { id: "m7-exercise", name: "Guided Exercise", href: "subjects/claude-code/module-7-exercise.html", type: "exercise" },
+            { id: "m7-quiz", name: "Scenario Quiz", href: "subjects/claude-code/module-7-quiz.html", type: "interactive" },
+            { id: "m7-flashcards", name: "Flashcards", href: "subjects/claude-code/module-7-flashcards.html", type: "interactive" },
+            { id: "m7-reference", name: "Quick Reference", href: "subjects/claude-code/module-7-reference.html", type: "reference" }
+          ]},
         { num: 8, name: "MCP — Connecting Claude Code to the World", section: 1, resources: [] },
         { num: 9, name: "Multi-Agent Workflows — Orchestration at Scale", section: 1, resources: [] },
         { num: 10, name: "Scheduled Tasks — Putting Claude on Autopilot", section: 2, resources: [] },

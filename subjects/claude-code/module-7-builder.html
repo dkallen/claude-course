@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 — Skill Builder</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 960px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; line-height: 1.6; margin-bottom: 1.5rem; font-size: 0.93rem; }
+  .layout { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+  @media (max-width: 700px) { .layout { grid-template-columns: 1fr; } }
+  .panel { border: 1px solid #eee; border-radius: 12px; padding: 1.2rem; background: #fafafa; }
+  .panel-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 1rem; }
+  label { display: block; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.05em; color: #888; font-weight: 700; margin-bottom: 0.3rem; margin-top: 0.9rem; }
+  label:first-of-type { margin-top: 0; }
+  input, textarea, select { width: 100%; border: 1px solid #ddd; border-radius: 8px; padding: 0.65rem 0.75rem; font: inherit; font-size: 0.9rem; background: #fff; color: #1a1a1a; }
+  input:focus, textarea:focus, select:focus { outline: 2px solid #1a1a1a; border-color: transparent; }
+  textarea { resize: vertical; min-height: 120px; }
+  .hint { font-size: 0.78rem; color: #aaa; margin-top: 0.25rem; margin-bottom: 0.1rem; }
+  .row { display: flex; gap: 0.6rem; align-items: flex-end; }
+  .row input { flex: 1; }
+  .add-btn { padding: 0.65rem 0.8rem; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; font: inherit; font-size: 0.88rem; cursor: pointer; white-space: nowrap; }
+  .add-btn:hover { background: #e8e8e8; }
+  .tag-list { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.4rem; min-height: 1.8rem; }
+  .tag { display: inline-flex; align-items: center; gap: 0.3rem; background: #f0f0f0; border-radius: 5px; padding: 0.2rem 0.5rem; font-size: 0.82rem; }
+  .tag button { background: none; border: none; cursor: pointer; color: #888; font-size: 0.9rem; line-height: 1; padding: 0; }
+  .tag button:hover { color: #1a1a1a; }
+  .location-row { display: flex; gap: 0.6rem; margin-top: 0.3rem; }
+  .location-option { flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 0.7rem; cursor: pointer; background: #fff; text-align: left; font: inherit; font-size: 0.88rem; transition: all 0.15s; }
+  .location-option.selected { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }
+  .location-option .loc-path { font-size: 0.75rem; opacity: 0.7; display: block; margin-top: 0.15rem; font-family: 'SF Mono', Consolas, monospace; }
+  .preview-panel { border: 1px solid #eee; border-radius: 12px; padding: 1.2rem; background: #fff; }
+  .preview-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: #888; margin-bottom: 0.75rem; display: flex; justify-content: space-between; align-items: center; }
+  .copy-btn { background: #1a1a1a; color: #fff; border: none; border-radius: 6px; padding: 0.35rem 0.75rem; font: inherit; font-size: 0.8rem; cursor: pointer; }
+  .copy-btn:hover { background: #333; }
+  .copy-btn.copied { background: #166534; }
+  pre.preview { font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.85rem; line-height: 1.6; white-space: pre-wrap; background: #f6f6f6; border-radius: 8px; padding: 1rem; min-height: 200px; color: #1a1a1a; }
+  .file-path { font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.8rem; color: #888; margin-bottom: 0.5rem; }
+  .palette-preview { border: 1px solid #eee; border-radius: 8px; padding: 0.8rem; margin-top: 1rem; background: #fafafa; }
+  .palette-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: #aaa; margin-bottom: 0.5rem; }
+  .palette-item { display: flex; gap: 0.75rem; align-items: baseline; }
+  .palette-cmd { font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.88rem; font-weight: 600; color: #1a1a1a; white-space: nowrap; }
+  .palette-desc { font-size: 0.85rem; color: #555; }
+  .section-divider { border: none; border-top: 1px solid #eee; margin: 1.2rem 0; }
+</style>
+</head>
+<body data-subject-id="claude-code" data-module="7" data-resource-id="m7-builder">
+<div class="container">
+  <h1>Skill Builder</h1>
+  <p class="subtitle">Construct a skill file step by step. The preview updates live so you can see exactly what Claude will read.</p>
+
+  <div class="layout">
+    <!-- Left: inputs -->
+    <div class="panel">
+      <div class="panel-title">Define your skill</div>
+
+      <label for="cmd-name">Command name</label>
+      <input type="text" id="cmd-name" placeholder="review-pr" spellcheck="false">
+      <p class="hint">Becomes /review-pr in the command palette. Use hyphens, no spaces.</p>
+
+      <label for="description">Description (shown in palette)</label>
+      <input type="text" id="description" placeholder="Review this pull request for correctness and style">
+      <p class="hint">One sentence. This is the label people see before invoking.</p>
+
+      <hr class="section-divider">
+
+      <label>Placement</label>
+      <div class="location-row">
+        <button class="location-option selected" id="loc-project" type="button" onclick="setLocation('project')">
+          Project-level
+          <span class="loc-path">.claude/commands/</span>
+        </button>
+        <button class="location-option" id="loc-user" type="button" onclick="setLocation('user')">
+          User-level
+          <span class="loc-path">~/.claude/commands/</span>
+        </button>
+      </div>
+
+      <hr class="section-divider">
+
+      <label for="instruction">Instruction body</label>
+      <textarea id="instruction" placeholder="Tell Claude exactly what to do when this skill is invoked. Be specific — concrete instructions produce consistent results."></textarea>
+      <p class="hint">This is what Claude reads and follows. Vague here means unpredictable output.</p>
+
+      <label for="use-args">Does this skill take an argument?</label>
+      <select id="use-args">
+        <option value="no">No — it runs the same way every time</option>
+        <option value="yes">Yes — the user passes something after the command</option>
+      </select>
+      <div id="args-config" style="display:none">
+        <label for="args-hint">What does the argument represent?</label>
+        <input type="text" id="args-hint" placeholder="e.g. the PR number, function name, file path...">
+        <p class="hint">Used to write the $ARGUMENTS placeholder in context. Not part of the file.</p>
+      </div>
+    </div>
+
+    <!-- Right: preview -->
+    <div>
+      <div class="preview-panel">
+        <div class="preview-title">
+          <span>File preview</span>
+          <button class="copy-btn" id="copy-btn" onclick="copyToClipboard()">Copy</button>
+        </div>
+        <div class="file-path" id="file-path">.claude/commands/<span id="filename-display">your-command</span>.md</div>
+        <pre class="preview" id="preview-output"># (description will appear here)
+
+(instruction body will appear here)</pre>
+      </div>
+
+      <div class="palette-preview">
+        <div class="palette-label">How it appears in the palette</div>
+        <div class="palette-item">
+          <span class="palette-cmd" id="palette-cmd">/your-command</span>
+          <span class="palette-desc" id="palette-desc">(description will appear here)</span>
+        </div>
+      </div>
+
+      <div class="palette-preview" style="margin-top:0.75rem; background: #fff;">
+        <div class="palette-label">Example invocation</div>
+        <div id="invocation-example" style="font-family:'SF Mono',Consolas,monospace;font-size:0.85rem;color:#555;">/your-command</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let location = 'project';
+
+function setLocation(loc) {
+  location = loc;
+  document.getElementById('loc-project').classList.toggle('selected', loc === 'project');
+  document.getElementById('loc-user').classList.toggle('selected', loc === 'user');
+  updatePreview();
+}
+
+function sanitizeCommandName(raw) {
+  return raw.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+}
+
+function updatePreview() {
+  const rawName = document.getElementById('cmd-name').value;
+  const cmdName = sanitizeCommandName(rawName) || 'your-command';
+  const desc = document.getElementById('description').value.trim() || '(description will appear here)';
+  const body = document.getElementById('instruction').value.trim() || '(instruction body will appear here)';
+  const useArgs = document.getElementById('use-args').value === 'yes';
+
+  // Build file content
+  let content = `# ${desc}\n\n${body}`;
+  if (useArgs) {
+    content += '\n\n$ARGUMENTS';
+  }
+
+  document.getElementById('preview-output').textContent = content;
+  document.getElementById('filename-display').textContent = cmdName;
+
+  const basePath = location === 'project' ? '.claude/commands/' : '~/.claude/commands/';
+  document.getElementById('file-path').innerHTML = `${basePath}<span id="filename-display">${cmdName}</span>.md`;
+
+  document.getElementById('palette-cmd').textContent = `/${cmdName}`;
+  document.getElementById('palette-desc').textContent = desc;
+
+  const argsHint = document.getElementById('args-hint').value.trim();
+  const exampleArg = argsHint || (useArgs ? 'your-argument' : '');
+  document.getElementById('invocation-example').textContent = useArgs
+    ? `/${cmdName} ${exampleArg}`
+    : `/${cmdName}`;
+}
+
+document.getElementById('use-args').addEventListener('change', function() {
+  document.getElementById('args-config').style.display = this.value === 'yes' ? 'block' : 'none';
+  updatePreview();
+});
+
+['cmd-name', 'description', 'instruction', 'args-hint'].forEach(id => {
+  document.getElementById(id).addEventListener('input', updatePreview);
+});
+
+function copyToClipboard() {
+  const text = document.getElementById('preview-output').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.textContent = 'Copy';
+      btn.classList.remove('copied');
+    }, 1800);
+  });
+}
+
+// Initial render
+updatePreview();
+</script>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+</body>
+</html>

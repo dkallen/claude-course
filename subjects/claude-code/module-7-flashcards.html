@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 — Flashcards</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .card { perspective: 1000px; cursor: pointer; min-height: 180px; }
+  .card-inner { position: relative; width: 100%; height: 100%; min-height: 180px; transition: transform 0.5s; transform-style: preserve-3d; }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; border: 1px solid #eee; border-radius: 12px; padding: 1rem; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.55; }
+  .front { background: #fafafa; font-weight: 600; font-size: 0.95rem; }
+  .back { background: #fff; transform: rotateY(180deg); color: #444; font-size: 0.88rem; }
+</style>
+</head>
+<body data-subject-id="claude-code" data-module="7" data-resource-id="m7-flashcards">
+<div class="container">
+  <h1>Module 7: Flashcards</h1>
+  <p class="subtitle">Click any card to flip it.</p>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+const cards = [
+  ["Skill", "A Markdown file in .claude/commands/ that Claude executes when you invoke the corresponding slash command."],
+  ["Slash command", "The / prefix + filename that invokes a skill (e.g., /commit from commit.md)."],
+  ["$ARGUMENTS", "A placeholder in the skill instruction replaced at runtime with whatever you type after the command name."],
+  ["Command palette", "The list of available skills that appears when you type / in a Claude Code session — shows built-in and custom skills."],
+  ["Project-level skill", "A skill in .claude/commands/, part of the repository, version-controlled and available to every contributor."],
+  ["User-level skill", "A skill in ~/.claude/commands/, personal and available across every project you open."],
+  ["Skill description", "The H1 first line of a skill file — the label shown in the command palette before invocation."],
+  ["Instruction body", "The text Claude reads and follows when a skill is invoked. Vague here means unpredictable output."],
+  ["Built-in skill", "A skill that ships with Claude Code, visible in the command palette alongside your custom skills."],
+  ["Skill composition", "Designing one skill's instruction to describe a multi-step workflow, effectively combining the behaviors of several focused skills."],
+  ["One skill, one job", "The design principle that skills performing multiple distinct operations fail inconsistently — each job deserves its own skill file."],
+  ["Trigger boundary", "The design decision about when a skill should be invoked — and crucially, when it should not be."]
+];
+
+const grid = document.getElementById("grid");
+cards.forEach(([front, back]) => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<div class="card-inner"><div class="face front">${front}</div><div class="face back">${back}</div></div>`;
+  card.addEventListener("click", () => card.classList.toggle("flipped"));
+  grid.appendChild(card);
+});
+</script>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+</body>
+</html>

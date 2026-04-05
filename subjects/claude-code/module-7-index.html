@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7: Skills — Reusable Intelligence</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 700px; margin: 0 auto; }
+  h1 { font-size: 1.8rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.3rem; }
+  .course-title { font-size: 0.9rem; color: #999; margin-bottom: 1.5rem; }
+  .intro { font-size: 0.95rem; color: #555; line-height: 1.65; margin-bottom: 2rem; }
+  .phase { margin-bottom: 2.4rem; }
+  .phase-header { display: flex; align-items: baseline; gap: 0.6rem; margin-bottom: 0.3rem; }
+  .phase-number { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #aaa; }
+  .phase-title { font-size: 1.1rem; font-weight: 600; }
+  .phase-desc { font-size: 0.88rem; color: #777; line-height: 1.5; margin-bottom: 1rem; }
+  .resource { display: flex; gap: 1rem; align-items: flex-start; padding: 0.95rem 1rem; background: #fafafa; border: 1px solid #eee; border-radius: 10px; margin-bottom: 0.65rem; text-decoration: none; color: inherit; transition: border-color 0.15s, background 0.15s; }
+  .resource:hover { border-color: #ccc; background: #f5f5f5; }
+  .resource-icon { font-size: 1.15rem; flex-shrink: 0; width: 28px; text-align: center; margin-top: 1px; }
+  .resource-name { font-size: 0.92rem; font-weight: 600; margin-bottom: 0.15rem; }
+  .resource-type { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; padding: 0.1rem 0.4rem; border-radius: 3px; background: #f0f0f0; color: #888; display: inline-block; margin-bottom: 0.3rem; }
+  .interactive { background: #1a1a1a; color: #fff; }
+  .resource-desc { font-size: 0.82rem; color: #888; }
+  .resource-time { font-size: 0.78rem; color: #bbb; margin-top: 0.2rem; }
+  .note { font-size: 0.85rem; color: #888; line-height: 1.6; margin-top: 2rem; padding: 1rem; background: #fafafa; border-radius: 8px; border-left: 3px solid #ddd; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="course-title">From Concept to Delivery with Claude Code</div>
+  <h1>Module 7: Skills</h1>
+  <p class="intro">Skills turn repeated instructions into invocable slash commands. Instead of re-explaining the same thing across sessions, you write it once as a Markdown file and call it with a single command. This module covers how the skill system works, how to build skills that hold up across different inputs, and where they belong.</p>
+
+  <div class="phase">
+    <div class="phase-header"><span class="phase-number">Phase 1</span><span class="phase-title">Understand the skill system</span></div>
+    <p class="phase-desc">Read the lesson to understand what skills are, how they're structured, and what distinguishes a skill that works consistently from one that doesn't.</p>
+    <a class="resource" href="module-7-lesson.html"><div class="resource-icon">1</div><div><div class="resource-name">Lesson Content</div><div class="resource-type">Passive</div><div class="resource-desc">Skill anatomy, file locations, $ARGUMENTS, built-in skills, composition, and testing</div><div class="resource-time">~15 min read</div></div></a>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header"><span class="phase-number">Phase 2</span><span class="phase-title">Build and test</span></div>
+    <p class="phase-desc">Use the builder to construct a skill file with live preview, then run the guided exercise to write, place, and stress-test a real skill in Claude Code.</p>
+    <a class="resource" href="module-7-builder.html"><div class="resource-icon">2</div><div><div class="resource-name">Skill Builder</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">Construct a skill file step by step — name, description, instruction body, $ARGUMENTS — with live Markdown preview</div><div class="resource-time">~10 min</div></div></a>
+    <a class="resource" href="module-7-exercise.html"><div class="resource-icon">3</div><div><div class="resource-name">Guided Exercise</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">Write a skill, place it in the right location, and invoke it on three different inputs to find where the instruction breaks</div><div class="resource-time">~30–45 min</div></div></a>
+  </div>
+
+  <div class="phase">
+    <div class="phase-header"><span class="phase-number">Phase 3</span><span class="phase-title">Pressure-test your understanding</span></div>
+    <p class="phase-desc">The quiz tests judgment around placement, $ARGUMENTS usage, and skill design decisions. Flashcards and the reference card lock in the terminology and principles.</p>
+    <a class="resource" href="module-7-quiz.html"><div class="resource-icon">4</div><div><div class="resource-name">Scenario Quiz</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">6 judgment calls about skill design, placement, and what breaks when instructions are underspecified</div><div class="resource-time">~10 min</div></div></a>
+    <a class="resource" href="module-7-flashcards.html"><div class="resource-icon">5</div><div><div class="resource-name">Flashcards</div><div class="resource-type interactive">Interactive</div><div class="resource-desc">Drill the core terms: slash commands, $ARGUMENTS, project vs. user scope, instruction body</div><div class="resource-time">~8 min</div></div></a>
+    <a class="resource" href="module-7-reference.html"><div class="resource-icon">6</div><div><div class="resource-name">Quick Reference</div><div class="resource-type">Passive</div><div class="resource-desc">Skill anatomy, file locations, naming convention, testing checklist, and design principles at a glance</div><div class="resource-time">~2 min</div></div></a>
+  </div>
+
+  <div class="note"><strong>Module 7 check:</strong> Can you explain how trigger matching works — how a slash command in the palette connects to the file on disk? Does your skill fire on intended inputs and behave consistently across different ones? If yes, you're ready for Module 8.</div>
+</div>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+</body>
+</html>

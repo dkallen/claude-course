@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 — Guided Exercise</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; padding: 2rem 1rem; color: #1a1a1a; background: #fff; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.4rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; font-size: 0.93rem; }
+  h2 { font-size: 1rem; text-transform: uppercase; letter-spacing: 0.05em; color: #555; margin: 1.6rem 0 0.6rem; }
+  p, li { font-size: 0.93rem; line-height: 1.65; color: #333; }
+  p { margin-bottom: 0.8rem; }
+  ul, ol { padding-left: 1.4rem; margin-bottom: 0.8rem; }
+  li { margin-bottom: 0.35rem; }
+  .card { background: #fafafa; border: 1px solid #eee; border-radius: 10px; padding: 1rem; margin-bottom: 1rem; }
+  pre { background: #f6f6f6; border-radius: 6px; padding: 0.85rem 1rem; font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.84rem; line-height: 1.55; margin-bottom: 0.8rem; overflow-x: auto; white-space: pre-wrap; }
+  code { font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.85em; background: #f0f0f0; padding: 0.1em 0.35em; border-radius: 3px; }
+  .step-note { font-size: 0.84rem; color: #888; font-style: italic; }
+</style>
+</head>
+<body data-subject-id="claude-code" data-module="7" data-resource-id="m7-exercise">
+<div class="container">
+  <h1>Module 7: Guided Exercise</h1>
+  <p class="subtitle">Write a skill from scratch, place it correctly, and test it until you trust it.</p>
+  <div class="card">
+    <p><strong>Goal:</strong> Build one working skill and verify that it behaves reliably across different inputs.</p>
+    <p><strong>Time estimate:</strong> 30–45 minutes</p>
+  </div>
+
+  <h2>Part 1: Browse Before You Build</h2>
+  <p>Open Claude Code and type <code>/</code>. Spend two minutes reading through the built-in skills in the palette. Pick one and look at what it does when invoked.</p>
+  <p>Notice: What does the description tell you before you run it? How specific is the instruction? Does it use <code>$ARGUMENTS</code>?</p>
+  <p class="step-note">You're not looking for anything in particular — just orienting yourself to what a well-formed skill feels like.</p>
+
+  <h2>Part 2: Choose a Task Worth Encoding</h2>
+  <p>Think of something you've asked Claude to do more than twice in the same general way. It doesn't need to be complex. Good candidates:</p>
+  <ul>
+    <li>Writing a commit message in a consistent style</li>
+    <li>Explaining what a file or function does</li>
+    <li>Checking code for a specific category of issue (security, performance, style)</li>
+    <li>Generating a structured summary of recent changes</li>
+    <li>Drafting a PR description from staged changes</li>
+  </ul>
+  <p>If nothing comes to mind, use this one: <em>Write a commit message for the current staged changes. Format it with a subject line under 72 characters, followed by a blank line and 2–3 bullet points explaining what changed and why.</em></p>
+
+  <h2>Part 3: Draft the Skill File</h2>
+  <p>Use the Skill Builder in this module, or draft the file directly. Either way, create a Markdown file with:</p>
+  <ul>
+    <li>A clear H1 description (what someone sees in the palette)</li>
+    <li>A specific instruction body (what Claude actually does)</li>
+    <li>A <code>$ARGUMENTS</code> placeholder if the skill takes variable input</li>
+  </ul>
+  <p>Example structure:</p>
+  <pre># Write a commit message for the current staged changes
+
+Examine the staged diff and write a commit message in this format:
+
+Subject: A clear summary under 72 characters (imperative mood)
+
+- What changed and why (one bullet per distinct change)
+- Omit obvious details visible in the diff itself
+- Focus on intent, not mechanics</pre>
+  <p>Save the file in <code>.claude/commands/</code> (or <code>~/.claude/commands/</code> if it's a personal habit). The filename is the command name — no spaces, use hyphens.</p>
+
+  <h2>Part 4: Invoke It Three Times</h2>
+  <p>Open a Claude Code session in a project and invoke your new skill three times with different context:</p>
+  <ol>
+    <li><strong>Typical case:</strong> The kind of input you imagined when writing the skill</li>
+    <li><strong>Unusual case:</strong> A larger change, a smaller change, or a different kind of file</li>
+    <li><strong>Stressful case:</strong> Ambiguous input, a file you don't normally work with, or very minimal content</li>
+  </ol>
+  <p>For each invocation, ask yourself: did the output match what I actually needed, or did the instruction leave room for Claude to interpret things in a way I didn't want?</p>
+
+  <h2>Part 5: Refine the Instruction</h2>
+  <p>Based on the three tests, identify the weakest part of your instruction body. Common problems:</p>
+  <ul>
+    <li>Too vague: Claude interpreted "review" differently than you meant</li>
+    <li>Too broad: Claude tried to cover everything when you only needed one thing</li>
+    <li>Missing constraints: Output format was inconsistent between invocations</li>
+    <li>Wrong placement: The skill is general-purpose but you put it in a project-specific location</li>
+  </ul>
+  <p>Edit the file. Invoke it again. Is it better?</p>
+
+  <h2>Part 6: Capture What You Learned</h2>
+  <p>Write a short note (doesn't need to be formal) answering these questions:</p>
+  <ul>
+    <li>What was vague in your first draft that you had to fix?</li>
+    <li>Did the skill behave differently across the three test cases, and if so, how?</li>
+    <li>Is this a project-level skill, a user-level skill, or both? Where did you put it and why?</li>
+    <li>What would make this skill better six months from now when your project has evolved?</li>
+  </ul>
+  <p class="step-note">This reflection is the real artifact. A skill file you write in 10 minutes is the start — this note is how you turn it into something durable.</p>
+</div>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+</body>
+</html>

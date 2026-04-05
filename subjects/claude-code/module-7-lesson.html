@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 — Lesson: Skills</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1a1a1a; background: #fff; font-size: 0.92rem; line-height: 1.6; }
+  .container { max-width: 700px; margin: 0 auto; padding: 2rem 1rem; }
+  .back-link { font-size: 0.8rem; color: #888; text-decoration: none; display: inline-block; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+  .subtitle { font-size: 0.88rem; color: #555; margin-bottom: 1.5rem; font-style: italic; }
+  h2 { font-size: 1.05rem; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2rem; margin-bottom: 0.75rem; }
+  h3 { font-size: 0.95rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  p, li { font-size: 0.92rem; line-height: 1.6; }
+  p { margin-bottom: 0.75rem; }
+  ul, ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+  blockquote { border-left: 2px solid #999; padding-left: 1rem; color: #444; font-style: italic; margin-bottom: 0.75rem; }
+  pre { background: #f6f6f6; border-radius: 6px; padding: 0.85rem 1rem; font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.84rem; line-height: 1.55; margin-bottom: 0.75rem; overflow-x: auto; }
+  code { font-family: 'SF Mono', SFMono-Regular, Consolas, monospace; font-size: 0.85em; background: #f0f0f0; padding: 0.1em 0.35em; border-radius: 3px; }
+  hr { border: none; border-top: 1px solid #eee; margin: 2rem 0; }
+  table { width: 100%; border-collapse: collapse; margin-bottom: 0.75rem; }
+  th, td { padding: 0.5rem 0.6rem; border-bottom: 1px solid #eee; text-align: left; font-size: 0.88rem; }
+  th { color: #666; font-weight: 600; }
+</style>
+</head>
+<body data-subject-id="claude-code" data-module="7" data-resource-id="m7-lesson">
+<div class="container">
+  <a href="module-7-index.html" class="back-link">&larr; Module 7</a>
+  <h1>Module 7: Skills — Reusable Intelligence</h1>
+  <p class="subtitle">From Concept to Delivery with Claude Code &mdash; A Practitioner's Course</p>
+
+  <hr>
+  <h2>Why This Module Matters</h2>
+  <p>Every time you tell Claude how to write a commit message, how to format a PR description, or how to structure a code review, that knowledge evaporates when the session ends. The next session, you explain it again. And the session after that.</p>
+  <p>Skills break this cycle. A skill captures an instruction once — in a file — and makes it invocable with a slash command. The expertise lives in the repository. Claude doesn't need to be briefed again.</p>
+
+  <h2>1. What a Skill Is</h2>
+  <p>A skill is a Markdown file in <code>.claude/commands/</code>. That's it. The filename becomes a slash command. The file content is the instruction Claude executes when you invoke it.</p>
+  <pre>.claude/
+  commands/
+    commit.md          →  /commit
+    review-pr.md       →  /review-pr
+    explain-error.md   →  /explain-error</pre>
+  <p>There are two places skills can live:</p>
+  <ul>
+    <li><strong>Project-level:</strong> <code>.claude/commands/</code> in your project root — version-controlled, shared with anyone who works in that repo</li>
+    <li><strong>User-level:</strong> <code>~/.claude/commands/</code> — personal, applies to every project you open</li>
+  </ul>
+  <blockquote>Project-level skills encode how <em>this codebase</em> works. User-level skills encode how <em>you</em> work.</blockquote>
+
+  <h2>2. Anatomy of a Skill File</h2>
+  <p>A skill file has three parts: a description, an instruction body, and an optional arguments placeholder.</p>
+  <pre># Summarize the changes in the current branch as a PR description
+
+Write a clear pull request description for the staged or committed
+changes in this branch. Structure it with:
+
+- A one-line summary (under 70 characters)
+- A "What changed" section with 2–4 bullet points
+- A "Why" section explaining the motivation
+
+Base the description on the actual diff, not assumptions.
+$ARGUMENTS</pre>
+  <p>Breaking that down:</p>
+  <ul>
+    <li>The <strong>H1 line</strong> is the description shown in the command palette when you type <code>/</code></li>
+    <li>The <strong>body</strong> is the full instruction Claude reads and follows</li>
+    <li><strong><code>$ARGUMENTS</code></strong> is replaced at runtime with whatever you type after the command name</li>
+  </ul>
+
+  <h2>3. The $ARGUMENTS Placeholder</h2>
+  <p>Without <code>$ARGUMENTS</code>, a skill runs identically every time — a fixed instruction. With it, you can pass context at invocation time.</p>
+  <pre># Explain what this function does and why it might fail
+
+Look at the function named $ARGUMENTS and explain:
+1. What it does, in plain English
+2. What inputs might cause unexpected behavior
+3. Any edge cases worth testing</pre>
+  <p>Invocation: <code>/explain-function parseUserInput</code></p>
+  <p><code>$ARGUMENTS</code> becomes <code>parseUserInput</code>. The skill now knows which function to target.</p>
+  <p>You can also use <code>$ARGUMENTS</code> mid-sentence, or use it to accept free-form instructions that modify the skill's default behavior.</p>
+
+  <h2>4. The Command Palette</h2>
+  <p>Type <code>/</code> in any Claude Code session and the command palette appears. It shows all available skills: built-in Claude Code skills, your user-level skills, and the project-level skills for the current directory.</p>
+  <p>The palette is organized by source. It also shows the first-line description for each skill, which is why that H1 line matters — it's your skill's label in the UI.</p>
+  <blockquote>If your skill description is vague, the palette is vague. Write the description like you're labeling a button someone else will press.</blockquote>
+
+  <h2>5. Built-in Skills</h2>
+  <p>Claude Code ships with built-in skills for common tasks. Browse them by typing <code>/</code> in a fresh session. Before writing your own, check whether a built-in already does what you want — or comes close enough that you only need to extend it.</p>
+  <p>Studying the built-in skills is also useful for understanding what good skill design looks like:</p>
+  <ul>
+    <li>Short, unambiguous command names</li>
+    <li>First lines that function as clear labels</li>
+    <li>Focused instruction bodies — one skill, one job</li>
+    <li>Deliberate use of <code>$ARGUMENTS</code> only when input actually varies</li>
+  </ul>
+
+  <h2>6. Project vs. User Skills — When to Use Each</h2>
+  <table>
+    <tr><th>Use project-level when...</th><th>Use user-level when...</th></tr>
+    <tr><td>The skill is specific to how this codebase is structured</td><td>You want the skill across all projects</td></tr>
+    <tr><td>You want teammates to have the same skill</td><td>The skill encodes your personal style or workflow</td></tr>
+    <tr><td>The skill should be version-controlled with the repo</td><td>The skill is an IDE-like habit, not project knowledge</td></tr>
+  </table>
+  <p>Some skills live in both. A general "write a PR description" might be user-level. A "write a PR description following this project's contribution guidelines" should be project-level.</p>
+
+  <h2>7. Skill Composition</h2>
+  <p>Skills compose naturally because they are just instructions. A higher-order skill can invoke the behaviors from other skills by describing the same behavior in its instruction body. There is no special syntax for calling one skill from another — you describe the workflow, and Claude executes it.</p>
+  <p>When to compose:</p>
+  <ul>
+    <li>You have two small, focused skills that often run back-to-back</li>
+    <li>You want a "meta" skill that orchestrates several steps in sequence</li>
+    <li>A skill is growing complex enough that splitting it into parts makes each part testable independently</li>
+  </ul>
+  <p>When <em>not</em> to compose:</p>
+  <ul>
+    <li>The combined skill would be so long it obscures what it does</li>
+    <li>The steps are already fast enough to run manually in sequence</li>
+    <li>The shared steps are different enough in each skill that one description can't cover both</li>
+  </ul>
+
+  <h2>8. Writing Skills That Work</h2>
+  <p>The most common failure mode is writing a skill that works in the specific case you imagined but breaks when the inputs change slightly. Three practices help:</p>
+  <h3>Be concrete, not abstract</h3>
+  <p>Vague: "Review this code." Concrete: "Review this code for off-by-one errors in loop bounds, null dereferences on user-supplied input, and SQL injection in any string interpolated into a query. For each issue found, show the line, explain the risk, and suggest a fix."</p>
+  <h3>Test with atypical inputs</h3>
+  <p>Run the skill on something other than the case you wrote it for. Does it still behave sensibly when the codebase is different, or when the argument is a partial name, or when the diff is large?</p>
+  <h3>One skill, one job</h3>
+  <p>Skills that try to do too much fail inconsistently. A skill that writes commit messages <em>and</em> runs tests <em>and</em> updates the changelog will sometimes do all three and sometimes do one. Split the jobs. Keep each skill small enough that its success condition is clear.</p>
+
+  <h2>9. Testing Skills Deliberately</h2>
+  <p>The test for a skill is not "did it run." It is "did it produce the right output across different inputs."</p>
+  <ol>
+    <li>Invoke it on a typical case. Is the output what you expected?</li>
+    <li>Invoke it on a boundary case. Does it still make sense?</li>
+    <li>Invoke it without <code>$ARGUMENTS</code> if the argument is optional. Does it degrade gracefully?</li>
+    <li>Wait two weeks. Come back and invoke it. Does it still do what you need, or has the project evolved past it?</li>
+  </ol>
+  <p>Iteration is normal. The first version of a skill is a draft. The real version emerges after a few real uses.</p>
+
+  <hr>
+  <h2>Check</h2>
+  <p>If you can write a skill file, place it in the right location, understand how <code>$ARGUMENTS</code> works, and test it with inputs that would expose a weak instruction body — you're ready to move on. The builder in this module will help you draft one. The exercise will help you test one.</p>
+</div>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+</body>
+</html>
