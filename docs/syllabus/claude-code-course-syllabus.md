@@ -167,58 +167,64 @@ Did the tests catch a real issue during implementation? If yes, you're experienc
 
 ## Module 7: Skills — Reusable Intelligence
 
-**Goal:** Create custom skills that encode your domain knowledge and workflows for Claude Code to use repeatedly.
+**Goal:** Learn how Claude Code's skill system works and create skills that extend what Claude can do without re-prompting.
 
 ### Key Concepts
-- What skills are: SKILL.md files that teach Claude Code how to do specific things
-- Skill anatomy: description, triggers, instructions, examples
-- When to write a skill vs. when to just prompt
-- Skill composition: skills that reference other skills
-- Testing and iterating on skills
+- What skills are: SKILL.md files that live in `.claude/skills/` and extend Claude Code's vocabulary with new commands and behaviors
+- Skill anatomy: the trigger block (regex patterns, slash commands, natural-language phrases), the instruction body, and optional examples — how each part is interpreted
+- How Claude discovers and selects skills: trigger matching vs. semantic matching, priority ordering when multiple skills could apply
+- Slash commands as skills: creating `/your-command` shortcuts that appear in the command palette — the difference between a slash command and a trigger phrase
+- The built-in skill library: what Claude Code ships with, how to browse it with `/skills`, and what the built-in ones reveal about good skill design
+- Skill composition: skills that call other skills, and when to split a workflow across multiple focused skills rather than one monolithic one
+- Testing skills: probing trigger patterns with phrasings that should fire and phrasings that shouldn't — how to iterate without guessing
 
 ### Exercise
-Identify a task you do repeatedly (e.g., writing a certain kind of document, setting up a certain kind of component, running a specific analysis). Write a skill for it. Test it three times with different inputs. Refine based on what Claude gets wrong.
+Start by browsing Claude Code's built-in skills with `/skills`. Pick one and read its SKILL.md — study the trigger pattern and how the instruction body is written. Then create your own: a slash command that handles something you do repeatedly. Test it with at least five different phrasings, including two or three that should *not* trigger it. Refine the trigger pattern until the boundaries are where you expect them.
 
 ### Check
-Does your skill produce consistent, high-quality output across different inputs without you having to re-explain things? If yes, move on.
+Can you explain how trigger matching works? Does your skill fire on intended inputs and stay quiet on unintended ones? If yes, move on.
 
 ---
 
 ## Module 8: MCP — Connecting Claude Code to the World
 
-**Goal:** Extend Claude Code's reach by connecting it to external tools and data sources.
+**Goal:** Understand how Model Context Protocol works inside Claude Code and extend it with servers that connect to external tools and data.
 
 ### Key Concepts
-- What MCP (Model Context Protocol) is and why it matters
-- Installing and configuring MCP servers (GitHub, filesystem, databases, etc.)
-- Using MCP to give Claude Code access to your actual tools and data
-- Security considerations: what you're granting access to
-- Building custom MCP servers (overview — not a deep dive)
+- What MCP is: an open standard for connecting LLMs to tools — and the key insight that Claude Code's built-in tools (Read, Edit, Bash, Glob, Grep) are already MCP tools; you're extending an existing system, not adding something new
+- The MCP tool-use loop: how Claude decides which tool to call, what it passes, what it does with the result, and how this shows up in the session output
+- The server ecosystem: official servers (GitHub, filesystem, Postgres, Brave Search, Puppeteer) and community-built ones — where to find them and how to evaluate them
+- Installing and configuring MCP servers: `claude mcp add`, the `.mcp.json` config file, and how to scope a server to a specific project vs. globally
+- Security model: what permissions you're granting when you install a server, network access implications, and why least-privilege matters for servers that touch production systems
+- Watching Claude use tools: how to read the tool-call output in a session to understand Claude's reasoning — which tool it reached for, why, and what it learned from the result
+- Building custom MCP servers (overview): the shape of a server, when the ecosystem doesn't have what you need
 
 ### Exercise
-Install one MCP server that's relevant to your work (e.g., GitHub if you use Git, or a filesystem server for a specific data source). Give Claude Code a task that requires that external data. Observe how it uses the MCP connection vs. how it would have handled the task without it.
+Install two MCP servers: one official (e.g., the GitHub MCP server) and one from the community that interests you. Give Claude Code a task that requires each one. Watch the tool-call output — pay attention to which tool Claude chose, what arguments it passed, and how it used the result in its next step. Then try giving it a task where the right tool is ambiguous and see which one it reaches for.
 
 ### Check
-Has Claude Code successfully used external data through MCP to complete a task it couldn't have done from the codebase alone? If yes, move on.
+Can you explain what MCP is and how it differs from just writing a prompt? Have you watched Claude's tool-call loop in action and understood what it was doing? If yes, move on.
 
 ---
 
 ## Module 9: Multi-Agent Workflows — Orchestration at Scale
 
-**Goal:** Understand how to use subagents and agent teams for complex, multi-step work.
+**Goal:** Learn how Claude Code spawns and coordinates subagents, and when specialized agent types produce better results than a single session.
 
 ### Key Concepts
-- When a single Claude Code session isn't enough
-- Subagents: what they are and when to spawn them
-- Worktrees: isolated Git environments for parallel work
-- Coordinating multiple agents on different aspects of a project
-- Context management across agents
+- The Agent tool: how Claude Code spawns subagents — the parameters that matter (`subagent_type`, `model`, `isolation`, `run_in_background`) and what each one controls
+- Specialized agent types: what each is optimized for — **Plan** (architecture and implementation strategy), **Explore** (fast codebase research, search, and analysis), **general-purpose** (complex multi-step tasks that don't fit a specialty) — and how to choose
+- Context isolation: why subagents start with a fresh context window, what you need to explicitly pass them, and why this is a feature rather than a limitation
+- The `isolation: "worktree"` parameter: what it creates (a temporary Git worktree), when to use it (parallel work that modifies files), and how the worktree is cleaned up
+- The orchestrator pattern: structuring an orchestrating session to delegate clearly, collect results, and synthesize — the difference between delegating a task and delegating a decision
+- Parallel vs. sequential agents: when to fire agents concurrently (`run_in_background: true`) vs. wait for results before proceeding — and what breaks if you parallelize the wrong things
+- Reading subagent output: how results surface back in the orchestrating session, what gets preserved, and what gets lost
 
 ### Exercise
-Take your project and identify two features that could be developed in parallel. Set up worktrees for each. Have Claude Code work on both simultaneously. Merge the results. Reflect on what went smoothly and what was awkward.
+Give Claude Code a task that benefits from multiple specialized agents — for example, ask it to research a library's API using an Explore agent *and* draft an implementation plan using a Plan agent, running both in parallel. Watch how it breaks the work down, what it passes to each agent, and how it writes the summary. Then ask it to repeat one of those tasks in an isolated worktree — observe what changes.
 
 ### Check
-Can you articulate when multi-agent workflows help vs. when a single session is more efficient? If yes, move on.
+Can you name the three specialized agent types and describe what each is optimized for? Can you explain why context isolation is a feature? If yes, move on.
 
 ---
 
@@ -233,7 +239,7 @@ Can you articulate when multi-agent workflows help vs. when a single session is 
 - Desktop scheduled tasks: creating durable tasks via the Cowork sidebar or `/schedule` that survive restarts
 - Session-scoped limits: tasks only fire while Claude Code is running and idle; 3-day auto-expiry on recurring tasks; no catch-up for missed fires
 - Practical patterns: deployment monitoring, daily PR summaries, weekly documentation updates, morning briefings
-- Security and permissions: tasks inherit your environment but permission prompts can stall unattended sessions
+- Security and permissions: tasks inherit your environment; permission prompts can stall unattended sessions; `--dangerously-skip-permissions` as an explicit opt-in for fully automated contexts (and when *not* to use it)
 - When to use /loop vs. Desktop scheduled tasks vs. GitHub Actions for CI/CD automation
 
 ### Exercise
@@ -292,39 +298,42 @@ Did you successfully send a task to Claude Code through a messaging platform and
 
 ## Module 13: Delivery — From Working Code to Shipped Product
 
-**Goal:** Use Claude Code to handle the "last mile" — documentation, deployment prep, release notes, and handoff.
+**Goal:** Use Claude Code's delivery-phase features to document, review, and ship — and know where to trust its output vs. where to review carefully.
 
 ### Key Concepts
-- Generating documentation from code (README, API docs, user guides)
-- Writing release notes and changelogs with Claude
-- Git workflows: branching, committing, PR creation with Claude Code
-- CI/CD integration: using Claude in GitHub Actions or GitLab CI
-- Code review automation with @claude on GitHub
-- The handoff: what to check before declaring "done"
+- **@claude in GitHub PRs**: how the code review bot works, what triggers it, what it can meaningfully comment on vs. what it gets wrong, and how to configure it
+- **Claude Code in GitHub Actions**: the `claude-code-action` runner — triggered reviews, automated triage, CI integration patterns, and how to write a workflow file that invokes it
+- **Hooks**: Claude Code's pre/post tool-call hook system — how to set up hooks that run automated checks (linting, tests, security scans) before or after Claude edits files, without manual prompting
+- **Commit messages and PR descriptions**: how Claude generates these, the prompts that produce good ones vs. generic ones, and when to use `/commit` vs. asking Claude to draft inline
+- **Documentation generation**: README, API docs, inline comments — what Claude does well (summarizing structure it can read), where it hallucinates (intent it can't infer from code), and how to guide it toward accuracy
+- **Release notes and changelogs**: using `git log` context to anchor Claude's output, what level of detail to ask for, and how to avoid the "improved performance and fixed bugs" trap
+- **The handoff checklist**: what Claude Code verifies automatically vs. what still requires human judgment before declaring done
 
 ### Exercise
-Take your project to a shippable state. Have Claude Code generate a README, write release notes, create a PR with a meaningful description, and run any automated checks. Review everything critically. Ship it (even if "shipping" means merging to main on a personal repo).
+In a project with at least a few commits, run Claude Code through three delivery tasks: (1) generate a README from the codebase, (2) write a commit message for staged changes, and (3) draft a PR description. Review each output critically — note where Claude summarized accurately vs. where it invented intent. Then, if you have a GitHub repo, set up the `claude-code-action` and trigger a review on a real PR.
 
 ### Check
-Did you go from working code to a shipped, documented deliverable with Claude Code handling the tedious parts? If yes, congratulations — you've completed the pipeline.
+Have you used Claude Code for at least two delivery-phase tasks and can you say where you'd trust its output directly vs. where you'd always review it? Do you understand how hooks differ from just asking Claude to run checks? If yes, move on.
 
 ---
 
 ## Capstone: Build Something Real
 
-Put it all together. Choose a real project — something you actually want to exist in the world. Walk the entire pipeline:
+Choose a real project — something you actually want to exist in the world. Build it with Claude Code doing as much of the work as possible, and use this as a chance to put its features under real load.
 
-1. **Idea refinement** (Module 4): Clarify the goal, problems, solutions, risks
-2. **Architecture** (Module 5): Design before building
-3. **TDD** (Module 6): Write tests first
-4. **Skills** (Module 7): Create reusable skills for repeated patterns
-5. **MCP** (Module 8): Connect to external tools you need
-6. **Multi-agent** (Module 9): Parallelize where it makes sense
-7. **Scheduled tasks** (Module 10): Automate recurring work
-8. **Remote Control + Channels** (Modules 11–12): Stay connected on the go
-9. **Delivery** (Module 13): Document, review, ship
+There's no prescribed pipeline. Plan however you want to plan. But as you build, actively reach for the Claude Code capabilities this course covered:
 
-Document your experience — what worked, what didn't, where Claude Code's jagged capabilities showed up, and how you adapted.
+- **CLAUDE.md** to set context once, not repeatedly
+- **Skills** to encode any repeated patterns that emerge
+- **MCP** to give Claude access to whatever external data or tools it needs
+- **Multi-agent workflows** when a task is big enough or parallel enough to benefit from subagents
+- **Scheduled tasks** for anything recurring
+- **Remote Control or Channels** to stay connected when you step away
+- **Delivery features** to close the loop — docs, commit messages, PR review, release notes
+
+When you're done, write a short retrospective: which features you actually used, which ones you didn't reach for (and why), and where Claude Code's capabilities were jagged — where it nailed it and where it needed the most steering from you.
+
+That retrospective is the most valuable artifact from the capstone. It's your personal map of the tool.
 
 ---
 
