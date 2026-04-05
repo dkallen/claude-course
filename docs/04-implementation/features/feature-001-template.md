@@ -4,13 +4,48 @@
 - **GPSR Solutions:** S-01, S-02
 - **Requirements:** REQ-001, REQ-002
 
+## Acceptance Criteria
+
+<!-- Feature-level acceptance criteria describe cross-story, integration-level behaviors --
+     things that emerge from multiple stories working together but aren't owned by any one story.
+     Each criterion maps to a smoke or end-to-end test.
+
+     Write these in user-friendly language first. A non-technical reviewer should be able to
+     understand what success looks like without knowing implementation details. Keep the
+     technical precision in lower sections such as Test Mapping, Verification Notes, or the
+     linked story docs.
+
+     WRONG — single-component behavior (belongs at story level):
+       Given a note is saved via notes-widget.js,
+       when the content is empty,
+       then the row is deleted.
+
+     RIGHT — cross-story integration behavior:
+       Given a user saves a note on a resource page in one tab,
+       when they switch to course.html in another tab,
+       then the note content is visible in the module's resource list.
+
+     If a criterion could be moved to a single story without losing meaning,
+     it belongs at the story level, not here. -->
+
+- Given ... when ... then ...
+- Given ... when ... then ...
+
+## Test Mapping
+
+<!-- Map feature-level criteria to smoke/e2e tests. This is where the Testing Strategy's
+     outer-loop model meets concrete test cases. -->
+
+| Criterion | Test Layer | Test Location |
+|---|---|---|
+| (criterion summary) | Smoke / E2E | `tests/smoke/(file)` |
+
 ## Stories
 
-- [ ] Story 1: (title)
-    - Task 1.1:
-    - Task 1.2:
-- [ ] Story 2: (title)
-    - Task 2.1:
+<!-- Each story has its own file in stories/ with story-level acceptance criteria and test mapping. -->
+
+- [ ] [Story 1: (title)](stories/story-001.md)
+- [ ] [Story 2: (title)](stories/story-002.md)
 
 ## Release Notes
 <!-- Fill in as stories complete. Plain language — understandable to a non-technical stakeholder. -->
