@@ -90,16 +90,12 @@
   .modal-btn { padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-size: 0.9rem; }
   .modal-btn.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
   .subject-link { border: none; cursor: pointer; font: inherit; }
-  .mc-resource-wrap { margin-bottom: 0.5rem; }
-  .mc-resource-wrap .mc-resource-link { margin-bottom: 0; }
-  .mc-resource-wrap.note-open .mc-resource-link { border-radius: 8px 8px 0 0; border-bottom: none; }
-  .mc-resource-wrap .mc-note-area { display: none; background: #fafafa; border: 1px solid #eee; border-top: none; border-radius: 0 0 8px 8px; padding: 0.4rem 0.9rem 0.6rem; }
-  .mc-resource-wrap.note-open .mc-note-area { display: block; }
-  .note-btn { background: none; border: none; cursor: pointer; font-size: 0.9rem; color: #ddd; padding: 0.2rem 0.25rem; flex-shrink: 0; align-self: center; line-height: 1; transition: color 0.1s; }
-  .note-btn:hover { color: #888; }
-  .note-btn.has-note { color: #999; }
-  .mc-note-textarea { width: 100%; min-height: 72px; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.45rem 0.5rem; font-family: inherit; font-size: 0.82rem; resize: vertical; background: #fff; color: #333; line-height: 1.5; }
-  .mc-note-textarea:focus { outline: none; border-color: #aaa; }
+  .mc-resource-wrap { margin-bottom: 0.75rem; }
+  .mc-resource-wrap .mc-resource-link { margin-bottom: 0; border-radius: 8px 8px 0 0; }
+  .mc-note-display { background: #fafafa; border: 1px solid #eee; border-top: none; border-radius: 0 0 8px 8px; padding: 0.55rem 0.9rem 0.75rem; }
+  .mc-note-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: #aaa; margin-bottom: 0.35rem; }
+  .mc-note-text { white-space: pre-wrap; font-size: 0.82rem; color: #333; line-height: 1.5; }
+  .mc-note-text.empty { color: #888; }
   .notes-view { max-width: 740px; }
   .notes-view h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 1.5rem; letter-spacing: -0.01em; }
   .notes-view-empty { font-size: 0.9rem; color: #aaa; }
@@ -110,8 +106,8 @@
   .notes-view-res-name { font-size: 0.85rem; font-weight: 600; }
   .notes-view-res-link { font-size: 0.75rem; color: #aaa; text-decoration: none; }
   .notes-view-res-link:hover { color: #555; }
-  .notes-view-textarea { width: 100%; min-height: 80px; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.45rem 0.5rem; font-family: inherit; font-size: 0.82rem; resize: vertical; background: #fff; color: #333; line-height: 1.5; }
-  .notes-view-textarea:focus { outline: none; border-color: #aaa; }
+  .notes-view-note { white-space: pre-wrap; min-height: 1.5rem; border: 1px solid #e0e0e0; border-radius: 4px; padding: 0.45rem 0.5rem; font-size: 0.82rem; background: #fff; color: #333; line-height: 1.5; }
+  .notes-view-note.empty { color: #888; }
   @media (max-width: 900px) {
     .sidebar { position: fixed; z-index: 80; background: #fff; height: 100vh; }
     .sidebar.collapsed { margin-left: -320px; }
@@ -266,6 +262,7 @@
 <script src="supabase-client.js"></script>
 <script src="course-data.js"></script>
 <script src="course-logic.js"></script>
+<script src="course-notes.js"></script>
 <script>
 const subjectMap = Object.fromEntries(window.COURSE_DATA.subjects.map(subject => [subject.slug, subject]));
 const params = new URLSearchParams(window.location.search);
@@ -278,6 +275,42 @@ let notes = {};
 let expandedModule = null;
 let gistToken = null;
 let gistId = null;
+let supabaseUserId = null;
+let activePanel = "placeholder";
+let noteLoadError = false;
+const EMPTY_NOTE_TEXT = "No notes available";
+const noteHelpers = window.courseNotes || {};
+const buildNotesMap = noteHelpers.mapNoteRows || function(rows) {
+  const mapped = {};
+  (rows || []).forEach(function(row) {
+    if (!row || !row.resource_id) return;
+    mapped[row.resource_id] = row.content || "";
+  });
+  return mapped;
+};
+const noteForResource = noteHelpers.getResourceNote || function(allNotes, resource) {
+  if (!resource || !resource.id) return "";
+  return (allNotes && allNotes[resource.id]) || "";
+};
+const buildModuleNotes = noteHelpers.buildModuleNoteGroups || function(module, allNotes, emptyText) {
+  const fallbackText = emptyText || EMPTY_NOTE_TEXT;
+  return (module.resources || []).map(function(resource) {
+    const noteText = noteForResource(allNotes, resource);
+    const trimmed = noteText.trim();
+    return {
+      resource,
+      text: trimmed ? noteText : fallbackText,
+      isEmpty: !trimmed
+    };
+  });
+};
+const buildAllModuleNotes = noteHelpers.buildAllModuleNoteGroups || function(allModules, allNotes, emptyText) {
+  return (allModules || []).filter(function(module) {
+    return module && Array.isArray(module.resources) && module.resources.length > 0;
+  }).map(function(module) {
+    return { module, items: buildModuleNotes(module, allNotes, emptyText) };
+  });
+};
 
 // storageKey(prefix) provided by course-logic.js; this wrapper closes over subject
 function subjectStorageKey() { return storageKey(subject.progressPrefix); }
@@ -285,76 +318,113 @@ function gistTokenKey() { return subject.progressPrefix + "-gist-token"; }
 function gistIdKey() { return subject.progressPrefix + "-gist-id"; }
 function gistFilename() { return subject.progressPrefix + "-progress.json"; }
 
-function loadNotes() {
+// --- Supabase persistence helpers ---
+
+async function loadSupabaseNotes() {
+  if (!supabaseUserId) {
+    notes = {};
+    noteLoadError = false;
+    return;
+  }
+
   try {
-    const stored = localStorage.getItem("course-notes");
-    notes = stored ? JSON.parse(stored) : {};
+    const { data } = await window.supabaseClient
+      .from('user_notes')
+      .select('resource_id, content')
+      .eq('user_id', supabaseUserId)
+      .eq('subject_id', subject.slug);
+    notes = buildNotesMap(data);
+    noteLoadError = false;
   } catch (e) {
     notes = {};
+    noteLoadError = true;
   }
 }
 
-function saveNote(href, text) {
-  if (text.trim() === "") {
-    delete notes[href];
-  } else {
-    notes[href] = text;
-  }
-  localStorage.setItem("course-notes", JSON.stringify(notes));
+async function loadSupabaseProgress() {
+  try {
+    const { data } = await window.supabaseClient
+      .from('user_progress')
+      .select('progress_data')
+      .eq('subject_id', subject.slug)
+      .maybeSingle();
+    if (data) {
+      progress = data.progress_data;
+      saveLocalProgress();
+      renderTOC();
+      updateProgress();
+    }
+  } catch (e) { /* localStorage fallback */ }
 }
 
-const noteTimers = {};
-function scheduleNoteSave(href, text) {
-  clearTimeout(noteTimers[href]);
-  noteTimers[href] = setTimeout(() => saveNote(href, text), 600);
+async function saveSupabaseProgress() {
+  if (!supabaseUserId) return;
+  try {
+    await window.supabaseClient
+      .from('user_progress')
+      .upsert({
+        user_id: supabaseUserId,
+        subject_id: subject.slug,
+        progress_data: progress,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id,subject_id' });
+  } catch (e) { /* localStorage fallback already saved */ }
 }
 
-function toggleNote(wrapId, href, event) {
-  event.preventDefault();
-  event.stopPropagation();
-  const wrap = document.getElementById(wrapId);
-  if (!wrap) return;
-  wrap.classList.toggle("note-open");
-  if (wrap.classList.contains("note-open")) {
-    wrap.querySelector(".mc-note-textarea").focus();
+function rerenderAfterNotesRefresh() {
+  if (activePanel === "notes") {
+    showNotesPanel();
+  } else if (activePanel === "module" && expandedModule !== null) {
+    showModulePanel(expandedModule);
   }
+}
+
+async function refreshNotesFromSource(options) {
+  const shouldRerender = !options || options.rerender !== false;
+  await loadSupabaseNotes();
+  if (shouldRerender) {
+    rerenderAfterNotesRefresh();
+  }
+}
+
+function renderReadonlyNote(noteText, className) {
+  const resolvedText = noteLoadError ? "Notes unavailable" : (noteText && noteText.trim() ? noteText : EMPTY_NOTE_TEXT);
+  const isEmpty = !noteLoadError && resolvedText === EMPTY_NOTE_TEXT;
+  return `<div class="${className}${isEmpty ? " empty" : ""}">${escapeHtml(resolvedText)}</div>`;
 }
 
 // escapeHtml() provided by course-logic.js
 
-function showNotesPanel() {
+async function showNotesPanel() {
+  activePanel = "notes";
   document.getElementById("placeholder").style.display = "none";
   const panel = document.getElementById("module-panel");
   panel.style.display = "block";
   expandedModule = null;
   renderTOC();
+  await loadSupabaseNotes();
 
-  let html = `<div class="notes-view"><h2>Notes</h2>`;
-  let hasAnyNote = false;
+  let html = `<div class="notes-view" data-panel="notes"><h2>Notes</h2>`;
+  const groupedModules = buildAllModuleNotes(modules, notes, EMPTY_NOTE_TEXT);
 
-  modules.forEach(module => {
-    if (!module.resources) return;
-    const moduleNotes = module.resources
-      .map((r, idx) => ({ resource: r, idx, note: notes[r.href] }))
-      .filter(x => x.note);
-    if (moduleNotes.length === 0) return;
-    hasAnyNote = true;
+  groupedModules.forEach(group => {
+    const module = group.module;
     html += `<div class="notes-view-module">`;
     html += `<div class="notes-view-module-name">Module ${module.num}: ${module.name}</div>`;
-    moduleNotes.forEach(({ resource, note }) => {
+    group.items.forEach(({ resource, text }) => {
       html += `<div class="notes-view-item">`;
       html += `<div class="notes-view-item-header">`;
       html += `<span class="notes-view-res-name">${escapeHtml(resource.name)}</span>`;
       html += `<a class="notes-view-res-link" href="${escapeHtml(resource.href)}" target="_blank">open ↗</a>`;
       html += `</div>`;
-      html += `<textarea class="notes-view-textarea" oninput="scheduleNoteSave('${escapeHtml(resource.href)}', this.value)">${escapeHtml(note)}</textarea>`;
+      html += renderReadonlyNote(text, "notes-view-note");
       html += `</div>`;
     });
     html += `</div>`;
   });
 
-  if (!hasAnyNote) {
-    html += `<div class="notes-view-empty">No notes yet. Open a module and click ✎ next to a resource to add a note.</div>`;
+  if (groupedModules.length === 0) {
+    html += `<div class="notes-view-empty">No notes available.</div>`;
   }
 
   html += `</div>`;
@@ -362,6 +432,7 @@ function showNotesPanel() {
 }
 
 function showFeedbackPanel() {
+  activePanel = "feedback";
   document.getElementById("placeholder").style.display = "none";
   const panel = document.getElementById("module-panel");
   panel.style.display = "block";
@@ -374,7 +445,7 @@ function showFeedbackPanel() {
     items = stored ? JSON.parse(stored) : [];
   } catch (e) { items = []; }
 
-  let html = `<div class="notes-view"><h2>Feedback</h2>`;
+  let html = `<div class="notes-view" data-panel="feedback"><h2>Feedback</h2>`;
 
   if (items.length === 0) {
     html += `<div class="notes-view-empty">No feedback yet. Use the Feedback button in the bottom-left corner of any page.</div>`;
@@ -506,6 +577,7 @@ async function saveToGist() {
 
 function saveProgress() {
   saveLocalProgress();
+  saveSupabaseProgress();
   saveToGist();
 }
 
@@ -573,18 +645,20 @@ function toggleSidebar() {
   document.getElementById("sidebar").classList.toggle("collapsed");
 }
 
-function loadModule(num) {
+async function loadModule(num) {
   expandedModule = expandedModule === num ? null : num;
   renderTOC();
-  showModulePanel(num);
+  await showModulePanel(num);
 }
 
-function showModulePanel(num) {
+async function showModulePanel(num) {
+  activePanel = "module";
   const module = modules.find(item => item.num === num);
   if (!module) return;
   document.getElementById("placeholder").style.display = "none";
   const panel = document.getElementById("module-panel");
   panel.style.display = "block";
+  await loadSupabaseNotes();
 
   if (!module.resources || module.resources.length === 0) {
     panel.innerHTML = `<div class="mc-coming"><h2>${module.num === "C" ? "Capstone" : "Module " + module.num}: ${module.name}</h2><p>Coming soon.</p></div>`;
@@ -611,17 +685,17 @@ function showModulePanel(num) {
         const resource = module.resources[idx];
         const tagClass = typeMap[resource.type] || "passive";
         const rChecked = !!progress[resourceKey(num, idx)];
-        const existingNote = notes[resource.href] || "";
-        const hasNote = !!existingNote;
-        const wrapId = "nw-" + num + "-" + idx;
-        html += `<div class="mc-resource-wrap${hasNote ? " note-open" : ""}" id="${wrapId}">`;
+        const existingNote = noteForResource(notes, resource);
+        html += `<div class="mc-resource-wrap">`;
         html += `<a class="mc-resource-link" href="${resource.href}" target="_blank">`;
         html += `<div class="mc-res-num">${idx + 1}</div>`;
         html += `<div class="mc-res-body"><div class="mc-res-name">${resource.name}</div><div class="mc-res-meta"><span class="mc-res-tag ${tagClass}">${tagClass}</span>${resource.type}</div></div>`;
-        html += `<button class="note-btn${hasNote ? " has-note" : ""}" onclick="toggleNote('${wrapId}', '${resource.href}', event)" title="Note">✎</button>`;
         html += `<input class="resource-check" type="checkbox" ${rChecked ? "checked" : ""} onclick="toggleResourceCheck('${num}', ${idx}, event)">`;
         html += `</a>`;
-        html += `<div class="mc-note-area"><textarea class="mc-note-textarea" placeholder="Notes..." oninput="scheduleNoteSave('${resource.href}', this.value)">${escapeHtml(existingNote)}</textarea></div>`;
+        html += `<div class="mc-note-display">`;
+        html += `<div class="mc-note-label">Notes</div>`;
+        html += renderReadonlyNote(existingNote, "mc-note-text");
+        html += `</div>`;
         html += `</div>`;
       }
     });
@@ -719,15 +793,20 @@ function renderSubjectMeta() {
 }
 
 function init() {
+  activePanel = "placeholder";
   renderSubjectMeta();
   loadLocalProgress();
-  loadNotes();
+  loadSupabaseNotes();
   gistToken = localStorage.getItem(gistTokenKey());
   gistId = localStorage.getItem(gistIdKey());
   setSyncStatus(gistToken ? "syncing" : "offline", gistToken ? "Syncing…" : "Not connected");
   renderTOC();
   updateProgress();
   if (gistToken) loadFromGist();
+
+  if (supabaseUserId) {
+    loadSupabaseProgress().then(function() { renderTOC(); updateProgress(); });
+  }
 }
 
 // Auth gate
@@ -759,8 +838,9 @@ async function authSignIn() {
   const password = document.getElementById("auth-password-si").value;
   if (!email || !password) { authMsg("Email and password required.", "error"); return; }
   authMsg("Signing in…");
-  const { error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
+  const { data, error } = await window.supabaseClient.auth.signInWithPassword({ email, password });
   if (error) { authMsg(error.message, "error"); return; }
+  supabaseUserId = data.user.id;
   hideAuthGate();
   init();
 }
@@ -793,6 +873,7 @@ async function authSocial(provider) {
 // Listen for auth state changes (handles magic link and OAuth redirects)
 window.supabaseClient.auth.onAuthStateChange(function(event, session) {
   if (session && document.getElementById("auth-gate").classList.contains("visible")) {
+    supabaseUserId = session.user.id;
     hideAuthGate();
     init();
   }
@@ -801,6 +882,7 @@ window.supabaseClient.auth.onAuthStateChange(function(event, session) {
 // Boot: check session, show auth gate or init
 window.supabaseReady.then(function(user) {
   if (user) {
+    supabaseUserId = user.id;
     init();
   } else {
     showAuthGate();

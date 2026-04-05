@@ -1,24 +1,13 @@
 (function () {
-    var NOTES_KEY = 'course-notes';
-    var parts = window.location.pathname.split('/').filter(Boolean);
-    var filename = parts.length >= 2 ? parts.slice(-2).join('/') : (parts[0] || 'index.html');
-
-    function loadNotes() {
-        try {
-            var stored = localStorage.getItem(NOTES_KEY);
-            return stored ? JSON.parse(stored) : {};
-        } catch (e) { return {}; }
-    }
-
-    function saveNote(text) {
-        var notes = loadNotes();
-        if (text.trim() === '') {
-            delete notes[filename];
-        } else {
-            notes[filename] = text;
-        }
-        localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
-    }
+    var body = document.body;
+    var subjectId = body.getAttribute('data-subject-id');
+    var resourceId = body.getAttribute('data-resource-id');
+    var canUseSupabase = !!(window.supabaseClient && subjectId && resourceId);
+    var currentUserId = null;
+    var lastSavedText = '';
+    var savedTimer;
+    var saveTimer;
+    var saveRequestId = 0;
 
     var style = document.createElement('style');
     style.textContent =
@@ -41,6 +30,7 @@
         '  line-height: 1.5; color: #333; box-sizing: border-box;' +
         '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
         '#nw-textarea:focus { outline: none; border-color: #999; }' +
+        '#nw-textarea:disabled { background: #f7f7f7; color: #888; cursor: not-allowed; }' +
         '#nw-saved { font-size: 0.7rem; color: #aaa; margin-top: 0.3rem; min-height: 1rem;' +
         '  text-align: right;' +
         '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
@@ -62,35 +52,143 @@
     panel.id = 'nw-panel';
     panel.innerHTML =
         '<div id="nw-label">Notes for this page</div>' +
-        '<textarea id="nw-textarea" placeholder="Type your notes here..."></textarea>' +
+        '<textarea id="nw-textarea" placeholder="Loading notes..." disabled></textarea>' +
         '<div id="nw-saved"></div>';
 
     document.body.appendChild(panel);
     document.body.appendChild(btn);
 
-    var notes = loadNotes();
     var textarea = document.getElementById('nw-textarea');
-    textarea.value = notes[filename] || '';
-    if (textarea.value.trim()) btn.classList.add('has-note');
+    var saved = document.getElementById('nw-saved');
+
+    function setStatus(text, clearAfter) {
+        saved.textContent = text || '';
+        clearTimeout(savedTimer);
+        if (clearAfter) {
+            savedTimer = setTimeout(function () {
+                saved.textContent = '';
+            }, clearAfter);
+        }
+    }
+
+    function setEditorAvailability(enabled, statusText, placeholder) {
+        textarea.disabled = !enabled;
+        if (placeholder) textarea.placeholder = placeholder;
+        setStatus(statusText || '');
+    }
+
+    async function loadSupabaseNote() {
+        var result = await window.supabaseClient
+            .from('user_notes')
+            .select('content')
+            .eq('subject_id', subjectId)
+            .eq('resource_id', resourceId)
+            .maybeSingle();
+        return result.data || null;
+    }
+
+    async function saveSupabaseNote(text) {
+        if (!currentUserId) throw new Error('No authenticated user');
+
+        if (text.trim() === '') {
+            await window.supabaseClient
+                .from('user_notes')
+                .delete()
+                .eq('user_id', currentUserId)
+                .eq('subject_id', subjectId)
+                .eq('resource_id', resourceId);
+            return;
+        }
+
+        await window.supabaseClient
+            .from('user_notes')
+            .upsert({
+                user_id: currentUserId,
+                subject_id: subjectId,
+                resource_id: resourceId,
+                content: text,
+                updated_at: new Date().toISOString()
+            }, { onConflict: 'user_id,subject_id,resource_id' });
+    }
+
+    async function initializeNotes() {
+        if (!canUseSupabase) {
+            setEditorAvailability(false, 'Notes unavailable.', 'Notes unavailable.');
+            return;
+        }
+
+        var user = null;
+        try {
+            user = await window.supabaseReady;
+        } catch (error) {
+            user = null;
+        }
+
+        if (!user) {
+            setEditorAvailability(false, 'Sign in to use notes.', 'Sign in to use notes.');
+            return;
+        }
+
+        currentUserId = user.id;
+        textarea.disabled = false;
+        textarea.placeholder = 'Type your notes here...';
+        setStatus('Loading notes...');
+
+        try {
+            var row = await loadSupabaseNote();
+            textarea.value = row && typeof row.content === 'string' ? row.content : '';
+            lastSavedText = textarea.value;
+            btn.classList.toggle('has-note', !!textarea.value.trim());
+            setStatus('');
+        } catch (error) {
+            textarea.value = '';
+            lastSavedText = '';
+            setEditorAvailability(false, 'Notes unavailable.', 'Notes unavailable.');
+        }
+    }
+
+    async function persistNote(text, showSavedStatus) {
+        if (textarea.disabled) return;
+
+        var requestId = ++saveRequestId;
+        setStatus('Saving...');
+
+        try {
+            await saveSupabaseNote(text);
+            if (requestId !== saveRequestId) return;
+            lastSavedText = text;
+            btn.classList.toggle('has-note', !!text.trim());
+            setStatus(showSavedStatus ? 'Saved' : '', showSavedStatus ? 1500 : 0);
+        } catch (error) {
+            if (requestId !== saveRequestId) return;
+            setStatus('Could not save.');
+        }
+    }
+
+    function flushPendingSave() {
+        clearTimeout(saveTimer);
+        if (textarea.disabled) return;
+        if (textarea.value === lastSavedText) return;
+        persistNote(textarea.value, false);
+    }
 
     btn.addEventListener('click', function () {
         panel.classList.toggle('open');
-        if (panel.classList.contains('open')) textarea.focus();
+        if (panel.classList.contains('open') && !textarea.disabled) textarea.focus();
     });
 
-    var saveTimer;
     textarea.addEventListener('input', function () {
         clearTimeout(saveTimer);
         saveTimer = setTimeout(function () {
-            saveNote(textarea.value);
-            var saved = document.getElementById('nw-saved');
-            saved.textContent = 'Saved';
-            if (textarea.value.trim()) {
-                btn.classList.add('has-note');
-            } else {
-                btn.classList.remove('has-note');
-            }
-            setTimeout(function () { saved.textContent = ''; }, 1500);
+            persistNote(textarea.value, true);
         }, 600);
     });
+
+    textarea.addEventListener('blur', flushPendingSave);
+    window.addEventListener('pagehide', flushPendingSave);
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'hidden') flushPendingSave();
+    });
+
+    initializeNotes();
 }());
