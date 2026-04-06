@@ -1,0 +1,1 @@
+Follow the architectural methodologies stored in ~/.agents/skills/ whenever a project requires formal analysis or TDD.
