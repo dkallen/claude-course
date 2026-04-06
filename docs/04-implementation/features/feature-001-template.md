@@ -47,6 +47,22 @@
 - [ ] [Story 1: (title)](stories/story-001.md)
 - [ ] [Story 2: (title)](stories/story-002.md)
 
+## Retrospective
+
+<!-- Every feature should close with a retrospective once the implementation is working and the
+     feature is effectively complete or at a meaningful checkpoint. The retrospective captures
+     what the feature taught us: successful practices, painful surprises, key tradeoffs, testing
+     gaps, and follow-up actions.
+
+     Use [retrospective-template.md](./retrospective-template.md) as the starting point and place
+     the completed retrospective alongside the feature doc, usually as `retrospective.md` inside
+     the feature folder.
+
+     Keep this artifact honest and useful. It should help a future contributor understand not only
+     what shipped, but what was learned while shipping it. -->
+
+- [ ] `retrospective.md` exists inside the feature folder and is based on `retrospective-template.md`
+
 ## Release Notes
 <!-- Fill in as stories complete. Plain language — understandable to a non-technical stakeholder. -->
 
