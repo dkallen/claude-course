@@ -1,5 +1,5 @@
 (function () {
-    var VERSION = 'v2026.04.05.1';
+    var VERSION = "2026-04-05 8ff42ab";
     var BADGE_ID = 'course-version-badge';
 
     window.COURSE_FRONTEND_VERSION = VERSION;

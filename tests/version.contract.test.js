@@ -5,6 +5,8 @@ const { resolve } = require('node:path');
 
 const projectRoot = resolve(__dirname, '..');
 const versionSource = readFileSync(resolve(projectRoot, 'version.js'), 'utf8');
+const packageJson = JSON.parse(readFileSync(resolve(projectRoot, 'package.json'), 'utf8'));
+const writeVersionSource = readFileSync(resolve(projectRoot, 'scripts', 'write-version.js'), 'utf8');
 
 function walkHtmlFiles(dirPath, results = []) {
     for (const entry of readdirSync(dirPath)) {
@@ -22,7 +24,16 @@ function walkHtmlFiles(dirPath, results = []) {
 describe('frontend version stamp contract', () => {
     test('version.js exposes a single shared frontend version identifier', () => {
         assert.match(versionSource, /COURSE_FRONTEND_VERSION/);
-        assert.match(versionSource, /v\d{4}\.\d{2}\.\d{2}\.\d+/);
+        assert.match(versionSource, /\d{4}-\d{2}-\d{2} [0-9a-f]{7,}( dirty)?/);
+    });
+
+    test('version automation is driven from git metadata before start and test commands', () => {
+        assert.match(writeVersionSource, /git show -s --format=%cs HEAD/);
+        assert.match(writeVersionSource, /git rev-parse --short HEAD/);
+        assert.equal(packageJson.scripts['write:version'], 'node scripts/write-version.js');
+        assert.ok(packageJson.scripts.start.includes('npm run write:version'));
+        assert.ok(packageJson.scripts['test:node'].includes('npm run write:version'));
+        assert.ok(packageJson.scripts['test:smoke'].includes('npm run write:version'));
     });
 
     test('learner-facing html entry points load version.js', () => {

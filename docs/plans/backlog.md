@@ -31,16 +31,13 @@ Needed to support user identity, authentication, and feedback collection. Must b
 
 ### add pre-commit hook for running tests 
 
+## Resolved ideas
+
 ### automate frontend version stamp generation from git metadata
 
-The visible version stamp is useful, but it should not rely on manual bumps. Generate it automatically from Git metadata whenever the frontend starts or tests run.
+Resolved on 2026-04-05 21:56 CDT.
 
-Desired outcome:
-- version stamp is regenerated before `npm start` and `npm test`
-- displayed version includes enough information to identify the running code quickly
-- local uncommitted changes can be surfaced clearly, such as with a `dirty` marker
-
-## Resolved ideas
+The frontend version stamp is now generated automatically from Git metadata before `npm start`, `npm run test:node`, and `npm run test:smoke`. Local runs can surface a `dirty` marker, while the committed artifact can be regenerated cleanly.
 
 ### feedback tooltip truncates and misaligns on mobile
 

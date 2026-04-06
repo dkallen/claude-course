@@ -10,7 +10,7 @@
 - Same-browser note updates now appear in already-open overview tabs through `BroadcastChannel`, reducing manual refresh friction.
 - The learner-facing GitHub Gist dependency was removed from the course shell.
 - Feedback is now collected through a Supabase-backed widget on resource pages instead of the old local export flow.
-- Additional hardening work improved mobile tooltip behavior and added a visible frontend version stamp for localhost verification.
+- Additional hardening work improved mobile tooltip behavior and automated the frontend version stamp from Git metadata for localhost verification.
 
 ## Goals for This Retrospective
 
@@ -40,7 +40,7 @@
 | Make module overview notes read-only | Reduce confusion from multiple editing surfaces | Lost some convenience in overview editing |
 | Add BroadcastChannel before Supabase Realtime | Solve the same-browser annoyance with lower complexity | Does not provide cross-device live updates |
 | Use Playwright Chromium instead of installed Chrome | Avoid side effects on the daily-driver browser profile | Less direct validation of Chrome-specific behavior |
-| Add a visible version stamp | Speed up localhost verification and stale-cache diagnosis | Initial implementation still needs follow-up automation from Git metadata |
+| Add a visible version stamp and automate it from Git metadata | Speed up localhost verification and stale-cache diagnosis | Adds a small scripting dependency to local start/test workflows |
 
 ## Defects, Incidents, and Near Misses
 
@@ -69,7 +69,7 @@
 
 | Action | Type | Destination | Status |
 |---|---|---|---|
-| Automate version stamp generation from Git metadata before `npm start` and `npm test` | Backlog | [backlog.md](../../../plans/backlog.md) | Open |
+| Keep Git-driven version generation in the standard local workflow so frontend verification stays trustworthy | Docs | [backlog.md](../../../plans/backlog.md) | Done |
 | Keep BroadcastChannel as the chosen same-browser refresh solution; do not add Supabase Realtime unless a future cross-device need appears | Docs | [feature.md](./feature.md) | Done |
 | Refine the retrospective methodology so every feature closes with a similar artifact | Docs | [feature-001-template.md](../feature-001-template.md) and [retrospective-template.md](../retrospective-template.md) | In progress |
 
