@@ -8,10 +8,6 @@ Each idea starts with ###.
 
 ### full user identity and authentication
 
-### more durable personalized notes and feedback
-
-Currently, notes and feedback are personalized but depend upon github Gist which is awkward. Establish a more robust soluton that is still affordable.
-
 ### AI-enabled review of exercises
   {
     "id": "6248557c-f94b-4214-a629-c08f10e0cb7d",
@@ -62,3 +58,9 @@ Added a visible frontend version badge and console stamp so it is immediately cl
 Resolved on 2026-04-05 21:52 CDT.
 
 README and testing strategy guidance now explain the localhost verification workflow, including disabling cache in DevTools and using cache-busting fetch checks when a browser tab appears stale.
+
+### more durable personalized notes and feedback
+
+Resolved on 2026-04-05 22:16 CDT.
+
+Notes and feedback are now persisted through Supabase rather than the older GitHub Gist-based approach. The learner-facing Gist dependency is removed, notes are Supabase-backed with resource-page editing and read-only module overview review, and feedback is captured through the Supabase-backed widget. See the `iam-persistence-feedback` feature package for the implementation and retrospective details.
