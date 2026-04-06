@@ -75,16 +75,16 @@ window.supabase = {
     return {
       auth: {
         getSession: function () {
-          return Promise.resolve({ data: { session: { user: { id: 'playwright-user' } } } });
+          return Promise.resolve({ data: { session: { user: { id: 'playwright-user', email: 'playwright@example.com', user_metadata: { full_name: 'Playwright User' } } } } });
         },
         getUser: function () {
-          return Promise.resolve({ data: { user: { id: 'playwright-user' } } });
+          return Promise.resolve({ data: { user: { id: 'playwright-user', email: 'playwright@example.com', user_metadata: { full_name: 'Playwright User' } } } });
         },
         onAuthStateChange: function () {
           return { data: { subscription: { unsubscribe: function () {} } } };
         },
         signInWithPassword: function () {
-          return Promise.resolve({ data: { user: { id: 'playwright-user' } }, error: null });
+          return Promise.resolve({ data: { user: { id: 'playwright-user', email: 'playwright@example.com', user_metadata: { full_name: 'Playwright User' } } }, error: null });
         },
         signUp: function () {
           return Promise.resolve({ error: null });
@@ -120,6 +120,19 @@ window.supabase = {
               }
             });
 
+            saveTable(tableName, rows);
+            return Promise.resolve({ data: payload, error: null });
+          },
+          insert: function (payload) {
+            var rows = loadTable(tableName);
+            var nextRows = Array.isArray(payload) ? payload : [payload];
+            nextRows.forEach(function (nextRow) {
+              var inserted = Object.assign({}, nextRow);
+              if (tableName === 'user_feedback' && !inserted.created_at) {
+                inserted.created_at = new Date().toISOString();
+              }
+              rows.push(inserted);
+            });
             saveTable(tableName, rows);
             return Promise.resolve({ data: payload, error: null });
           }

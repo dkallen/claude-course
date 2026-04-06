@@ -1,140 +1,215 @@
-(function () {
-    var FEEDBACK_KEY = 'course-feedback';
-    var AUTHOR_KEY = 'feedback-author';
-    var parts = window.location.pathname.split('/').filter(Boolean);
-    var page = parts.length >= 2 ? parts.slice(-2).join('/') : (parts[0] || 'index.html');
-
-    function loadFeedback() {
-        try {
-            var stored = localStorage.getItem(FEEDBACK_KEY);
-            return stored ? JSON.parse(stored) : [];
-        } catch (e) { return []; }
+(function (root, factory) {
+    if (typeof module !== 'undefined' && module.exports) {
+        module.exports = factory();
+    }
+    if (typeof window !== 'undefined') {
+        window.feedbackWidget = factory();
+        window.feedbackWidget.init();
+    }
+}(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+    function normalizeFeedbackComment(text) {
+        var trimmed = (text || '').trim();
+        return trimmed ? trimmed : null;
     }
 
-    function saveFeedback(entry) {
-        var items = loadFeedback();
-        items.push(entry);
-        localStorage.setItem(FEEDBACK_KEY, JSON.stringify(items));
+    function resolveFeedbackDisplayName(user) {
+        if (!user) return 'Learner';
+        var metadata = user.user_metadata || {};
+        return metadata.full_name || metadata.name || user.email || user.id || 'Learner';
     }
 
-    function exportFeedback() {
-        var items = loadFeedback();
-        if (items.length === 0) return;
-        var blob = new Blob([JSON.stringify(items, null, 2)], { type: 'application/json' });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = 'course-feedback.json';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
+    function buildFeedbackPayload(options) {
+        var user = options.user || {};
+        return {
+            user_id: user.id,
+            author_display_name: resolveFeedbackDisplayName(user),
+            subject_id: options.subjectId,
+            module: options.module,
+            resource_id: options.resourceId,
+            rating: options.rating,
+            comment: normalizeFeedbackComment(options.comment)
+        };
     }
 
-    var style = document.createElement('style');
-    style.textContent =
-        '#fb-btn { position: fixed; bottom: 20px; left: 20px; z-index: 9999;' +
-        '  background: #1a1a1a; color: #fff; border: none; border-radius: 6px;' +
-        '  padding: 0.45rem 0.85rem; cursor: pointer; font-size: 0.8rem; font-weight: 600;' +
-        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' +
-        '  box-shadow: 0 2px 8px rgba(0,0,0,0.18); transition: background 0.15s; }' +
-        '#fb-btn:hover { background: #333; }' +
-        '#fb-panel { position: fixed; bottom: 60px; left: 20px; z-index: 9998;' +
-        '  width: 320px; background: #fff; border: 1px solid #ddd; border-radius: 10px;' +
-        '  padding: 0.85rem; box-shadow: 0 4px 20px rgba(0,0,0,0.12); display: none; }' +
-        '#fb-panel.open { display: block; }' +
-        '#fb-label { font-size: 0.68rem; font-weight: 600; text-transform: uppercase;' +
-        '  letter-spacing: 0.05em; color: #aaa; margin-bottom: 0.5rem;' +
-        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
-        '#fb-textarea { width: 100%; min-height: 100px; border: 1px solid #e0e0e0;' +
-        '  border-radius: 4px; padding: 0.5rem; font-size: 0.82rem; resize: vertical;' +
-        '  line-height: 1.5; color: #333; box-sizing: border-box;' +
-        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
-        '#fb-textarea:focus { outline: none; border-color: #999; }' +
-        '#fb-author { width: 100%; border: 1px solid #e0e0e0; border-radius: 4px;' +
-        '  padding: 0.4rem 0.5rem; font-size: 0.82rem; color: #333; box-sizing: border-box;' +
-        '  margin-bottom: 0.5rem;' +
-        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
-        '#fb-author:focus { outline: none; border-color: #999; }' +
-        '#fb-actions { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.5rem; }' +
-        '#fb-submit { background: #1a1a1a; color: #fff; border: none; border-radius: 4px;' +
-        '  padding: 0.35rem 0.75rem; cursor: pointer; font-size: 0.78rem; font-weight: 600;' +
-        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
-        '#fb-submit:hover { background: #333; }' +
-        '#fb-export { background: none; border: none; color: #999; cursor: pointer;' +
-        '  font-size: 0.72rem; text-decoration: underline; margin-left: auto;' +
-        '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
-        '#fb-export:hover { color: #666; }' +
-        '[data-tooltip] { position: relative; }' +
-        '[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: 100%;' +
-        '  left: 0; padding: 0.35rem 0.55rem; background: #333;' +
-        '  color: #fff; font-size: 0.72rem; font-weight: 400; line-height: 1.4;' +
-        '  border-radius: 4px; white-space: nowrap; pointer-events: none;' +
-        '  opacity: 0; transition: opacity 0.15s; margin-bottom: 6px; }' +
-        '[data-tooltip]:hover::after { opacity: 1; transition-delay: 0.2s; }';
-    document.head.appendChild(style);
+    function init() {
+        if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
-    var btn = document.createElement('button');
-    btn.id = 'fb-btn';
-    btn.textContent = 'Feedback';
-    btn.setAttribute('data-tooltip', 'Submit a suggestion to improve this page. Click to toggle.');
+        var body = document.body;
+        var subjectId = body.getAttribute('data-subject-id');
+        var moduleId = body.getAttribute('data-module');
+        var resourceId = body.getAttribute('data-resource-id');
 
-    var cachedAuthor = localStorage.getItem(AUTHOR_KEY) || '';
-    var authorHTML = cachedAuthor
-        ? ''
-        : '<input id="fb-author" type="text" placeholder="Your name (saved for future use)">';
+        if (!subjectId || !moduleId || !resourceId) return;
 
-    var panel = document.createElement('div');
-    panel.id = 'fb-panel';
-    panel.innerHTML =
-        '<div id="fb-label">Suggestion for this page</div>' +
-        authorHTML +
-        '<textarea id="fb-textarea" placeholder="What could be improved?"></textarea>' +
-        '<div id="fb-actions">' +
-        '  <button id="fb-submit">Submit</button>' +
-        '  <button id="fb-export">Export all</button>' +
-        '</div>';
+        var style = document.createElement('style');
+        style.textContent =
+            '#fw-btn { position: fixed; bottom: 20px; left: 20px; z-index: 9999;' +
+            '  background: #1a1a1a; color: #fff; border: none; border-radius: 8px;' +
+            '  padding: 0.5rem 0.95rem; cursor: pointer; font-size: 0.8rem; font-weight: 700;' +
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;' +
+            '  box-shadow: 0 2px 10px rgba(0,0,0,0.18); }' +
+            '#fw-panel { position: fixed; bottom: 62px; left: 20px; z-index: 9998; width: 320px;' +
+            '  max-width: calc(100vw - 40px); background: #fff; border: 1px solid #ddd;' +
+            '  border-radius: 12px; padding: 0.9rem; box-shadow: 0 6px 24px rgba(0,0,0,0.14); display: none; }' +
+            '#fw-panel.open { display: block; }' +
+            '#fw-title { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #777; margin-bottom: 0.3rem;' +
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
+            '#fw-copy { font-size: 0.84rem; color: #444; line-height: 1.45; margin-bottom: 0.75rem;' +
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
+            '#fw-thumbs { display: flex; gap: 0.55rem; margin-bottom: 0.75rem; }' +
+            '.fw-thumb { flex: 1; border: 1px solid #ddd; background: #fafafa; color: #222; border-radius: 10px; padding: 0.65rem 0.8rem; cursor: pointer; font-size: 0.92rem; font-weight: 600;' +
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
+            '.fw-thumb.selected { border-color: #1a1a1a; background: #1a1a1a; color: #fff; }' +
+            '.fw-thumb:disabled { cursor: not-allowed; opacity: 0.55; }' +
+            '#fw-comment { width: 100%; min-height: 92px; border: 1px solid #ddd; border-radius: 8px; padding: 0.65rem; resize: vertical; font-size: 0.82rem; line-height: 1.45; color: #333; box-sizing: border-box;' +
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
+            '#fw-comment:disabled { background: #f7f7f7; color: #888; }' +
+            '#fw-actions { display: flex; justify-content: flex-end; align-items: center; gap: 0.65rem; margin-top: 0.7rem; }' +
+            '#fw-submit { border: none; background: #1a1a1a; color: #fff; border-radius: 8px; padding: 0.55rem 0.85rem; font-size: 0.8rem; font-weight: 700; cursor: pointer;' +
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
+            '#fw-submit:disabled { opacity: 0.5; cursor: not-allowed; }' +
+            '#fw-status { min-height: 1rem; font-size: 0.72rem; color: #777; text-align: left;' +
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }';
+        document.head.appendChild(style);
 
-    document.body.appendChild(panel);
-    document.body.appendChild(btn);
+        var btn = document.createElement('button');
+        btn.id = 'fw-btn';
+        btn.type = 'button';
+        btn.textContent = 'Feedback';
 
-    btn.addEventListener('click', function () {
-        panel.classList.toggle('open');
-        if (panel.classList.contains('open')) {
-            var authorInput = document.getElementById('fb-author');
-            if (authorInput) {
-                authorInput.focus();
-            } else {
-                document.getElementById('fb-textarea').focus();
+        var panel = document.createElement('div');
+        panel.id = 'fw-panel';
+        panel.innerHTML =
+            '<div id="fw-title">Share quick feedback</div>' +
+            '<div id="fw-copy">Tell us whether this page was useful. You can optionally add a note before submitting.</div>' +
+            '<div id="fw-thumbs">' +
+            '  <button type="button" class="fw-thumb" id="fw-up" data-rating="1">Thumbs up</button>' +
+            '  <button type="button" class="fw-thumb" id="fw-down" data-rating="-1">Thumbs down</button>' +
+            '</div>' +
+            '<textarea id="fw-comment" placeholder="Optional comment"></textarea>' +
+            '<div id="fw-actions">' +
+            '  <div id="fw-status"></div>' +
+            '  <button type="button" id="fw-submit" disabled>Submit</button>' +
+            '</div>';
+
+        document.body.appendChild(panel);
+        document.body.appendChild(btn);
+
+        var upButton = document.getElementById('fw-up');
+        var downButton = document.getElementById('fw-down');
+        var comment = document.getElementById('fw-comment');
+        var submit = document.getElementById('fw-submit');
+        var status = document.getElementById('fw-status');
+        var selectedRating = null;
+        var currentUser = null;
+        var isReady = false;
+
+        function setStatus(text) {
+            status.textContent = text || '';
+        }
+
+        function setInteractiveState(enabled) {
+            upButton.disabled = !enabled;
+            downButton.disabled = !enabled;
+            comment.disabled = !enabled;
+            submit.disabled = !enabled || selectedRating === null;
+        }
+
+        function updateSelection(nextRating) {
+            selectedRating = nextRating;
+            upButton.classList.toggle('selected', nextRating === 1);
+            downButton.classList.toggle('selected', nextRating === -1);
+            submit.disabled = !isReady || selectedRating === null;
+        }
+
+        function resetForm(message) {
+            updateSelection(null);
+            comment.value = '';
+            setStatus(message || '');
+        }
+
+        async function initialize() {
+            if (!window.supabaseClient || !window.supabaseReady) {
+                setStatus('Feedback unavailable.');
+                setInteractiveState(false);
+                comment.placeholder = 'Feedback unavailable.';
+                return;
+            }
+
+            setStatus('Loading...');
+            setInteractiveState(false);
+
+            try {
+                currentUser = await window.supabaseReady;
+            } catch (error) {
+                currentUser = null;
+            }
+
+            if (!currentUser) {
+                setStatus('Sign in to leave feedback.');
+                setInteractiveState(false);
+                comment.placeholder = 'Sign in to leave feedback.';
+                return;
+            }
+
+            isReady = true;
+            comment.placeholder = 'Optional comment';
+            setStatus('');
+            setInteractiveState(true);
+        }
+
+        async function submitFeedback() {
+            if (!isReady || !currentUser || selectedRating === null) return;
+
+            setInteractiveState(false);
+            setStatus('Submitting...');
+
+            try {
+                var payload = buildFeedbackPayload({
+                    user: currentUser,
+                    subjectId: subjectId,
+                    module: moduleId,
+                    resourceId: resourceId,
+                    rating: selectedRating,
+                    comment: comment.value
+                });
+
+                var result = await window.supabaseClient
+                    .from('user_feedback')
+                    .insert(payload);
+
+                if (result && result.error) throw result.error;
+                resetForm('Thanks for the feedback.');
+                setInteractiveState(true);
+            } catch (error) {
+                setStatus('Could not submit feedback.');
+                setInteractiveState(true);
             }
         }
-    });
 
-    document.getElementById('fb-submit').addEventListener('click', function () {
-        var textarea = document.getElementById('fb-textarea');
-        var comment = textarea.value.trim();
-        if (!comment) return;
-
-        var authorInput = document.getElementById('fb-author');
-        var author = cachedAuthor;
-        if (authorInput) {
-            author = authorInput.value.trim();
-            if (!author) return;
-            localStorage.setItem(AUTHOR_KEY, author);
-            cachedAuthor = author;
-            authorInput.remove();
-        }
-
-        saveFeedback({
-            id: crypto.randomUUID(),
-            author: author,
-            page: page,
-            timestamp: new Date().toISOString(),
-            comment: comment
+        btn.addEventListener('click', function () {
+            panel.classList.toggle('open');
         });
 
-        textarea.value = '';
-    });
+        upButton.addEventListener('click', function () {
+            updateSelection(1);
+            comment.focus();
+        });
 
-    document.getElementById('fb-export').addEventListener('click', exportFeedback);
-}());
+        downButton.addEventListener('click', function () {
+            updateSelection(-1);
+            comment.focus();
+        });
+
+        submit.addEventListener('click', submitFeedback);
+
+        initialize();
+    }
+
+    return {
+        normalizeFeedbackComment: normalizeFeedbackComment,
+        resolveFeedbackDisplayName: resolveFeedbackDisplayName,
+        buildFeedbackPayload: buildFeedbackPayload,
+        init: init
+    };
+}));

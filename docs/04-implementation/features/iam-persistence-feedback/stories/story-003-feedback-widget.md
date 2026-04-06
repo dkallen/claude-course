@@ -1,7 +1,7 @@
 # Story: Capture thumbs-based learner feedback
 
 **Feature:** Feature: User Identity, Data Persistence, and Learner Feedback
-**Status:** Not started
+**Status:** Done
 
 ## Traceability
 - **Feature:** `docs/04-implementation/features/iam-persistence-feedback/feature.md`
@@ -23,15 +23,18 @@ Replace the current feedback flow with a low-friction thumbs-up/thumbs-down widg
 | Feedback widget captures page context and selected rating | Contract | `tests/feedback-context.contract.test.js` |
 | Feedback payload shape is normalized before write | Unit | `tests/feedback-widget.test.js` |
 | Legacy feedback panel affordance is removed from the course shell | Unit | `tests/course-shell-ui.test.js` |
+| Resource-page feedback submission writes full context to Supabase | Smoke | `tests/smoke/feedback-widget.spec.js` |
 
 ## Tasks
 
-- [ ] Add failing smoke test in `tests/smoke/feedback-widget.spec.js`.
-- [ ] Replace `feedback-widget.js` with the thumbs-up/thumbs-down interaction and optional comment flow.
-- [ ] Remove the old course-shell feedback panel affordance and `showFeedbackPanel()` path.
-- [ ] Verify the Supabase payload matches the design package fields before marking the story done.
+- [x] Add failing smoke test in `tests/smoke/feedback-widget.spec.js`.
+- [x] Replace `feedback-widget.js` with the thumbs-up/thumbs-down interaction and optional comment flow.
+- [x] Remove the old course-shell feedback panel affordance and `showFeedbackPanel()` path.
+- [x] Verify the Supabase payload matches the design package fields before marking the story done.
 
 ## Notes
 
 - The author review experience remains the Supabase dashboard; no custom admin UI is part of this story.
 - This story depends on the stable page context attributes already added in the completed foundation work.
+- Module and resource pages that load `feedback-widget.js` now own their page context explicitly through `data-subject-id`, `data-module`, and `data-resource-id`.
+- `course.html` no longer loads a learner-facing feedback panel; feedback capture happens on contextual learner pages only.

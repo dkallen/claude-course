@@ -190,7 +190,6 @@
       <a class="subject-link" href="index.html">All Subjects</a>
       <a class="subject-link" id="syllabus-link" href="#">Syllabus</a>
       <button class="subject-link" onclick="showNotesPanel()">Notes</button>
-      <button class="subject-link" onclick="showFeedbackPanel()">Feedback</button>
     </div>
   </div>
   <div id="toc-sections"></div>
@@ -394,41 +393,6 @@ async function showNotesPanel() {
 
   if (groupedModules.length === 0) {
     html += `<div class="notes-view-empty">No notes available.</div>`;
-  }
-
-  html += `</div>`;
-  panel.innerHTML = html;
-}
-
-function showFeedbackPanel() {
-  activePanel = "feedback";
-  document.getElementById("placeholder").style.display = "none";
-  const panel = document.getElementById("module-panel");
-  panel.style.display = "block";
-  expandedModule = null;
-  renderTOC();
-
-  let items = [];
-  try {
-    const stored = localStorage.getItem('course-feedback');
-    items = stored ? JSON.parse(stored) : [];
-  } catch (e) { items = []; }
-
-  let html = `<div class="notes-view" data-panel="feedback"><h2>Feedback</h2>`;
-
-  if (items.length === 0) {
-    html += `<div class="notes-view-empty">No feedback yet. Use the Feedback button in the bottom-left corner of any page.</div>`;
-  } else {
-    items.slice().reverse().forEach(item => {
-      html += `<div class="notes-view-item">`;
-      html += `<div class="notes-view-item-header">`;
-      html += `<span class="notes-view-res-name">${escapeHtml(item.page)}</span>`;
-      html += `<span style="font-size:0.7rem;color:#aaa;">${new Date(item.timestamp).toLocaleString()}</span>`;
-      html += `</div>`;
-      html += `<div style="font-size:0.85rem;color:#333;line-height:1.5;padding:0.4rem 0;">${escapeHtml(item.comment)}</div>`;
-      html += `<div style="font-size:0.7rem;color:#bbb;">— ${escapeHtml(item.author)}</div>`;
-      html += `</div>`;
-    });
   }
 
   html += `</div>`;
@@ -715,6 +679,5 @@ window.supabaseReady.then(function(user) {
   }
 });
 </script>
-<script src="feedback-widget.js"></script>
 </body>
 </html>

@@ -1,7 +1,7 @@
 # Feature: User Identity, Data Persistence, and Learner Feedback
 
 **Date:** 2026-04-05
-**Status:** In progress
+**Status:** Done
 
 ## Traceability
 - **GPSR Solutions:** S1, S2, S3, S4, S5
@@ -32,7 +32,7 @@
 ## Stories
 - [x] [Story 1: Simplify notes to Supabase-only persistence and read-only module overview](stories/story-001-stale-notes-sync.md)
 - [x] [Story 2: Remove remaining GitHub Gist dependency](stories/story-002-remove-gist-dependency.md)
-- [ ] [Story 3: Capture thumbs-based learner feedback](stories/story-003-feedback-widget.md)
+- [x] [Story 3: Capture thumbs-based learner feedback](stories/story-003-feedback-widget.md)
 
 ## Foundation Already Completed
 
@@ -43,6 +43,7 @@
 | 3 | S1: Supabase project setup, schema, RLS, `supabase-client.js`, auth gate | Done | Completed in commit `1dec92c`. Google/GitHub OAuth remain deferred. |
 | 4 | S1 + S5: Notes and progress persistence via Supabase plus same-browser live note refresh | Done | Supabase-only notes, read-only module overview, and BroadcastChannel-based same-browser live refresh are now in place. |
 | 5 | S3: Remove remaining GitHub Gist dependency | Done | Learner-facing Gist sync UI, helpers, and subject metadata have been removed from the course shell. |
+| 6 | S2: Thumbs-based learner feedback capture | Done | Contextual module and resource pages now submit append-only feedback records to Supabase, and the old course-shell feedback panel is gone. |
 
 ## Carry-Forward Decisions
 - Auth is required up front on `course.html`; `index.html` and syllabus pages remain public.
@@ -56,8 +57,10 @@
 - Module overview notes are read-only; note editing happens only on the resource page itself.
 
 ## Current Risk / Known Gap
-- Story 1 and Story 2 are complete. Remaining feature work is now concentrated in Story 3 (feedback capture).
+- No feature-level known gaps remain. Future work, if any, would be enhancement-oriented rather than required to satisfy the current feature scope.
 
 ## Release Notes
 
-_In progress_
+- Notes and progress now persist through Supabase with read-only module-overview notes and same-browser live note refresh.
+- Remaining Gist-dependent learner sync flows have been removed from the course shell.
+- Learners can now submit append-only thumbs-based feedback with optional comments from module and resource pages.
