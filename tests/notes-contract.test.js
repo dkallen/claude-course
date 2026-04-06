@@ -5,6 +5,7 @@ const { resolve } = require("node:path");
 
 const projectRoot = resolve(__dirname, "..");
 const notesWidgetSource = readFileSync(resolve(projectRoot, "notes-widget.js"), "utf8");
+const feedbackWidgetSource = readFileSync(resolve(projectRoot, "feedback-widget.js"), "utf8");
 const courseHtmlSource = readFileSync(resolve(projectRoot, "course.html"), "utf8");
 const dataSource = readFileSync(resolve(projectRoot, "course-data.js"), "utf8");
 
@@ -83,6 +84,27 @@ describe("module overview notes contract", () => {
         assert.ok(
             courseHtmlSource.includes("No notes available"),
             "course.html must render the exact empty-state text 'No notes available'"
+        );
+    });
+});
+
+describe("widget tooltip contract", () => {
+    test("notes and feedback affordances expose wrapping helper tooltips", () => {
+        assert.ok(
+            notesWidgetSource.includes("Jot down personal notes about this page. Click to toggle."),
+            "notes-widget.js should expose the notes helper tooltip copy"
+        );
+        assert.ok(
+            feedbackWidgetSource.includes("Share quick feedback about this page. Click to toggle."),
+            "feedback-widget.js should expose the feedback helper tooltip copy"
+        );
+        assert.ok(
+            notesWidgetSource.includes("white-space: normal") && !notesWidgetSource.includes("white-space: nowrap"),
+            "notes-widget.js should allow tooltip copy to wrap on smaller screens"
+        );
+        assert.ok(
+            feedbackWidgetSource.includes("white-space: normal") && !feedbackWidgetSource.includes("white-space: nowrap"),
+            "feedback-widget.js should allow tooltip copy to wrap on smaller screens"
         );
     });
 });

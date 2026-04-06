@@ -40,18 +40,25 @@
         '  text-align: right;' +
         '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
         '[data-tooltip] { position: relative; }' +
-        '[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: 100%;' +
-        '  right: 0; padding: 0.35rem 0.55rem; background: #333;' +
-        '  color: #fff; font-size: 0.72rem; font-weight: 400; line-height: 1.4;' +
-        '  border-radius: 4px; white-space: nowrap; pointer-events: none;' +
-        '  opacity: 0; transition: opacity 0.15s; margin-bottom: 6px; }' +
-        '[data-tooltip]:hover::after { opacity: 1; transition-delay: 0.2s; }';
+        '[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 8px);' +
+        '  right: 0; width: max-content; max-width: min(16rem, calc(100vw - 32px));' +
+        '  padding: 0.45rem 0.6rem; background: rgba(51, 51, 51, 0.96);' +
+        '  color: #fff; font-size: 0.72rem; font-weight: 400; line-height: 1.4; text-align: left;' +
+        '  border-radius: 8px; white-space: normal; word-break: break-word; pointer-events: none;' +
+        '  opacity: 0; transform: translateY(4px); transition: opacity 0.15s, transform 0.15s;' +
+        '  box-shadow: 0 4px 14px rgba(0,0,0,0.18); }' +
+        '[data-tooltip][data-tooltip-position="start"]::after { left: 0; right: auto; }' +
+        '[data-tooltip]:hover::after, [data-tooltip]:focus-visible::after { opacity: 1; transform: translateY(0); }' +
+        '@media (max-width: 480px) {' +
+        '  [data-tooltip]::after { font-size: 0.68rem; max-width: min(13rem, calc(100vw - 24px)); }' +
+        '}';
     document.head.appendChild(style);
 
     var btn = document.createElement('button');
     btn.id = 'nw-btn';
     btn.textContent = 'Notes';
     btn.setAttribute('data-tooltip', 'Jot down personal notes about this page. Click to toggle.');
+    btn.setAttribute('data-tooltip-position', 'end');
 
     var panel = document.createElement('div');
     panel.id = 'nw-panel';

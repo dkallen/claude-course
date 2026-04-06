@@ -69,13 +69,29 @@
             '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
             '#fw-submit:disabled { opacity: 0.5; cursor: not-allowed; }' +
             '#fw-status { min-height: 1rem; font-size: 0.72rem; color: #777; text-align: left;' +
-            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }';
+            '  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }' +
+            '[data-tooltip] { position: relative; }' +
+            '[data-tooltip]::after { content: attr(data-tooltip); position: absolute; bottom: calc(100% + 8px);' +
+            '  width: max-content; max-width: min(16rem, calc(100vw - 32px));' +
+            '  padding: 0.45rem 0.6rem; background: rgba(51, 51, 51, 0.96);' +
+            '  color: #fff; font-size: 0.72rem; font-weight: 400; line-height: 1.4; text-align: left;' +
+            '  border-radius: 8px; white-space: normal; word-break: break-word; pointer-events: none;' +
+            '  opacity: 0; transform: translateY(4px); transition: opacity 0.15s, transform 0.15s;' +
+            '  box-shadow: 0 4px 14px rgba(0,0,0,0.18); }' +
+            '[data-tooltip][data-tooltip-position="start"]::after { left: 0; right: auto; }' +
+            '[data-tooltip][data-tooltip-position="end"]::after { right: 0; left: auto; }' +
+            '[data-tooltip]:hover::after, [data-tooltip]:focus-visible::after { opacity: 1; transform: translateY(0); }' +
+            '@media (max-width: 480px) {' +
+            '  [data-tooltip]::after { font-size: 0.68rem; max-width: min(13rem, calc(100vw - 24px)); }' +
+            '}';
         document.head.appendChild(style);
 
         var btn = document.createElement('button');
         btn.id = 'fw-btn';
         btn.type = 'button';
         btn.textContent = 'Feedback';
+        btn.setAttribute('data-tooltip', 'Share quick feedback about this page. Click to toggle.');
+        btn.setAttribute('data-tooltip-position', 'start');
 
         var panel = document.createElement('div');
         panel.id = 'fw-panel';
