@@ -4,6 +4,16 @@
 **Feature Reference:** [feature.md](./feature.md)  
 **Status:** Draft / Completed
 
+<!-- Status convention:
+     - `Draft` while validation, backlog routing, or follow-up triage is still underway.
+     - `Completed` once the closeout checklist is fully satisfied.
+
+     Commit naming convention:
+     - `Add <feature-slug> retrospective` when first adding a draft retrospective.
+     - `Close out <feature-slug> feature` when finalizing feature docs, release notes, backlog routing,
+       and setting the retrospective status to `Completed`.
+     - `Finalize <feature-slug> retrospective` only for later retrospective-only cleanup. -->
+
 ## Outcome Summary
 
 <!-- 3-6 plain-language bullets. What changed for learners/users and what state the feature is in now. -->

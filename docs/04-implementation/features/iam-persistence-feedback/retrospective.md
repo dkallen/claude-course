@@ -2,7 +2,7 @@
 
 **Date:** 2026-04-05  
 **Feature Reference:** [feature.md](./feature.md)  
-**Status:** Draft
+**Status:** Completed
 
 ## Outcome Summary
 
@@ -71,20 +71,20 @@
 |---|---|---|---|
 | Keep Git-driven version generation in the standard local workflow so frontend verification stays trustworthy | Docs | [backlog.md](../../../plans/backlog.md) | Done |
 | Keep BroadcastChannel as the chosen same-browser refresh solution; do not add Supabase Realtime unless a future cross-device need appears | Docs | [feature.md](./feature.md) | Done |
-| Refine the retrospective methodology so every feature closes with a similar artifact | Docs | [feature-001-template.md](../feature-001-template.md) and [retrospective-template.md](../retrospective-template.md) | In progress |
+| Refine the retrospective methodology so every feature closes with a similar artifact | Docs | [feature-001-template.md](../feature-001-template.md) and [retrospective-template.md](../retrospective-template.md) | Done |
 
 ## Commit and Artifact References
 
 - **Primary feature doc:** [feature.md](./feature.md)
 - **Stories:** [story-001-stale-notes-sync.md](./stories/story-001-stale-notes-sync.md), [story-002-remove-gist-dependency.md](./stories/story-002-remove-gist-dependency.md), [story-003-feedback-widget.md](./stories/story-003-feedback-widget.md)
 - **Related bugs/incidents:** [bug-001-notes-split-brain.md](./bugs/bug-001-notes-split-brain.md)
-- **Key commits:** `8d4d60c`, `97b40e8`, `f00fee7`, `e888d00`, `04a117b`, `1d46d0a`, `ee056bc`
+- **Key commits:** `8d4d60c`, `97b40e8`, `f00fee7`, `e888d00`, `04a117b`, `1d46d0a`, `ee056bc`, `8ff42ab`, `07c1742`, `c892dae`
 - **Relevant test files:** `tests/course-notes-refresh.test.js`, `tests/notes-contract.test.js`, `tests/smoke/notes-live-sync.spec.js`, `tests/gist-removal.contract.test.js`, `tests/feedback-widget.test.js`, `tests/smoke/feedback-widget.spec.js`
 
 ## Closeout Check
 
-- [ ] Outcome summary reflects the final shipped state.
-- [ ] Major decisions and tradeoffs are recorded.
-- [ ] Important defects or near misses are linked.
-- [ ] Follow-up actions are pushed to backlog/incidents/docs as needed.
-- [ ] A future contributor could understand what this feature taught us.
+- [x] Outcome summary reflects the final shipped state.
+- [x] Major decisions and tradeoffs are recorded.
+- [x] Important defects or near misses are linked.
+- [x] Follow-up actions are pushed to backlog/incidents/docs as needed.
+- [x] A future contributor could understand what this feature taught us.
