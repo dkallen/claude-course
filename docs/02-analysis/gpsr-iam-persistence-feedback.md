@@ -1,7 +1,7 @@
 # GPSR Analysis: User Identity, Data Persistence, and Learner Feedback
 
-**Date:** 2026-03-30
-**Status:** Draft — awaiting approval
+**Date:** 2026-04-05
+**Status:** Revised draft — awaiting approval
 **Project classification:** (c) For others
 **Scale target:** < 50 learners
 
@@ -13,7 +13,8 @@
 G1: Learners' personalized data persists reliably across sessions, devices, and browsers
 ├── G1.1: Notes survive browser data loss and device changes
 ├── G1.2: Feedback survives browser data loss and device changes
-└── G1.3: Progress/completion state survives browser data loss and device changes
+├── G1.3: Progress/completion state survives browser data loss and device changes
+└── G1.4: Open notes surfaces in the same browser session stay aligned without manual refresh after a successful save
 
 G2: Setting up and using the course requires no technical knowledge
 ├── G2.1: No GitHub account or PAT required
@@ -41,12 +42,14 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
 | P5 | No low-friction mechanism for learners to give feedback, and no easy way for the author to review it | G4 | |
 | P6 | Investment must be calibrated — too little investment turns off early users before demand can be validated; too much is wasted if demand doesn't materialize | G1, G2, G3, G4 | Constrains the solution space globally |
 | P7 | Two separate course shells (desktop and mobile) with duplicated logic — every new feature must be implemented twice or the mobile version falls behind | G1 (all), G2 (all), G4 | Multiplies implementation cost of S1, S2, and S3. Mobile shell already lacks notes widget and Gist sync, demonstrating the drift. |
+| P8 | When a learner has both the module overview and a resource page open in the same browser session, saving a note on the resource page does not update the already-open overview until the learner refreshes manually | G1.4 | Persistence is correct after reload, but the stale open tab feels unreliable and undermines trust in the notes feature. |
 
 **Causal relationships:**
 - P3 AND P1 → conjunctive: even moving notes to a server doesn't help without identity to link them to a user
 - P3 → P2: Gist/PAT exists *because* there is no proper identity system
 - P4 is secondary: it goes away entirely when Gist is replaced
 - P7 is a cost multiplier: every solution in this enhancement touches course shell code, so P7 amplifies P6
+- P8 is downstream of S1: once notes are Supabase-backed and editable only on resource pages, the remaining gap is live same-browser visibility of successful saves
 
 ---
 
@@ -97,6 +100,18 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
     - Must be done before or alongside S1/S2/S3 to avoid implementing new features in two shells.
     - The mobile shell is 186 lines with a subset of desktop functionality — the responsive CSS work is smaller than maintaining two codebases.
 
+### S5: Add same-browser live note refresh with BroadcastChannel
+
+- **Classification:** Build (small)
+- **Resolves:** P8
+- **Advances:** G1.4
+- **Description:**
+    - Keep Supabase as the single persistent source of truth for notes.
+    - After a resource page successfully saves a note to Supabase, publish a small client-side message on a named `BroadcastChannel`.
+    - The already-open course shell listens for that message, reloads the relevant note data from Supabase, and rerenders any visible module-overview notes surface without a manual page refresh.
+    - This is intentionally scoped to the same browser profile on the same device. It improves responsiveness without adding backend subscriptions.
+    - Cross-device or cross-browser live updates remain out of scope unless a real user need justifies Supabase Realtime later.
+
 ---
 
 ## 4. Risk Register
@@ -114,6 +129,7 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
 | R9 | Broader web application security (XSS, CSRF, injection) | S1, S2 | Low-Medium | High | WAF (e.g., Cloudflare free tier) backlogged. Supabase JS SDK uses parameterized queries (no injection). Standard browser security headers should be reviewed. |
 | R10 | Supabase API keys exposed in client-side JS | S1, S2 | Certain (by design) | Low (if mitigated) | The anon key is designed to be public. Row-level security (RLS) is the actual security boundary. RLS policies must be thorough and tested before launch. |
 | R11 | Responsive redesign introduces layout regressions | S4 | Medium | Low | Test on multiple viewport sizes before retiring mobile shell. Keep mobile shell available on a branch until responsive version is validated. |
+| R12 | BroadcastChannel behavior is same-browser only and may be unavailable in some constrained environments | S5 | Low | Low | Treat BroadcastChannel as a UX enhancement rather than a persistence layer. If unavailable, the learner still sees correct notes after reopen or refresh. |
 
 ---
 
@@ -127,6 +143,7 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
 - Database schema for: user notes, user feedback, user progress
 - Row-level security policies on all tables
 - Persist notes, feedback, and progress per authenticated user
+- Same-browser live note refresh between resource pages and the already-open course shell via `BroadcastChannel`
 - Thumbs up/down + optional comment widget on every module page and every resource page
 - Feedback auto-captures: subject, module, page/resource, user identity, author display name, timestamp
 - Author reviews feedback via Supabase dashboard
@@ -138,6 +155,7 @@ G4: Author can gather enough learner feedback to validate demand, without over-i
 
 - Flashcard state persistence
 - Custom admin UI or analytics dashboard
+- Cross-browser or cross-device live note updates via Supabase Realtime
 - WAF / Cloudflare (backlogged)
 - CAPTCHA on signup (backlogged)
 - Privacy policy (backlogged — must ship before launch)
@@ -158,6 +176,7 @@ graph BT
     S3[S3: Remove Gist] --> P2
     S3 --> P4
     S4[S4: Responsive shell] --> P7
+    S5[S5: BroadcastChannel live refresh] --> P8
 
     P1 --> G1.1
     P1 --> G1.2
@@ -175,6 +194,7 @@ graph BT
     P7 --> G1.2
     P7 --> G1.3
     P7 --> G4
+    P8 --> G1.4
 
     G1.1 --> G1[G1: Persist data]
     G1.2 --> G1
@@ -187,6 +207,7 @@ graph BT
     S1 --> G3.1
     S1 --> G3.2
     S2 --> G4[G4: Gather feedback]
+    S5 --> G1.4
 
     P6[P6: constrains all] -.-> S1
     P6 -.-> S2
@@ -210,6 +231,7 @@ graph BT
 | S2 → G4 | **Pass.** Thumbs + optional comments with automatic context gives the author actionable signal with zero custom admin work. |
 | S3 → P2, P4 | **Pass.** Removing Gist eliminates the PAT requirement and all Gist-related reliability issues. |
 | S4 → P7 | **Pass.** Single responsive shell eliminates duplicated code. New features (auth, persistence, feedback) only need one implementation. |
+| S5 → G1.4 | **Pass.** BroadcastChannel addresses the remaining same-browser stale-tab annoyance without changing note persistence authority. |
 
 ### Neutralization Test (Sub-Goal → Problem)
 
@@ -223,7 +245,7 @@ graph BT
 
 | Check | Result |
 |-------|--------|
-| G1.1 + G1.2 + G1.3 → G1? | **Pass.** All three categories of user data (notes, feedback, progress) are covered. Flashcard state excluded by deliberate decision — low value, no user-created content at risk. |
+| G1.1 + G1.2 + G1.3 + G1.4 → G1? | **Pass.** Notes, feedback, and progress persist across sessions/devices, and open note surfaces in the same browser session stay aligned after successful saves. Flashcard state excluded by deliberate decision — low value, no user-created content at risk. |
 | G2.1 + G2.2 → G2? | **Pass.** No technical prerequisites, familiar auth flows. |
 | G3.1 + G3.2 → G3? | **Pass.** Free tier, no fixed cost, scales proportionally. |
 
@@ -237,3 +259,4 @@ graph BT
 
 - **Privacy policy is a hard dependency** that is out of scope for this enhancement but must ship before launch. It's in the backlog but should be prioritized alongside this work.
 - **WAF/CAPTCHA are deferred security hardening.** Supabase built-in rate limiting provides baseline protection, but internet-facing auth warrants follow-up. Acceptable risk for initial launch to colleagues (known, small audience) but should be addressed before broader distribution.
+- **BroadcastChannel is a scoped UX enhancement, not a persistence guarantee.** It improves same-browser responsiveness only. If learners later expect cross-device live updates, that should trigger a separate decision about Supabase Realtime rather than broadening S5 implicitly.

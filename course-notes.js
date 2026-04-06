@@ -2,6 +2,8 @@
 // In the browser, these are available on window.courseNotes.
 // In Node, they are importable via require().
 
+const NOTES_LIVE_CHANNEL_NAME = "course-notes-live";
+
 function mapNoteRows(rows) {
     const mapped = {};
     (rows || []).forEach(function(row) {
@@ -45,6 +47,7 @@ function buildAllModuleNoteGroups(modules, notes, emptyText) {
 }
 
 const exported = {
+    NOTES_LIVE_CHANNEL_NAME,
     mapNoteRows,
     getResourceNote,
     buildModuleNoteGroups,

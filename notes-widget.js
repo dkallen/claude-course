@@ -3,6 +3,11 @@
     var subjectId = body.getAttribute('data-subject-id');
     var resourceId = body.getAttribute('data-resource-id');
     var canUseSupabase = !!(window.supabaseClient && subjectId && resourceId);
+    var noteHelpers = window.courseNotes || {};
+    var notesLiveChannelName = noteHelpers.NOTES_LIVE_CHANNEL_NAME || 'course-notes-live';
+    var liveChannel = typeof window.BroadcastChannel === 'function'
+        ? new window.BroadcastChannel(notesLiveChannelName)
+        : null;
     var currentUserId = null;
     var lastSavedText = '';
     var savedTimer;
@@ -75,6 +80,16 @@
         textarea.disabled = !enabled;
         if (placeholder) textarea.placeholder = placeholder;
         setStatus(statusText || '');
+    }
+
+    function publishLiveNoteUpdate(text) {
+        if (!liveChannel) return;
+        liveChannel.postMessage({
+            type: 'note-saved',
+            subjectId: subjectId,
+            resourceId: resourceId,
+            content: text
+        });
     }
 
     async function loadSupabaseNote() {
@@ -158,6 +173,7 @@
             if (requestId !== saveRequestId) return;
             lastSavedText = text;
             btn.classList.toggle('has-note', !!text.trim());
+            publishLiveNoteUpdate(text);
             setStatus(showSavedStatus ? 'Saved' : '', showSavedStatus ? 1500 : 0);
         } catch (error) {
             if (requestId !== saveRequestId) return;

@@ -39,8 +39,30 @@ describe("notes persistence contract", () => {
 
     test("note persistence no longer depends on note-specific localStorage keys", () => {
         assert.ok(
-            !notesWidgetSource.includes("course-notes-") && !courseHtmlSource.includes("course-notes-"),
+            !notesWidgetSource.includes("localStorage.getItem('course-notes-") &&
+            !notesWidgetSource.includes('localStorage.getItem("course-notes-') &&
+            !notesWidgetSource.includes("localStorage.setItem('course-notes-") &&
+            !notesWidgetSource.includes('localStorage.setItem("course-notes-') &&
+            !courseHtmlSource.includes("localStorage.getItem('course-notes-") &&
+            !courseHtmlSource.includes('localStorage.getItem("course-notes-') &&
+            !courseHtmlSource.includes("localStorage.setItem('course-notes-") &&
+            !courseHtmlSource.includes('localStorage.setItem("course-notes-'),
             "note persistence should not depend on note-related localStorage keys"
+        );
+    });
+
+    test("notes live refresh uses BroadcastChannel as a same-browser enhancement", () => {
+        assert.ok(
+            notesWidgetSource.includes("BroadcastChannel"),
+            "notes-widget.js should publish a BroadcastChannel message after successful saves"
+        );
+        assert.ok(
+            courseHtmlSource.includes("BroadcastChannel"),
+            "course.html should listen for BroadcastChannel note refresh messages"
+        );
+        assert.ok(
+            courseHtmlSource.includes("refreshNotesFromSource"),
+            "course.html should refresh note data from Supabase after a live-refresh message"
         );
     });
 });

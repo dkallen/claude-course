@@ -1,7 +1,7 @@
 # Design Package: User Identity, Data Persistence, and Learner Feedback
 
-**Date:** 2026-03-30
-**Status:** Draft — awaiting approval
+**Date:** 2026-04-05
+**Status:** Revised draft — awaiting approval
 **GPSR Reference:** [gpsr-iam-persistence-feedback.md](../analysis/gpsr-iam-persistence-feedback.md)
 
 ---
@@ -16,6 +16,7 @@ graph TB
         COURSE[course.html<br>responsive SPA shell<br>auth required]
         PAGES[resource pages<br>lessons, quizzes, etc.]
         SC[supabase-client.js<br>shared SDK init]
+        BC[BroadcastChannel<br>course-notes-live]
         NW[notes-widget.js<br>personal notes]
         FW[feedback-widget.js<br>thumbs + comments]
         CD[course-data.js<br>subjects, modules, resources]
@@ -35,6 +36,8 @@ graph TB
     PAGES --> SC
     PAGES --> NW
     PAGES --> FW
+    COURSE --> BC
+    NW --> BC
     SC --> AUTH
     SC --> DB
     NW --> SC
@@ -48,10 +51,11 @@ graph TB
 | Component | Responsibility |
 |-----------|---------------|
 | `supabase-client.js` | Initialize Supabase SDK, expose auth and database client to all other components. Single source of Supabase config (URL, anon key). |
-| `course.html` | SPA shell. Auth gate — redirects to login if no session. Renders modules/resources from `course-data.js`. Reads/writes progress via `supabase-client.js`. Responsive layout for desktop and mobile. |
-| `notes-widget.js` | Self-injecting IIFE on resource pages. Reads/writes notes to Supabase via `supabase-client.js`. Falls back to localStorage if offline. One note per user per resource. |
+| `course.html` | SPA shell. Auth gate — redirects to login if no session. Renders modules/resources from `course-data.js`. Reads/writes progress via `supabase-client.js`. Renders module-overview notes as grouped read-only notes. Listens for `BroadcastChannel` note-save events and refreshes visible note views in the same browser session. Responsive layout for desktop and mobile. |
+| `notes-widget.js` | Self-injecting IIFE on resource pages. Reads/writes notes to Supabase via `supabase-client.js`. Resource pages are the only note editor. After a successful save/delete, publishes a small `BroadcastChannel` message so other open tabs in the same browser session can refresh. One note per user per resource. |
 | `feedback-widget.js` | Self-injecting IIFE on all module and resource pages. Thumbs up/down + optional comment. Writes to Supabase with auto-captured context. Append-only. |
 | `course-data.js` | Static course structure. Source of truth for subject slugs, module numbers, and resource IDs. No changes to its role — just adds `id` fields to resources. |
+| Browser `BroadcastChannel` | Same-browser, same-profile event bus used only for note-refresh hints after successful saves. Not a source of truth and not a persistence layer. |
 | Supabase Auth | Manages user identity. Three methods: email+password, magic link, social (Google, GitHub). Long-lived session. |
 | Supabase Postgres | Stores user_notes, user_progress, user_feedback. RLS enforces per-user isolation. |
 | Supabase Dashboard | Author's admin view. No custom UI built — author queries tables directly. |
@@ -123,10 +127,44 @@ Writes (upsert on save, debounced 600ms):
 Deletes:
   If content is cleared, DELETE the row.
 
-Offline fallback:
-  If supabaseReady fails or network is unavailable, read/write localStorage
-  as today. No sync-back mechanism in v1 — localStorage is a degraded mode,
-  not a write-through cache.
+Live refresh hint:
+  After a successful save or delete, publish a BroadcastChannel message:
+  {
+    type: "note-saved",
+    subjectId,
+    resourceId,
+    content
+  }
+
+Failure behavior:
+  If supabaseReady fails, the learner is signed out, or the network is
+  unavailable, show an explicit status and do not silently fall back to
+  note-related localStorage persistence.
+```
+
+### BroadcastChannel live note refresh
+
+```
+Channel name:
+  "course-notes-live"
+
+Sender:
+  notes-widget.js on successful note save or delete
+
+Receiver:
+  course.html while loaded in the same browser profile
+
+Receiver behavior:
+  - Ignore messages for other subjects
+  - Reload note rows from Supabase rather than trusting the message payload as
+    the source of truth
+  - Rerender the currently visible module-overview notes surface if it is open
+  - Leave behavior unchanged if BroadcastChannel is unsupported
+
+Scope boundary:
+  - Same browser profile on the same device only
+  - No cross-browser or cross-device live sync
+  - Does not replace Supabase persistence
 ```
 
 ### feedback-widget.js
@@ -280,7 +318,20 @@ erDiagram
 - (-) Authors must remember to set an ID when adding a new resource
 - (-) IDs must never be reused across different resources
 
-### ADR-004: Single responsive shell, retire mobile
+### ADR-004: BroadcastChannel before Supabase Realtime
+
+**Context:** After simplifying notes to use Supabase as the only persistent store and limiting editing to resource pages, the remaining UX gap is that an already-open module overview does not reflect a successful note save from another tab until the learner refreshes manually.
+
+**Decision:** Add a same-browser `BroadcastChannel` hint so resource-page saves can prompt the already-open course shell to reload notes from Supabase and rerender the visible overview. Do not add Supabase Realtime at this stage.
+
+**Consequences:**
+- (+) Small client-only enhancement with no schema or backend subscription work
+- (+) Preserves the clean architectural boundary: Supabase persists, BroadcastChannel refreshes
+- (+) Solves the concrete annoyance the current learner flow exposes
+- (-) Only works within the same browser profile on the same device
+- (-) If future usage requires cross-device live updates, a separate follow-on decision about Supabase Realtime will still be needed
+
+### ADR-005: Single responsive shell, retire mobile
 
 **Context:** Two separate course shells exist (course.html for desktop, course-mobile.html for mobile) with duplicated logic. The mobile shell lacks features present in the desktop version (notes, Gist sync). Every new feature (auth, persistence, feedback) would need to be implemented in both.
 
@@ -293,7 +344,7 @@ erDiagram
 - (-) Must verify layout works on small viewports before removing mobile shell
 - (-) Responsive CSS adds some complexity to course.html styles
 
-### ADR-005: Feedback widget is append-only, author reviews via Supabase dashboard
+### ADR-006: Feedback widget is append-only, author reviews via Supabase dashboard
 
 **Context:** The author needs to see learner feedback (thumbs + comments) but expects low volume (~3 comments/week). Building a custom admin UI would violate the calibrated investment constraint (P6).
 
@@ -327,6 +378,7 @@ erDiagram
 | Auth gate in course.html | S1 | P2, P3 |
 | Login UI (email, magic link, social) | S1 | P2, P3 |
 | user_notes table + notes-widget.js persistence | S1 | P1 |
+| BroadcastChannel note refresh between notes-widget.js and course.html | S5 | P8 |
 | user_progress table + course.html persistence | S1 | P1, P4 |
 | user_feedback table + feedback-widget.js | S2 | P5 |
 | Remove Gist code from course.html | S3 | P2, P4 |
@@ -346,5 +398,6 @@ Based on the dependency test in the GPSR defensibility report:
 2. **Stable IDs** — add resource IDs to course-data.js, add data attributes to pages
 3. **S1: Supabase setup** — project, schema, RLS, supabase-client.js, auth gate
 4. **S1: Persistence** — notes and progress read/write via Supabase
-5. **S3: Remove Gist** — strip all Gist code
-6. **S2: Feedback widget** — replace current feedback-widget.js with thumbs up/down
+5. **S5: BroadcastChannel live refresh** — same-browser note refresh between resource pages and the already-open course shell
+6. **S3: Remove Gist** — strip all Gist code
+7. **S2: Feedback widget** — replace current feedback-widget.js with thumbs up/down

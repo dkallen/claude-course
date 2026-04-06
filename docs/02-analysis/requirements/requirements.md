@@ -50,9 +50,10 @@ This document captures the functional and non-functional requirements for delive
 | ID | Requirement | Priority | Notes |
 |----|------------|----------|-------|
 | N1 | Per-resource note-taking (free-text attached to each individual resource) | Must | Not just per-module — per-resource granularity |
-| N2 | Inline note editing from within the module view (expand/collapse per resource) | Should | |
+| N2 | Module overview displays notes grouped by resource as a read-only review surface; note editing happens on the resource page itself | Should | Simplifies the model and avoids conflicting editable surfaces |
 | N3 | Centralized notes view aggregating all notes across all modules with resource links | Should | |
-| N4 | Auto-save with debounce (no explicit save button) | Should | |
+| N4 | Resource-page notes auto-save with debounce (no explicit save button) | Should | |
+| N5 | When the same learner has multiple course tabs open in the same browser profile, a note saved on a resource page appears in the already-open module overview without manual refresh | Should | Same-browser live update only; not a cross-device realtime requirement |
 
 ## 5. Navigation & UX
 
@@ -93,7 +94,7 @@ This document captures the functional and non-functional requirements for delive
 |----|------------|----------|-------|
 | S1 | Progress accessible from any device (desktop, tablet, phone) | Must | Currently: GitHub Gist workaround |
 | S2 | No dependency on GitHub account or personal access tokens for end users | Must | Current sync mechanism is too technical for non-developers |
-| S3 | Offline access or graceful degradation when disconnected | Nice | Current: fully offline-capable as static files |
+| S3 | Graceful messaging when disconnected or when Supabase is unavailable; full offline editing is not required in v1 | Nice | Product direction is web-first rather than offline-first |
 
 ## 9. Analytics & Insights (New — Valuable for Scaling)
 

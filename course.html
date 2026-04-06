@@ -280,6 +280,11 @@ let activePanel = "placeholder";
 let noteLoadError = false;
 const EMPTY_NOTE_TEXT = "No notes available";
 const noteHelpers = window.courseNotes || {};
+const notesLiveChannelName = noteHelpers.NOTES_LIVE_CHANNEL_NAME || "course-notes-live";
+const notesLiveChannel = typeof window.BroadcastChannel === "function"
+  ? new window.BroadcastChannel(notesLiveChannelName)
+  : null;
+let notesLiveListenerBound = false;
 const buildNotesMap = noteHelpers.mapNoteRows || function(rows) {
   const mapped = {};
   (rows || []).forEach(function(row) {
@@ -385,6 +390,22 @@ async function refreshNotesFromSource(options) {
   if (shouldRerender) {
     rerenderAfterNotesRefresh();
   }
+}
+
+function bindNotesLiveRefresh() {
+  if (!notesLiveChannel || notesLiveListenerBound) return;
+
+  notesLiveChannel.addEventListener("message", function(event) {
+    const data = event && event.data;
+    if (!data || data.type !== "note-saved") return;
+    if (data.subjectId !== subject.slug) return;
+
+    refreshNotesFromSource({
+      rerender: activePanel === "notes" || (activePanel === "module" && expandedModule !== null)
+    });
+  });
+
+  notesLiveListenerBound = true;
 }
 
 function renderReadonlyNote(noteText, className) {
@@ -794,6 +815,7 @@ function renderSubjectMeta() {
 
 function init() {
   activePanel = "placeholder";
+  bindNotesLiveRefresh();
   renderSubjectMeta();
   loadLocalProgress();
   loadSupabaseNotes();
