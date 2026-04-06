@@ -189,6 +189,24 @@ For questions, issues, or feedback:
 
 ---
 
+## Testing
+
+Run tests from the repo root:
+
+- `npm run test:node`
+  Runs the Node-based unit and contract tests.
+- `npm run test:smoke`
+  Runs the Playwright smoke tests against the local dev server.
+- `npm test`
+  Runs both the Node tests and the smoke tests.
+
+Notes:
+
+- Smoke tests use Playwright's bundled Chromium, not the installed `Google Chrome.app`.
+- See [05-testing-strategy.md](/Users/davidallen/Code/claude-course/docs/03-design/05-testing-strategy.md) for the current testing layers and when to run each one.
+
+---
+
 ## Getting Started
 
 ### Immediate Next Steps

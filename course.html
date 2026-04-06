@@ -37,17 +37,6 @@
   .progress-label { font-size: 0.7rem; color: #bbb; margin-bottom: 0.25rem; }
   .progress-bar { height: 4px; background: #f0f0f0; border-radius: 2px; overflow: hidden; }
   .progress-fill { height: 100%; background: #888; border-radius: 2px; transition: width 0.3s; }
-  .sync-row { display: flex; align-items: center; justify-content: space-between; }
-  .sync-status { font-size: 0.7rem; display: flex; align-items: center; gap: 0.3rem; }
-  .sync-dot { width: 6px; height: 6px; border-radius: 50%; background: #ccc; flex-shrink: 0; }
-  .sync-dot.synced { background: #4caf50; }
-  .sync-dot.syncing { background: #ff9800; animation: pulse 1s infinite; }
-  .sync-dot.error { background: #f44336; }
-  .sync-dot.offline { background: #ccc; }
-  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-  .sync-text { color: #aaa; }
-  .sync-settings-btn { background: none; border: none; font-size: 0.7rem; color: #ccc; cursor: pointer; padding: 0; text-decoration: underline; }
-  .sync-settings-btn:hover { color: #888; }
   .sidebar-toggle { position: fixed; top: 12px; left: 12px; z-index: 100; background: #fff; border: 1px solid #e0e0e0; border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.9rem; color: #999; transition: all 0.15s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
   .sidebar-toggle:hover { border-color: #bbb; color: #555; }
   .sidebar-open .sidebar-toggle { left: 332px; }
@@ -78,17 +67,6 @@
   .mc-coming p { font-size: 0.9rem; color: #aaa; }
   .mc-check { font-size: 0.85rem; color: #888; line-height: 1.6; margin-top: 1.5rem; padding: 1rem; background: #fafafa; border-radius: 8px; border-left: 3px solid #ddd; }
   .mc-check strong { color: #666; }
-  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 200; display: flex; align-items: center; justify-content: center; }
-  .modal-backdrop.hidden { display: none; }
-  .modal { background: #fff; border-radius: 10px; padding: 2rem; max-width: 460px; width: 90%; box-shadow: 0 8px 32px rgba(0,0,0,0.12); }
-  .modal h2 { font-size: 1.2rem; margin-bottom: 0.6rem; }
-  .modal p, .modal li, .modal label { font-size: 0.9rem; color: #666; line-height: 1.6; }
-  .modal label { display: block; margin-top: 1rem; margin-bottom: 0.3rem; font-weight: 600; color: #444; }
-  .modal input { width: 100%; padding: 0.7rem 0.8rem; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 0.9rem; }
-  .modal-error { color: #f44336; font-size: 0.8rem; margin-top: 0.5rem; min-height: 1.2rem; }
-  .modal-actions { display: flex; gap: 0.6rem; margin-top: 1.2rem; }
-  .modal-btn { padding: 0.6rem 1rem; border-radius: 6px; border: 1px solid #ddd; background: #fff; cursor: pointer; font-size: 0.9rem; }
-  .modal-btn.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
   .subject-link { border: none; cursor: pointer; font: inherit; }
   .mc-resource-wrap { margin-bottom: 0.75rem; }
   .mc-resource-wrap .mc-resource-link { margin-bottom: 0; border-radius: 8px 8px 0 0; }
@@ -221,10 +199,6 @@
       <div class="progress-label" id="progress-label">0 / 0 complete</div>
       <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
     </div>
-    <div class="sync-row">
-      <div class="sync-status"><span class="sync-dot offline" id="sync-dot"></span><span class="sync-text" id="sync-text">Not connected</span></div>
-      <button class="sync-settings-btn" onclick="showTokenModal()">Sync</button>
-    </div>
   </div>
 </aside>
 
@@ -236,27 +210,6 @@
   </div>
   <div id="module-panel" style="display:none;"></div>
 </main>
-
-<div class="modal-backdrop hidden" id="modal-backdrop">
-  <div class="modal">
-    <h2>Connect GitHub Gist Sync</h2>
-    <p>Your progress for this subject will be saved to a private GitHub Gist and synced across devices.</p>
-    <ol>
-      <li>Go to <strong>github.com</strong> → Settings → Developer settings</li>
-      <li>Personal access tokens → Tokens (classic)</li>
-      <li>Generate a token with <strong>gist</strong> scope</li>
-      <li>Paste it below</li>
-    </ol>
-    <label for="token-input">GitHub Personal Access Token</label>
-    <input type="text" id="token-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false">
-    <div class="modal-error" id="modal-error"></div>
-    <div class="modal-actions">
-      <button class="modal-btn primary" onclick="saveToken()">Connect</button>
-      <button class="modal-btn" onclick="hideTokenModal()">Cancel</button>
-      <button class="modal-btn" onclick="disconnectGist()" style="margin-left:auto; color:#f44336; border-color:#fdd;">Disconnect</button>
-    </div>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-client.js"></script>
@@ -273,8 +226,6 @@ let modules = subject.modules;
 let progress = {};
 let notes = {};
 let expandedModule = null;
-let gistToken = null;
-let gistId = null;
 let supabaseUserId = null;
 let activePanel = "placeholder";
 let noteLoadError = false;
@@ -319,9 +270,6 @@ const buildAllModuleNotes = noteHelpers.buildAllModuleNoteGroups || function(all
 
 // storageKey(prefix) provided by course-logic.js; this wrapper closes over subject
 function subjectStorageKey() { return storageKey(subject.progressPrefix); }
-function gistTokenKey() { return subject.progressPrefix + "-gist-token"; }
-function gistIdKey() { return subject.progressPrefix + "-gist-id"; }
-function gistFilename() { return subject.progressPrefix + "-progress.json"; }
 
 // --- Supabase persistence helpers ---
 
@@ -500,149 +448,9 @@ function saveLocalProgress() {
   localStorage.setItem(subjectStorageKey(), JSON.stringify(progress));
 }
 
-function setSyncStatus(state, text) {
-  document.getElementById("sync-dot").className = "sync-dot " + state;
-  document.getElementById("sync-text").textContent = text;
-}
-
-function gistFetch(url, options = {}) {
-  return fetch(url, {
-    ...options,
-    headers: {
-      Authorization: "token " + gistToken,
-      "Content-Type": "application/json",
-      ...(options.headers || {})
-    }
-  });
-}
-
-async function createGist() {
-  const res = await gistFetch("https://api.github.com/gists", {
-    method: "POST",
-    body: JSON.stringify({
-      description: subject.gistDescription,
-      public: false,
-      files: { [gistFilename()]: { content: JSON.stringify(progress, null, 2) } }
-    })
-  });
-  if (res.ok) {
-    const data = await res.json();
-    gistId = data.id;
-    localStorage.setItem(gistIdKey(), gistId);
-  }
-}
-
-async function loadFromGist() {
-  if (!gistToken) return;
-  setSyncStatus("syncing", "Syncing…");
-  try {
-    if (gistId) {
-      const res = await gistFetch("https://api.github.com/gists/" + gistId);
-      if (res.ok) {
-        const data = await res.json();
-        const content = data.files[gistFilename()] && data.files[gistFilename()].content;
-        if (content) {
-          progress = JSON.parse(content);
-          saveLocalProgress();
-          renderTOC();
-          updateProgress();
-          setSyncStatus("synced", "Synced");
-          return;
-        }
-      }
-    }
-
-    const listRes = await gistFetch("https://api.github.com/gists?per_page=100");
-    if (!listRes.ok) { setSyncStatus("error", "Sync failed"); return; }
-    const gists = await listRes.json();
-    const match = gists.find(gist => gist.files[gistFilename()]);
-    if (match) {
-      gistId = match.id;
-      localStorage.setItem(gistIdKey(), gistId);
-      const detail = await gistFetch("https://api.github.com/gists/" + gistId);
-      if (detail.ok) {
-        const data = await detail.json();
-        const content = data.files[gistFilename()] && data.files[gistFilename()].content;
-        if (content) {
-          progress = JSON.parse(content);
-          saveLocalProgress();
-          renderTOC();
-          updateProgress();
-        }
-      }
-    } else {
-      await createGist();
-    }
-    setSyncStatus("synced", "Synced");
-  } catch (e) {
-    setSyncStatus("error", "Sync failed");
-  }
-}
-
-async function saveToGist() {
-  if (!gistToken) return;
-  setSyncStatus("syncing", "Syncing…");
-  try {
-    if (!gistId) await createGist();
-    const res = await gistFetch("https://api.github.com/gists/" + gistId, {
-      method: "PATCH",
-      body: JSON.stringify({
-        files: { [gistFilename()]: { content: JSON.stringify(progress, null, 2) } }
-      })
-    });
-    setSyncStatus(res.ok ? "synced" : "error", res.ok ? "Synced" : "Sync failed");
-  } catch (e) {
-    setSyncStatus("error", "Sync failed");
-  }
-}
-
 function saveProgress() {
   saveLocalProgress();
   saveSupabaseProgress();
-  saveToGist();
-}
-
-function showTokenModal() {
-  document.getElementById("token-input").value = gistToken || "";
-  document.getElementById("modal-error").textContent = "";
-  document.getElementById("modal-backdrop").classList.remove("hidden");
-  document.getElementById("token-input").focus();
-}
-
-function hideTokenModal() {
-  document.getElementById("modal-backdrop").classList.add("hidden");
-}
-
-async function saveToken() {
-  const input = document.getElementById("token-input").value.trim();
-  const errorEl = document.getElementById("modal-error");
-  errorEl.textContent = "";
-  if (!input) { errorEl.textContent = "Please paste your token."; return; }
-
-  errorEl.textContent = "Verifying…";
-  try {
-    const res = await fetch("https://api.github.com/user", { headers: { Authorization: "token " + input } });
-    if (!res.ok) { errorEl.textContent = "Token invalid or missing gist scope."; return; }
-  } catch (e) {
-    errorEl.textContent = "Could not reach GitHub. Check your connection.";
-    return;
-  }
-
-  gistToken = input;
-  gistId = null;
-  localStorage.setItem(gistTokenKey(), gistToken);
-  localStorage.removeItem(gistIdKey());
-  hideTokenModal();
-  await loadFromGist();
-}
-
-function disconnectGist() {
-  gistToken = null;
-  gistId = null;
-  localStorage.removeItem(gistTokenKey());
-  localStorage.removeItem(gistIdKey());
-  setSyncStatus("offline", "Not connected");
-  hideTokenModal();
 }
 
 function toggleCheck(num, event) {
@@ -819,12 +627,8 @@ function init() {
   renderSubjectMeta();
   loadLocalProgress();
   loadSupabaseNotes();
-  gistToken = localStorage.getItem(gistTokenKey());
-  gistId = localStorage.getItem(gistIdKey());
-  setSyncStatus(gistToken ? "syncing" : "offline", gistToken ? "Syncing…" : "Not connected");
   renderTOC();
   updateProgress();
-  if (gistToken) loadFromGist();
 
   if (supabaseUserId) {
     loadSupabaseProgress().then(function() { renderTOC(); updateProgress(); });

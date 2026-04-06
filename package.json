@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "start": "./bin/serve.sh",
-    "test:node": "node --test tests/course-logic.test.js tests/resource-check.test.js tests/notes-contract.test.js tests/course-notes-refresh.test.js && node --test tests/course-data.test.js",
+    "test:node": "node --test tests/course-logic.test.js tests/resource-check.test.js tests/notes-contract.test.js tests/course-notes-refresh.test.js tests/gist-removal.contract.test.js && node --test tests/course-data.test.js",
     "test:smoke": "npx playwright test",
     "test": "npm run test:node && npm run test:smoke"
   },

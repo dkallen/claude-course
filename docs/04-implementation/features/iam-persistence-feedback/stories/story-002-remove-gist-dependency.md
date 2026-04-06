@@ -1,7 +1,7 @@
 # Story: Remove remaining GitHub Gist dependency
 
 **Feature:** Feature: User Identity, Data Persistence, and Learner Feedback
-**Status:** Not started
+**Status:** Done
 
 ## Traceability
 - **Feature:** `docs/04-implementation/features/iam-persistence-feedback/feature.md`
@@ -26,10 +26,10 @@ Remove the remaining GitHub Gist persistence path and UI so learner progress dep
 
 ## Tasks
 
-- [ ] Add failing smoke test in `tests/smoke/no-gist-dependency.spec.js`.
-- [ ] Remove Gist functions, modal markup, sync status UI, and Gist-specific localStorage usage from `course.html`.
-- [ ] Verify whether `progressPrefix` is still required for offline fallback before removing it from `course-data.js`.
-- [ ] Update release notes once learner flow no longer references GitHub.
+- [x] Add failing smoke test in `tests/smoke/no-gist-dependency.spec.js`.
+- [x] Remove Gist functions, modal markup, sync status UI, and Gist-specific localStorage usage from `course.html`.
+- [x] Verify whether `progressPrefix` is still required for offline fallback before removing it from `course-data.js`.
+- [x] Update release notes once learner flow no longer references GitHub.
 
 ## Notes
 

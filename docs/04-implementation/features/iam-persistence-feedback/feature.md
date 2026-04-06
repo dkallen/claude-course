@@ -31,7 +31,7 @@
 
 ## Stories
 - [x] [Story 1: Simplify notes to Supabase-only persistence and read-only module overview](stories/story-001-stale-notes-sync.md)
-- [ ] [Story 2: Remove remaining GitHub Gist dependency](stories/story-002-remove-gist-dependency.md)
+- [x] [Story 2: Remove remaining GitHub Gist dependency](stories/story-002-remove-gist-dependency.md)
 - [ ] [Story 3: Capture thumbs-based learner feedback](stories/story-003-feedback-widget.md)
 
 ## Foundation Already Completed
@@ -42,6 +42,7 @@
 | 2 | Stable resource IDs + page data attributes | Done | Added stable resource context for persistence and feedback. |
 | 3 | S1: Supabase project setup, schema, RLS, `supabase-client.js`, auth gate | Done | Completed in commit `1dec92c`. Google/GitHub OAuth remain deferred. |
 | 4 | S1 + S5: Notes and progress persistence via Supabase plus same-browser live note refresh | Done | Supabase-only notes, read-only module overview, and BroadcastChannel-based same-browser live refresh are now in place. |
+| 5 | S3: Remove remaining GitHub Gist dependency | Done | Learner-facing Gist sync UI, helpers, and subject metadata have been removed from the course shell. |
 
 ## Carry-Forward Decisions
 - Auth is required up front on `course.html`; `index.html` and syllabus pages remain public.
@@ -55,7 +56,7 @@
 - Module overview notes are read-only; note editing happens only on the resource page itself.
 
 ## Current Risk / Known Gap
-- Story 1's notes simplification and same-browser live refresh are complete. Remaining feature work is now concentrated in Story 2 (Gist removal) and Story 3 (feedback capture).
+- Story 1 and Story 2 are complete. Remaining feature work is now concentrated in Story 3 (feedback capture).
 
 ## Release Notes
 
