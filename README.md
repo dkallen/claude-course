@@ -205,6 +205,22 @@ Notes:
 - Smoke tests use Playwright's bundled Chromium, not the installed `Google Chrome.app`.
 - See [05-testing-strategy.md](/Users/davidallen/Code/claude-course/docs/03-design/05-testing-strategy.md) for the current testing layers and when to run each one.
 
+### Localhost Verification
+
+When frontend JavaScript changes on `localhost:8080`, browsers can sometimes keep serving cached assets even after a restart and hard refresh. To reduce false alarms during manual testing:
+
+1. Open DevTools before reloading the page.
+2. In the Network tab, enable `Disable cache` while DevTools stays open.
+3. Hard refresh the page.
+4. Confirm the visible version badge matches the current frontend change you expect.
+5. If the UI still looks stale, use the Console to fetch the current asset with a cache-busting query string, for example:
+
+```js
+fetch('/feedback-widget.js?v=' + Date.now()).then(r => r.text()).then(console.log)
+```
+
+Quick rule: if the version badge or fetched script contents do not match expectations, treat that as a cache problem first rather than a product bug.
+
 ---
 
 ## Getting Started

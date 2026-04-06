@@ -40,6 +40,13 @@ This project uses three test layers. It does not use performance testing (low tr
 2. **Before commit:** Run full suite — `npm test` (unit + contract + smoke).
 3. **Smoke tests require local dev server:** `npm start` must be running on port 8080. Playwright launches headless Chromium against it.
 
+### Localhost Manual Verification Guardrails
+
+- Keep DevTools open and enable `Disable cache` in the Network tab when manually verifying a frontend change on `localhost:8080`.
+- Use the visible frontend version badge as the first sanity check that the browser tab is running the expected asset set.
+- If a page still appears stale after a hard refresh, fetch the changed script with a cache-busting query parameter in the Console before diagnosing product behavior. Example: `fetch('/feedback-widget.js?v=' + Date.now())`.
+- Treat version mismatches or stale fetched assets as a browser-cache problem first, not as immediate evidence of a broken implementation.
+
 ---
 
 ## Constraints and Tradeoffs
