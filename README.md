@@ -57,9 +57,12 @@ npx serve .
 ```
 
 Access the application in your browser:
-- Main Landing Page: `http://localhost:3000/index.html`
-- Claude Code Course: `http://localhost:3000/course.html?subject=claude-code`
-- OpenAI Codex Course: `http://localhost:3000/course.html?subject=codex`
+- Login and account recovery: `http://localhost:8080/login.html`
+- Protected library landing page: `http://localhost:8080/index.html`
+- Claude Code Course: `http://localhost:8080/course.html?subject=claude-code`
+- OpenAI Codex Course: `http://localhost:8080/course.html?subject=codex`
+
+All learner-facing pages are protected behind authentication. `login.html` is the only public entry point, and password recovery returns there before redirecting back to the protected page you requested.
 
 ## Testing
 

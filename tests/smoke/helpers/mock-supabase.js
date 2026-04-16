@@ -1,7 +1,59 @@
-function fakeSupabaseCdnScript() {
+function fakeSupabaseCdnScript(options) {
+    var sessionLiteral = JSON.stringify(options && options.session ? options.session : null);
+
     return `
 window.supabase = {
   createClient: function () {
+    var authStorageKey = '__mock_supabase_auth_session';
+    var seededSession = ${sessionLiteral};
+    var authListeners = [];
+
+    function loadSession() {
+      try {
+        var stored = localStorage.getItem(authStorageKey);
+        if (stored) return JSON.parse(stored);
+      } catch (error) {}
+
+      if (seededSession) {
+        try {
+          localStorage.setItem(authStorageKey, JSON.stringify(seededSession));
+        } catch (error) {}
+      }
+
+      return seededSession;
+    }
+
+    function saveSession(session) {
+      currentSession = session || null;
+      try {
+        if (currentSession) {
+          localStorage.setItem(authStorageKey, JSON.stringify(currentSession));
+        } else {
+          localStorage.removeItem(authStorageKey);
+        }
+      } catch (error) {}
+    }
+
+    var currentSession = loadSession();
+
+    function defaultUser() {
+      return {
+        id: 'playwright-user',
+        email: 'playwright@example.com',
+        user_metadata: { full_name: 'Playwright User' }
+      };
+    }
+
+    function activeUser() {
+      return currentSession && currentSession.user ? currentSession.user : null;
+    }
+
+    function notifyAuth(eventName) {
+      authListeners.forEach(function (listener) {
+        listener(eventName, currentSession);
+      });
+    }
+
     function storageKey(tableName) {
       return '__mock_supabase_' + tableName;
     }
@@ -75,16 +127,29 @@ window.supabase = {
     return {
       auth: {
         getSession: function () {
-          return Promise.resolve({ data: { session: { user: { id: 'playwright-user', email: 'playwright@example.com', user_metadata: { full_name: 'Playwright User' } } } } });
+          return Promise.resolve({ data: { session: currentSession } });
         },
         getUser: function () {
-          return Promise.resolve({ data: { user: { id: 'playwright-user', email: 'playwright@example.com', user_metadata: { full_name: 'Playwright User' } } } });
+          return Promise.resolve({ data: { user: activeUser() } });
         },
-        onAuthStateChange: function () {
-          return { data: { subscription: { unsubscribe: function () {} } } };
+        onAuthStateChange: function (listener) {
+          authListeners.push(listener);
+          return {
+            data: {
+              subscription: {
+                unsubscribe: function () {
+                  authListeners = authListeners.filter(function (candidate) {
+                    return candidate !== listener;
+                  });
+                }
+              }
+            }
+          };
         },
         signInWithPassword: function () {
-          return Promise.resolve({ data: { user: { id: 'playwright-user', email: 'playwright@example.com', user_metadata: { full_name: 'Playwright User' } } }, error: null });
+          saveSession({ user: defaultUser() });
+          notifyAuth('SIGNED_IN');
+          return Promise.resolve({ data: { user: currentSession.user }, error: null });
         },
         signUp: function () {
           return Promise.resolve({ error: null });
@@ -93,6 +158,17 @@ window.supabase = {
           return Promise.resolve({ error: null });
         },
         signInWithOAuth: function () {
+          return Promise.resolve({ error: null });
+        },
+        resetPasswordForEmail: function () {
+          return Promise.resolve({ error: null });
+        },
+        updateUser: function () {
+          return Promise.resolve({ error: null });
+        },
+        signOut: function () {
+          saveSession(null);
+          notifyAuth('SIGNED_OUT');
           return Promise.resolve({ error: null });
         }
       },
@@ -147,11 +223,29 @@ async function installMockSupabase(context) {
     await context.route('**/@supabase/supabase-js@2*', async route => {
         await route.fulfill({
             contentType: 'application/javascript',
-            body: fakeSupabaseCdnScript()
+            body: fakeSupabaseCdnScript({
+                session: {
+                    user: {
+                        id: 'playwright-user',
+                        email: 'playwright@example.com',
+                        user_metadata: { full_name: 'Playwright User' }
+                    }
+                }
+            })
+        });
+    });
+}
+
+async function installMockSupabaseWithSession(context, session) {
+    await context.route('**/@supabase/supabase-js@2*', async route => {
+        await route.fulfill({
+            contentType: 'application/javascript',
+            body: fakeSupabaseCdnScript({ session: session || null })
         });
     });
 }
 
 module.exports = {
-    installMockSupabase
+    installMockSupabase,
+    installMockSupabaseWithSession
 };

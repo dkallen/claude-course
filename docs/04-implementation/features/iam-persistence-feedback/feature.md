@@ -46,7 +46,7 @@
 | 6 | S2: Thumbs-based learner feedback capture | Done | Contextual module and resource pages now submit append-only feedback records to Supabase, and the old course-shell feedback panel is gone. |
 
 ## Carry-Forward Decisions
-- Auth is required up front on `course.html`; `index.html` and syllabus pages remain public.
+- `login.html` is the public auth entry point; learner-facing course, index, syllabus, and resource pages are protected behind authentication.
 - Flashcard state is intentionally excluded from persistence.
 - No Gist data migration is needed; there is no user data worth preserving from the legacy approach.
 - Feedback is append-only; learners do not edit or delete submitted entries.

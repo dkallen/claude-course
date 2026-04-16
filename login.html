@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Course Login</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; min-height: 100vh; background: radial-gradient(circle at top, #f4f0e8 0%, #ffffff 48%), linear-gradient(180deg, #ffffff 0%, #f7f7f5 100%); color: #1a1a1a; display: grid; place-items: center; padding: 1.5rem; }
+  .auth-shell { width: min(980px, 100%); display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(320px, 420px); border: 1px solid #ece7dc; border-radius: 28px; overflow: hidden; background: rgba(255,255,255,0.9); box-shadow: 0 24px 60px rgba(35, 32, 24, 0.08); }
+  .auth-aside { padding: 3rem; background: linear-gradient(180deg, rgba(230, 224, 212, 0.85) 0%, rgba(245, 242, 235, 0.92) 100%); }
+  .auth-kicker { font-size: 0.76rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 700; color: #856d46; margin-bottom: 1rem; }
+  .auth-aside h1 { font-size: clamp(2rem, 4vw, 3.25rem); line-height: 0.95; letter-spacing: -0.05em; margin-bottom: 1rem; }
+  .auth-aside p { font-size: 1rem; line-height: 1.75; color: #554d40; max-width: 26rem; }
+  .auth-points { margin-top: 1.6rem; display: grid; gap: 0.8rem; }
+  .auth-point { font-size: 0.92rem; color: #4d463a; background: rgba(255,255,255,0.7); border: 1px solid rgba(133, 109, 70, 0.12); border-radius: 14px; padding: 0.9rem 1rem; }
+  .auth-panel-wrap { padding: 2rem; display: flex; align-items: center; justify-content: center; }
+  .auth-box { width: 100%; }
+  .auth-box h2 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+  .auth-subtitle { font-size: 0.9rem; color: #7a7367; margin-bottom: 1.5rem; line-height: 1.6; }
+  .auth-tabs { display: flex; gap: 0; border-bottom: 1px solid #ece7dc; margin-bottom: 1.4rem; overflow-x: auto; }
+  .auth-tab { background: none; border: none; padding: 0.55rem 0.9rem 0.7rem; font: inherit; font-size: 0.84rem; color: #9a9488; cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; white-space: nowrap; }
+  .auth-tab.active { color: #1a1a1a; border-bottom-color: #1a1a1a; font-weight: 700; }
+  .auth-field { margin-bottom: 0.95rem; }
+  .auth-field label { display: block; font-size: 0.8rem; font-weight: 700; color: #555045; margin-bottom: 0.35rem; }
+  .auth-field input { width: 100%; padding: 0.78rem 0.85rem; border: 1px solid #ddd6ca; border-radius: 10px; font: inherit; font-size: 0.92rem; background: #fff; }
+  .auth-field input:focus { outline: none; border-color: #9d8355; box-shadow: 0 0 0 3px rgba(157, 131, 85, 0.12); }
+  .auth-btn { width: 100%; padding: 0.78rem; background: #1a1a1a; color: #fff; border: none; border-radius: 10px; font: inherit; font-size: 0.92rem; font-weight: 700; cursor: pointer; }
+  .auth-btn:disabled { background: #beb8ae; cursor: default; }
+  .auth-alt { margin-top: 0.9rem; font-size: 0.8rem; color: #7a7367; line-height: 1.55; }
+  .auth-alt button { background: none; border: none; color: #1a1a1a; text-decoration: underline; cursor: pointer; font: inherit; padding: 0; }
+  .auth-msg { font-size: 0.82rem; margin-top: 0.9rem; min-height: 1.2rem; color: #6f675a; }
+  .auth-msg.error { color: #c2410c; }
+  .auth-msg.success { color: #1f7a47; }
+  @media (max-width: 860px) {
+    .auth-shell { grid-template-columns: 1fr; }
+    .auth-aside { padding: 2rem 2rem 1rem; }
+    .auth-panel-wrap { padding-top: 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="auth-shell">
+  <section class="auth-aside">
+    <div class="auth-kicker">Protected Course Library</div>
+    <h1>Sign in before you enter the course.</h1>
+    <p>Every learner-facing page is now protected behind authentication. Use this page to sign in, create an account, request a magic link, or recover access to your account.</p>
+    <div class="auth-points">
+      <div class="auth-point">Email/password sign-in and sign-up are available for local and production verification.</div>
+      <div class="auth-point">Magic link and password recovery both return here before sending you back to the protected page you requested.</div>
+      <div class="auth-point">Once you are signed in, the rest of the site stays locked down unless your session expires or you sign out.</div>
+    </div>
+  </section>
+  <section class="auth-panel-wrap">
+    <div class="auth-box">
+      <h2>Account access</h2>
+      <p class="auth-subtitle">Sign in to continue, or recover your account if you’ve lost access.</p>
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-auth-tab="signin">Sign in</button>
+        <button class="auth-tab" data-auth-tab="signup">Sign up</button>
+        <button class="auth-tab" data-auth-tab="magic">Magic link</button>
+        <button class="auth-tab" data-auth-tab="forgot">Forgot password</button>
+        <button class="auth-tab" data-auth-tab="reset" style="display:none;">Reset password</button>
+      </div>
+      <form id="auth-panel-signin">
+        <div class="auth-field"><label for="auth-email-si">Email</label><input type="email" id="auth-email-si" name="email" autocomplete="username" placeholder="you@example.com"></div>
+        <div class="auth-field"><label for="auth-password-si">Password</label><input type="password" id="auth-password-si" name="password" autocomplete="current-password" placeholder="••••••••"></div>
+        <button class="auth-btn" type="submit">Sign in</button>
+        <div class="auth-alt">Need a reset instead? <button type="button" data-auth-tab="forgot">Send a password reset email</button>.</div>
+      </form>
+      <form id="auth-panel-signup" style="display:none;">
+        <div class="auth-field"><label for="auth-email-su">Email</label><input type="email" id="auth-email-su" name="email" autocomplete="username" placeholder="you@example.com"></div>
+        <div class="auth-field"><label for="auth-password-su">Password</label><input type="password" id="auth-password-su" name="new-password" autocomplete="new-password" placeholder="At least 6 characters"></div>
+        <button class="auth-btn" type="submit">Create account</button>
+      </form>
+      <form id="auth-panel-magic" style="display:none;">
+        <div class="auth-field"><label for="auth-email-ml">Email</label><input type="email" id="auth-email-ml" name="email" autocomplete="username" placeholder="you@example.com"></div>
+        <button class="auth-btn" type="submit">Send magic link</button>
+      </form>
+      <form id="auth-panel-forgot" style="display:none;">
+        <div class="auth-field"><label for="auth-email-forgot">Email</label><input type="email" id="auth-email-forgot" name="email" autocomplete="username" placeholder="you@example.com"></div>
+        <button class="auth-btn" type="submit">Send reset email</button>
+      </form>
+      <form id="auth-panel-reset" style="display:none;">
+        <div class="auth-field"><label for="auth-password-reset">New password</label><input type="password" id="auth-password-reset" name="password" autocomplete="new-password" placeholder="At least 6 characters"></div>
+        <div class="auth-field"><label for="auth-password-reset-confirm">Confirm password</label><input type="password" id="auth-password-reset-confirm" name="password-confirm" autocomplete="new-password" placeholder="Repeat your password"></div>
+        <button class="auth-btn" type="submit">Update password</button>
+      </form>
+      <div class="auth-msg" id="auth-msg"></div>
+    </div>
+  </section>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-client.js"></script>
+<script src="auth-ui.js"></script>
+<script src="version.js"></script>
+</body>
+</html>

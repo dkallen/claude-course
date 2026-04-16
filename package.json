@@ -5,7 +5,7 @@
     "write:version": "node scripts/write-version.js",
     "write:version:clean": "node scripts/write-version.js --clean",
     "start": "npm run write:version && ./bin/serve.sh",
-    "test:node": "npm run write:version && node --test tests/course-logic.test.js tests/resource-check.test.js tests/notes-contract.test.js tests/course-notes-refresh.test.js tests/gist-removal.contract.test.js tests/feedback-widget.test.js tests/feedback-context.contract.test.js tests/course-shell-ui.test.js tests/version.contract.test.js && node --test tests/course-data.test.js",
+    "test:node": "npm run write:version && node --test tests/course-logic.test.js tests/resource-check.test.js tests/notes-contract.test.js tests/course-notes-refresh.test.js tests/gist-removal.contract.test.js tests/feedback-widget.test.js tests/feedback-context.contract.test.js tests/course-shell-ui.test.js tests/version.contract.test.js tests/auth-protection.contract.test.js && node --test tests/course-data.test.js",
     "test:smoke": "npm run write:version && npx playwright test",
     "test": "npm run test:node && npm run test:smoke"
   },
