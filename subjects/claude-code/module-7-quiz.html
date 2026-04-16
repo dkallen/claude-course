@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 — Scenario Quiz</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .card { border: 1px solid #eee; border-radius: 12px; background: #fafafa; padding: 1rem; }
+  .progress { font-size: 0.85rem; color: #777; margin-bottom: 1rem; font-weight: 600; }
+  .question { font-size: 1rem; line-height: 1.55; margin-bottom: 1rem; }
+  .options { display: grid; gap: 0.65rem; }
+  button.option { text-align: left; padding: 0.8rem; border: 1px solid #ddd; border-radius: 8px; background: #fff; cursor: pointer; font: inherit; font-size: 0.92rem; }
+  button.option:hover { border-color: #aaa; }
+  .feedback { margin-top: 1rem; padding: 0.85rem; border-radius: 8px; font-size: 0.92rem; line-height: 1.55; display: none; }
+  .feedback.correct { background: #f0fdf4; color: #166534; display: block; }
+  .feedback.incorrect { background: #fef2f2; color: #991b1b; display: block; }
+  .next { margin-top: 1rem; background: #1a1a1a; color: #fff; border: none; border-radius: 8px; padding: 0.8rem 1rem; font: inherit; cursor: pointer; display: none; }
+</style>
+</head>
+<body data-subject-id="claude-code" data-module="7" data-resource-id="m7-quiz">
+<div class="container">
+  <h1>Module 7: Scenario Quiz</h1>
+  <p class="subtitle">Eight judgment calls about skills, invocation, and when reusable intelligence actually helps.</p>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="next" id="next-btn">Next</button>
+  </div>
+</div>
+<script>
+const questions = [
+  {
+    q: "You want Claude to automatically suggest using your skill whenever someone asks how code works. Which frontmatter field controls this?",
+    options: [
+      "allowed-tools — it sets which tools the skill can use",
+      "description — Claude reads this to decide when to invoke the skill automatically",
+      "user-invocable — setting it to false hides the skill from the menu",
+      "context — setting it to fork isolates the skill"
+    ],
+    answer: 1,
+    explanation: "The description is always loaded into context. Claude uses it to match the skill to relevant requests. Without a strong description, the skill will only fire when you invoke it directly."
+  },
+  {
+    q: "You have a /deploy skill. You don't want Claude to decide on its own that the code looks ready and run it. Which frontmatter setting do you need?",
+    options: [
+      "user-invocable: false",
+      "context: fork",
+      "disable-model-invocation: true",
+      "effort: low"
+    ],
+    answer: 2,
+    explanation: "disable-model-invocation: true prevents Claude from invoking the skill automatically. Only you can trigger it with /deploy. This is the right choice for anything with side effects."
+  },
+  {
+    q: "A colleague asks: 'what's the difference between a skill and CLAUDE.md?' What's the most accurate answer?",
+    options: [
+      "They're the same thing — CLAUDE.md is just the older format",
+      "CLAUDE.md is always loaded; skill bodies load on demand. CLAUDE.md holds facts; skills hold procedures.",
+      "Skills are for personal use; CLAUDE.md is for the whole team",
+      "Skills require the API; CLAUDE.md works offline"
+    ],
+    answer: 1,
+    explanation: "CLAUDE.md is always loaded whether relevant or not — keep it lean. Skill descriptions are always in context but the full body only loads when invoked. Long procedures belong in skills, not CLAUDE.md."
+  },
+  {
+    q: "Your skill uses the !`gh pr diff` syntax. When does this command execute?",
+    options: [
+      "When Claude decides it needs the PR diff",
+      "Before the skill content reaches Claude — the output replaces the placeholder",
+      "After Claude generates its first response",
+      "Only if Claude explicitly calls the Bash tool"
+    ],
+    answer: 1,
+    explanation: "Dynamic context injection runs as preprocessing. Each !`command` executes before Claude sees any of the skill content. Claude receives the fully-rendered prompt with the actual data already inserted."
+  },
+  {
+    q: "You invoked three skills in one session and then auto-compaction ran. Which skills are most likely to be dropped?",
+    options: [
+      "The most recently invoked skill",
+      "The skill with the largest body",
+      "The oldest invoked skills, since re-attachment fills the 25k token budget starting from the most recent",
+      "All skills are dropped after compaction"
+    ],
+    answer: 2,
+    explanation: "After compaction, Claude Code re-attaches invoked skills up to 25,000 tokens combined, starting from the most recently invoked. If the budget runs out, the oldest invoked skills are dropped. Re-invoke them to restore full content."
+  },
+  {
+    q: "You add a large API specification to your skill directory as reference.md but don't mention it in SKILL.md. What happens?",
+    options: [
+      "Claude loads it automatically when the skill is triggered",
+      "Claude never reads it — you must reference it from SKILL.md for Claude to know it exists",
+      "It counts against the 25k compaction budget",
+      "It is loaded at startup alongside the skill description"
+    ],
+    answer: 1,
+    explanation: "Supporting files only load when Claude decides to read them, and Claude only knows they exist if SKILL.md tells it. Reference them from SKILL.md with a note about what each contains and when to load it."
+  },
+  {
+    q: "You set context: fork on a skill. Which of the following is true?",
+    options: [
+      "The skill shares the full conversation history with the subagent",
+      "The skill runs in an isolated context — the subagent does not see conversation history",
+      "The skill can only be invoked manually with /skill-name",
+      "The skill's output is discarded and not returned to the main session"
+    ],
+    answer: 1,
+    explanation: "context: fork runs the skill in a forked subagent. The subagent receives the skill content as its task but has no access to conversation history. Results are summarised and returned to your main session."
+  },
+  {
+    q: "A skill you wrote was working well, but after a long session it seems to stop influencing Claude's behavior. What is the most likely cause and fix?",
+    options: [
+      "The skill file was deleted — recreate it",
+      "Claude auto-compacted the session and the skill was dropped from the re-attachment budget — re-invoke it",
+      "The allowed-tools setting expired — update the frontmatter",
+      "Skills only last for 10 minutes — this is expected behavior"
+    ],
+    answer: 1,
+    explanation: "Skills survive compaction up to the 25k token budget, starting from the most recent invocations. If a skill falls outside that budget, re-invoking it restores the full content to the session."
+  }
+];
+
+let current = 0;
+let locked = false;
+
+function renderQuestion() {
+  locked = false;
+  const item = questions[current];
+  document.getElementById("progress").textContent = `Question ${current + 1} of ${questions.length}`;
+  document.getElementById("question").textContent = item.q;
+  const optionsEl = document.getElementById("options");
+  optionsEl.innerHTML = "";
+  item.options.forEach((option, idx) => {
+    const button = document.createElement("button");
+    button.className = "option";
+    button.textContent = option;
+    button.addEventListener("click", () => answer(idx));
+    optionsEl.appendChild(button);
+  });
+  document.getElementById("feedback").className = "feedback";
+  document.getElementById("feedback").textContent = "";
+  document.getElementById("next-btn").style.display = "none";
+}
+
+function answer(idx) {
+  if (locked) return;
+  locked = true;
+  const item = questions[current];
+  const feedback = document.getElementById("feedback");
+  feedback.className = "feedback " + (idx === item.answer ? "correct" : "incorrect");
+  feedback.textContent = item.explanation;
+  document.getElementById("next-btn").style.display = "inline-block";
+}
+
+document.getElementById("next-btn").addEventListener("click", () => {
+  current += 1;
+  if (current >= questions.length) {
+    document.querySelector(".card").innerHTML = "<h2 style='margin-bottom:0.5rem;'>Quiz complete</h2><p style='line-height:1.6;color:#444;'>If your mistakes were around invocation control or compaction behavior, those are the subtleties that bite people in practice. Review the reference page and try building another skill.</p>";
+    return;
+  }
+  renderQuestion();
+});
+
+renderQuestion();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth-guard.js"></script>
+<script src="../../auth-account.js"></script>
+<script src="../../course-notes.js"></script>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+<script src="../../version.js"></script>
+</body>
+</html>

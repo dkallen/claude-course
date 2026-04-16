@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 — Flashcards</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: #fff; color: #1a1a1a; padding: 2rem 1rem; }
+  .container { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.6rem; margin-bottom: 0.35rem; }
+  .subtitle { color: #666; margin-bottom: 1.5rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .card { perspective: 1000px; cursor: pointer; min-height: 180px; }
+  .card-inner { position: relative; width: 100%; height: 100%; min-height: 180px; transition: transform 0.5s; transform-style: preserve-3d; }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face { position: absolute; inset: 0; border: 1px solid #eee; border-radius: 12px; padding: 1rem; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; text-align: center; line-height: 1.55; }
+  .front { background: #fafafa; font-weight: 600; font-size: 0.95rem; }
+  .back { background: #fff; transform: rotateY(180deg); color: #444; font-size: 0.88rem; }
+</style>
+</head>
+<body data-subject-id="claude-code" data-module="7" data-resource-id="m7-flashcards">
+<div class="container">
+  <h1>Module 7: Flashcards</h1>
+  <p class="subtitle">Click any card to flip it.</p>
+  <div class="grid" id="grid"></div>
+</div>
+<script>
+const cards = [
+  ["Skill", "A directory containing a SKILL.md file that packages a reusable playbook for Claude. Loads on demand — only the description is in context at startup."],
+  ["SKILL.md", "The required entrypoint of every skill. Contains YAML frontmatter (behavior config) and markdown content (instructions Claude follows when invoked)."],
+  ["description field", "Always loaded into context. Claude reads this to decide when to invoke the skill automatically. Front-load the key use case — it's truncated at 1,536 chars."],
+  ["disable-model-invocation: true", "Only you can invoke this skill. Claude will not trigger it automatically. Use for side-effect tasks like /deploy or /commit."],
+  ["user-invocable: false", "Claude can invoke this skill; you cannot use the slash command. Use for background knowledge that isn't a meaningful user action."],
+  ["allowed-tools", "Grants Claude permission to use specific tools without per-use approval while this skill is active. Does not restrict other tools."],
+  ["$ARGUMENTS", "Expands to all arguments passed when invoking the skill. Use $0, $1 for individual positional values."],
+  ["Dynamic context injection", "The !`command` syntax. Runs shell commands before skill content reaches Claude. Output replaces the placeholder. Claude sees results, not the command."],
+  ["context: fork", "Runs the skill in an isolated subagent. The subagent receives the skill content as its task but has no access to conversation history."],
+  ["Supporting files", "Additional files in the skill directory (reference.md, scripts/, etc.). Claude loads them on demand, not upfront. Scripts execute via bash — only output enters context."],
+  ["Skill compaction behavior", "After auto-compaction, the most recently invoked skills are re-attached. Budget: 5,000 tokens per skill, 25,000 tokens combined. Oldest skills can be dropped."],
+  ["Personal vs. project skill", "Personal (~/.claude/skills/) — available across all your projects. Project (.claude/skills/) — this repo only, committed to version control."],
+  ["Bundled skills", "Skills that ship with Claude Code: /simplify, /debug, /loop, /batch, /claude-api. Prompt-based, not hardcoded — good models for your own skills."],
+  ["Skills vs. CLAUDE.md", "CLAUDE.md is always loaded — keep it lean, facts only. Skill bodies load on demand — long procedures belong here, not in CLAUDE.md."]
+];
+
+const grid = document.getElementById("grid");
+cards.forEach(([front, back]) => {
+  const card = document.createElement("div");
+  card.className = "card";
+  card.innerHTML = `<div class="card-inner"><div class="face front">${front}</div><div class="face back">${back}</div></div>`;
+  card.addEventListener("click", () => card.classList.toggle("flipped"));
+  grid.appendChild(card);
+});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth-guard.js"></script>
+<script src="../../auth-account.js"></script>
+<script src="../../course-notes.js"></script>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+<script src="../../version.js"></script>
+</body>
+</html>

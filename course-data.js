@@ -118,7 +118,20 @@ window.COURSE_DATA = {
             { id: "m6-flashcards", name: "Flashcards", href: "subjects/claude-code/module-6-flashcards.html", type: "interactive" },
             { id: "m6-reference", name: "Quick Reference", href: "subjects/claude-code/module-6-reference.html", type: "reference" }
           ]},
-        { num: 7, name: "Skills — Reusable Intelligence", section: 1, resources: [] },
+        { num: 7, name: "Skills — Reusable Intelligence", section: 1,
+          check: "Can you write a skill, control whether Claude or you invokes it, pass arguments to it, and explain the difference between the description and the body? If yes, you're ready for Module 8.",
+          phases: [
+            { label: "Phase 1", title: "Understand the mechanism", desc: "Read the lesson to understand what skills are, how they differ from CLAUDE.md, and what the key authoring decisions are.", items: [0] },
+            { label: "Phase 2", title: "Write and test your own skill", desc: "Build a skill for a task you repeat. Test manual invocation, then confirm auto-invocation works.", items: [1] },
+            { label: "Phase 3", title: "Lock in the concepts", desc: "Use the quiz, flashcards, and reference to sharpen the judgment calls that matter in practice.", items: [2, 3, 4] }
+          ],
+          resources: [
+            { id: "m7-lesson", name: "Lesson Content", href: "subjects/claude-code/module-7-lesson.html", type: "read" },
+            { id: "m7-exercise", name: "Guided Exercise", href: "subjects/claude-code/module-7-exercise.html", type: "exercise" },
+            { id: "m7-quiz", name: "Scenario Quiz", href: "subjects/claude-code/module-7-quiz.html", type: "interactive" },
+            { id: "m7-flashcards", name: "Flashcards", href: "subjects/claude-code/module-7-flashcards.html", type: "interactive" },
+            { id: "m7-reference", name: "Quick Reference", href: "subjects/claude-code/module-7-reference.html", type: "reference" }
+          ]},
         { num: 8, name: "MCP — Connecting Claude Code to the World", section: 1, resources: [] },
         { num: 9, name: "Multi-Agent Workflows — Orchestration at Scale", section: 1, resources: [] },
         { num: 10, name: "Scheduled Tasks — Putting Claude on Autopilot", section: 2, resources: [] },

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Module 7 — Lesson: Skills</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; color: #1a1a1a; background: #fff; font-size: 0.92rem; line-height: 1.6; }
+  .container { max-width: 700px; margin: 0 auto; padding: 2rem 1rem; }
+  .back-link { font-size: 0.8rem; color: #888; text-decoration: none; display: inline-block; margin-bottom: 1.5rem; }
+  h1 { font-size: 1.4rem; font-weight: 700; margin-bottom: 0.5rem; line-height: 1.3; }
+  .subtitle { font-size: 0.88rem; color: #555; margin-bottom: 1.5rem; font-style: italic; }
+  h2 { font-size: 1.05rem; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2rem; margin-bottom: 0.75rem; }
+  h3 { font-size: 0.95rem; font-weight: 600; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+  p, li { font-size: 0.92rem; line-height: 1.6; }
+  p { margin-bottom: 0.75rem; }
+  ul, ol { margin-bottom: 0.75rem; padding-left: 1.5rem; }
+  li { margin-bottom: 0.3rem; }
+  blockquote { border-left: 2px solid #999; padding-left: 1rem; color: #444; font-style: italic; margin-bottom: 0.75rem; }
+  pre { background: #f5f5f5; border-radius: 8px; padding: 1rem; margin-bottom: 0.75rem; overflow-x: auto; font-size: 0.85rem; line-height: 1.55; }
+  code { font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace; font-size: 0.86em; background: #f0f0f0; padding: 0.1em 0.35em; border-radius: 3px; }
+  pre code { background: none; padding: 0; font-size: inherit; }
+  hr { border: none; border-top: 1px solid #eee; margin: 2rem 0; }
+</style>
+</head>
+<body data-subject-id="claude-code" data-module="7" data-resource-id="m7-lesson">
+<div class="container">
+  <a href="module-7-index.html" class="back-link">&larr; Module 7</a>
+  <h1>Module 7: Skills &mdash; Reusable Intelligence</h1>
+  <p class="subtitle">From Concept to Delivery with Claude Code &mdash; A Practitioner's Course</p>
+  <p><strong>Accuracy note:</strong> Claude Code evolves quickly. This lesson sticks to behavior Anthropic documents publicly today, and it calls out the places where settings, permissions, or invocation mode change what Claude actually sees.</p>
+
+  <hr>
+  <h2>Why This Module Matters</h2>
+  <p>Every time you paste the same playbook into a chat, you are doing work Claude could remember. Every time a section of your CLAUDE.md has grown into a step-by-step procedure, you have created something that deserves its own home.</p>
+  <p>Skills are that home. A skill is a directory containing a <code>SKILL.md</code> file that packages a playbook for Claude to apply on demand &mdash; automatically when relevant, or on command when you type <code>/skill-name</code>. Write it once. Stop re-explaining it forever.</p>
+
+  <h2>1. The Three Instruction Layers and When to Use Each</h2>
+  <p>In practice, keep three kinds of guidance distinct. Only the first two are Claude Code features; the third is just good prompting hygiene. Confusing them is a common source of bloated CLAUDE.md files and under-used skills.</p>
+  <ul>
+    <li><strong>CLAUDE.md</strong> &mdash; always-loaded facts: project conventions, tech choices, constraints, and recurring preferences. Claude reads this on every session, so keep it lean.</li>
+    <li><strong>Skills</strong> &mdash; reusable workflows and domain playbooks. Claude keeps a listing entry for available skills so it knows when they are relevant; the full skill body loads only when the skill is invoked. One important exception: if you set <code>disable-model-invocation: true</code>, the description is not kept in context until you invoke the skill yourself.</li>
+    <li><strong>One-off prompts</strong> &mdash; ad hoc instructions for a task you may never repeat. Useful, but not a separate persistent Claude Code mechanism.</li>
+  </ul>
+  <p>Older Claude Code material may talk about custom commands as a separate feature. Today, custom commands have been merged into skills: a file at <code>.claude/commands/deploy.md</code> and a skill at <code>.claude/skills/deploy/SKILL.md</code> can both create <code>/deploy</code>, but skills are the more capable format.</p>
+  <blockquote>If you have pasted the same playbook three times, it belongs in a skill. If a section of CLAUDE.md has grown into a procedure rather than a fact, extract it.</blockquote>
+
+  <h2>2. Anatomy of a Skill</h2>
+  <p>Every skill is a directory. The only required file is <code>SKILL.md</code>.</p>
+  <pre>~/.claude/skills/my-skill/
+├── SKILL.md          # required — instructions and frontmatter
+├── reference.md      # optional — detailed lookup material
+├── template.md       # optional — output template
+└── scripts/
+    └── helper.py     # optional — script Claude can execute</pre>
+  <p>In practice, most <code>SKILL.md</code> files use YAML frontmatter plus a markdown body. Anthropic's current docs make all frontmatter fields optional, but the frontmatter is where discovery, invocation control, and tool pre-approval live, so you should usually include it.</p>
+  <pre>---
+name: explain-code
+description: Explains code with visual diagrams and analogies. Use when
+  explaining how code works, teaching about a codebase, or when the
+  user asks "how does this work?"
+---
+
+When explaining code, always:
+
+1. **Start with an analogy** — compare the concept to everyday life
+2. **Draw an ASCII diagram** — show the flow or structure visually
+3. **Walk through it step by step** — no implementation assumptions
+4. **Flag one common misconception** — what do people usually get wrong?</pre>
+  <p>The <code>name</code> becomes the <code>/slash-command</code>; if you omit it, Claude uses the directory name. The <code>description</code> is what Claude reads to decide whether to load the skill automatically; if you omit it, Claude falls back to the first paragraph of the markdown body. The combined <code>description</code> and <code>when_to_use</code> listing text is truncated to 1,536 characters.</p>
+
+  <h2>3. Where Skills Live</h2>
+  <p>Where you store a skill determines who gets it.</p>
+  <ul>
+    <li>Enterprise-managed &mdash; deployed to all users in your organisation</li>
+    <li><code>~/.claude/skills/skill-name/</code> &mdash; personal, available across all your projects</li>
+    <li><code>.claude/skills/skill-name/</code> in a repo &mdash; project-scoped, committed to version control</li>
+    <li>Plugin skills &mdash; bundled with an installed plugin and available where that plugin is enabled</li>
+  </ul>
+  <p>When the same skill name exists at enterprise, personal, and project levels, higher-priority wins: enterprise beats personal beats project. Plugin skills use a namespace like <code>plugin-name:skill-name</code>, so they do not conflict with those levels. Claude Code also auto-discovers nested <code>.claude/skills/</code> directories in monorepos, and legacy <code>.claude/commands/</code> files still work.</p>
+
+  <h2>4. Invocation Control</h2>
+  <p>By default, both you and Claude can invoke any skill. Two frontmatter fields change that.</p>
+  <h3>disable-model-invocation: true</h3>
+  <p>Only you can trigger this skill. Use it for anything with side effects: <code>/deploy</code>, <code>/commit</code>, <code>/send-report</code>. You do not want Claude deciding to deploy because the code looks ready.</p>
+  <pre>---
+name: deploy
+description: Deploy the application to production
+disable-model-invocation: true
+---
+
+Deploy $ARGUMENTS to production:
+1. Run the full test suite
+2. Build the application
+3. Push to the deployment target
+4. Confirm the deployment is healthy</pre>
+  <h3>user-invocable: false</h3>
+  <p>Only Claude can trigger this skill. Use it for background knowledge that is not a command &mdash; context Claude should apply automatically, but that <code>/legacy-system-context</code> is not a meaningful action for you to take.</p>
+
+  <h2>5. Arguments</h2>
+  <p>Both you and Claude can pass arguments when invoking a skill. Use <code>$ARGUMENTS</code> for the full argument string, <code>$ARGUMENTS[N]</code> for a 0-based position, or the shorthand <code>$0</code>, <code>$1</code> for individual values.</p>
+  <pre>---
+name: fix-issue
+description: Fix a GitHub issue by number
+disable-model-invocation: true
+---
+
+Fix GitHub issue $ARGUMENTS following our coding standards.
+
+1. Read the issue description
+2. Understand the requirements
+3. Implement the fix
+4. Write tests
+5. Create a commit</pre>
+  <p>Running <code>/fix-issue 247</code> gives Claude "Fix GitHub issue 247 following our coding standards." If you pass arguments but the skill body does not reference <code>$ARGUMENTS</code>, Claude Code appends <code>ARGUMENTS: 247</code> to the rendered skill so the input is still preserved.</p>
+
+  <h2>6. Dynamic Context Injection</h2>
+  <p>Skills can run shell commands before the content reaches Claude. Use the <code>!`command`</code> syntax. The output replaces the placeholder &mdash; Claude receives actual data, not the command itself.</p>
+  <pre>---
+name: pr-summary
+description: Summarise the current pull request
+context: fork
+agent: Explore
+allowed-tools: Bash(gh *)
+---
+
+## Pull request context
+- Diff: !`gh pr diff`
+- Comments: !`gh pr view --comments`
+- Changed files: !`gh pr diff --name-only`
+
+## Your task
+Summarise this pull request for a reviewer who has not seen it before.</pre>
+  <p>When this skill runs, each <code>!`...`</code> block executes first. Claude receives the fully-rendered prompt with the actual PR data already inserted. This is preprocessing, not something Claude executes.</p>
+  <p>For multi-line commands, use a fenced code block opened with <code>```!</code>. If you need to disable shell injection for user, project, plugin, or additional-directory skills, Anthropic documents a <code>disableSkillShellExecution</code> setting; bundled and managed skills are not affected.</p>
+
+  <h2>7. Pre-Approving Tools</h2>
+  <p>The <code>allowed-tools</code> field grants Claude permission to use specific tools without prompting you each time the skill is active. It does not restrict anything &mdash; all tools remain callable, and your normal permission settings govern the rest.</p>
+  <pre>---
+name: commit
+description: Stage and commit the current changes
+disable-model-invocation: true
+allowed-tools: Bash(git add *) Bash(git commit *) Bash(git status *)
+---</pre>
+  <p>If you actually want to block tool use, do that in Claude Code's permission settings with deny rules; <code>allowed-tools</code> is an allowlist for approval flow, not a sandbox.</p>
+
+  <h2>8. Subagent Execution</h2>
+  <p>Add <code>context: fork</code> to run a skill in an isolated subagent. The skill content becomes the task prompt. The subagent does not see your conversation history, but it does run with the selected agent type's system prompt and your <code>CLAUDE.md</code> guidance. Results are summarised and returned to your main session.</p>
+  <pre>---
+name: deep-research
+description: Research a topic thoroughly in an isolated context
+context: fork
+agent: Explore
+---
+
+Research $ARGUMENTS thoroughly:
+
+1. Find relevant files using Glob and Grep
+2. Read and analyse the code
+3. Summarise findings with specific file references</pre>
+  <p>The <code>agent</code> field sets the execution environment &mdash; model, tools, and permissions. Built-in options include <code>Explore</code>, <code>Plan</code>, and <code>general-purpose</code>; you can also point to a custom subagent. If omitted, <code>general-purpose</code> is used.</p>
+
+  <h2>9. Supporting Files</h2>
+  <p>Keep <code>SKILL.md</code> focused. Move large reference material &mdash; API docs, detailed schemas, extended examples &mdash; to separate files in the same directory. Claude loads them only when the task needs them.</p>
+  <pre>my-skill/
+├── SKILL.md          # overview and navigation
+├── reference.md      # detailed API docs — loaded when needed
+├── examples.md       # usage examples — loaded when needed
+└── scripts/
+    └── validate.sh   # executed, not loaded into context</pre>
+  <p>Reference supporting files from your <code>SKILL.md</code> so Claude knows what each contains and when to read it. Scripts are especially efficient: when Claude runs <code>validate.sh</code>, only the output enters the context window &mdash; the script code itself does not. Anthropic's guidance is to keep <code>SKILL.md</code> under roughly 500 lines and push bulky detail into supporting files.</p>
+
+  <h2>10. Context Lifecycle and Compaction</h2>
+  <p>When a skill is invoked, the rendered <code>SKILL.md</code> enters the conversation as a message and stays there for the rest of the session. Claude does not re-read the skill file on later turns. Write guidance that should apply throughout a task as standing instructions, not one-time steps.</p>
+  <p>After auto-compaction, Claude Code re-attaches the most recently invoked skills: up to 5,000 tokens each, 25,000 tokens combined. Older skills can be dropped if many have been invoked. If a skill seems to stop influencing behavior after compaction, re-invoke it.</p>
+
+  <h2>11. Bundled Skills</h2>
+  <p>Claude Code currently documents several bundled skills. They use the same prompt-based mechanism as the skills you write yourself, not a separate hardcoded system, so they are good examples to study.</p>
+  <ul>
+    <li><code>/simplify</code> &mdash; reviews recently changed files for reuse, quality, and efficiency issues, then fixes what it finds</li>
+    <li><code>/debug</code> &mdash; enables debug logging for the current session and investigates issues using the session debug log</li>
+    <li><code>/loop</code> &mdash; reruns a prompt on an interval while the session stays open</li>
+    <li><code>/batch</code> &mdash; applies a task across multiple files in parallel</li>
+    <li><code>/claude-api</code> &mdash; loads Claude API reference material and SDK guidance for your project's language</li>
+  </ul>
+  <p>Type <code>/simplify</code> after making a set of changes to see how a well-crafted skill prompt reads.</p>
+
+  <hr>
+  <h2>Check</h2>
+  <p>If you can create a skill, control whether Claude or you invokes it, pass arguments to it, and explain the difference between a skill body and its description &mdash; you are ready to start building your own skill library.</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../../supabase-client.js"></script>
+<script src="../../auth-guard.js"></script>
+<script src="../../auth-account.js"></script>
+<script src="../../course-notes.js"></script>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+<script src="../../version.js"></script>
+</body>
+</html>
