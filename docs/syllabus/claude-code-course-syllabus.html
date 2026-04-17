@@ -62,14 +62,14 @@
       <tr><td>7</td><td>Skills &mdash; Reusable Intelligence</td><td>SKILL.md files, triggers, testing, composition</td></tr>
       <tr><td>8</td><td>MCP &mdash; Connecting Claude Code to the World</td><td>External tools, data sources, security</td></tr>
       <tr><td>9</td><td>Multi-Agent Workflows &mdash; Orchestration at Scale</td><td>Subagents, worktrees, parallel development</td></tr>
-      <tr><td>10</td><td>Scheduled Tasks &mdash; Putting Claude on Autopilot</td><td><code>/loop</code>, Desktop scheduling, recurring automation</td></tr>
+      <tr><td>10</td><td>Scheduled Tasks &amp; Routines &mdash; Putting Claude on Autopilot</td><td><code>/loop</code>, Desktop scheduling, cloud-executed Routines</td></tr>
       <tr><td>11</td><td>Remote Control &mdash; Claude Code from Your Pocket</td><td><code>claude rc</code>, mobile control, local execution</td></tr>
       <tr><td>12</td><td>Channels &mdash; Claude Code Meets You Where You Are</td><td>Telegram, Discord, event-driven workflows</td></tr>
       <tr><td>13</td><td>Delivery &mdash; From Working Code to Shipped Product</td><td>Docs, release notes, CI/CD, shipping</td></tr>
       <tr><td>&mdash;</td><td>Capstone: Build Something Real</td><td>Full pipeline on a real project</td></tr>
     </tbody>
   </table>
-  <p class="section-note">Modules 1&ndash;9: Working with Claude Code at your desk.<br>Modules 10&ndash;12: Claude Code working for you when you're not.<br>Module 13: Shipping.</p>
+  <p class="section-note">Modules 1&ndash;9: Working with Claude Code at your desk.<br>Modules 10&ndash;12: Claude Code working for you when you&rsquo;re not (including cloud-executed Routines).<br>Module 13: Shipping.</p>
 
   <div class="module-block">
     <h2>Module 1: Orientation &mdash; What Claude Code Actually Is</h2>
@@ -77,7 +77,7 @@
     <h3>Key Concepts</h3>
     <ul>
       <li>The agentic loop: how Claude Code reads, plans, acts, and verifies</li>
-      <li>Environments: terminal CLI, VS Code extension, desktop app, web, and how they differ</li>
+      <li>Environments: terminal CLI, VS Code extension, desktop app (redesigned 2026: multi-session, integrated terminal, in-app editor, diff viewer), web, and how they differ</li>
       <li>Context windows and compaction &mdash; why Claude "forgets" and what to do about it</li>
       <li>The jagged capability frontier: what Claude Code excels at vs. where it falls flat</li>
     </ul>
@@ -226,22 +226,24 @@
   </div>
 
   <div class="module-block">
-    <h2>Module 10: Scheduled Tasks &mdash; Putting Claude on Autopilot</h2>
-    <p class="module-goal">Learn to set up recurring and one-shot tasks so Claude Code works on your behalf without you sitting at the terminal.</p>
+    <h2>Module 10: Scheduled Tasks &amp; Routines &mdash; Putting Claude on Autopilot</h2>
+    <p class="module-goal">Learn to set up recurring and one-shot tasks so Claude Code works on your behalf without you sitting at the terminal &mdash; including cloud-executed Routines that run even when your laptop is off.</p>
     <h3>Key Concepts</h3>
     <ul>
-      <li>Two flavors of scheduling: CLI session-scoped (<code>/loop</code>) vs. Desktop persistent (Cowork <code>/schedule</code>)</li>
+      <li>Three tiers of automation: session-scoped (<code>/loop</code>), Desktop-persistent (<code>/schedule</code>), and cloud-executed (Routines)</li>
       <li>The <code>/loop</code> command: syntax, intervals, and when to use it</li>
       <li>Underlying cron tools: CronCreate, CronList, CronDelete &mdash; and the 5-field cron expression format</li>
       <li>Desktop scheduled tasks: creating durable tasks via the Cowork sidebar or <code>/schedule</code> that survive restarts</li>
       <li>Session-scoped limits: tasks only fire while Claude Code is running and idle; 3-day auto-expiry; no catch-up for missed fires</li>
-      <li>Practical patterns: deployment monitoring, daily PR summaries, weekly documentation updates, morning briefings</li>
-      <li>Security and permissions: tasks inherit your environment but permission prompts can stall unattended sessions</li>
-      <li>When to use <code>/loop</code> vs. Desktop scheduled tasks vs. GitHub Actions for CI/CD automation</li>
+      <li><strong>Routines (cloud execution):</strong> a saved configuration of prompt, repositories, and connectors that runs on Anthropic's infrastructure &mdash; your machine doesn't need to be on. Supports scheduling and event triggers. Available on Pro (5/day), Max (15/day), Team/Enterprise (25/day)</li>
+      <li>Routines vs. cron jobs vs. GitHub Actions: Routines are AI-adaptive (context-aware, not just script-executing) but not full agents (stateless per run)</li>
+      <li>Practical patterns: deployment verification, alert triage, daily PR summaries, weekly documentation updates</li>
+      <li>Security and permissions: tasks inherit your environment; cloud Routines use connectors you explicitly authorize; permission prompts can stall unattended local sessions</li>
+      <li>When to use each tier: <code>/loop</code> for active monitoring, Desktop tasks for local persistence, Routines for untethered automation</li>
     </ul>
     <h3>Exercise</h3>
-    <p>Set up two scheduled tasks for your project. First, use <code>/loop</code> in the CLI to monitor something in real time. Second, create a persistent Desktop scheduled task that runs weekly. Compare the experience &mdash; which felt more useful, and why?</p>
-    <div class="check"><strong>Check:</strong> Can you set up a recurring task that runs without your intervention and delivers useful output when you come back? If yes, move on.</div>
+    <p>Set up all three tiers for your project. Use <code>/loop</code> in the CLI to monitor something in real time. Create a persistent Desktop scheduled task that runs weekly. Then set up one Routine &mdash; start with a simple daily summary &mdash; and verify it runs without your machine being active. Compare the three: what's the tradeoff between control, persistence, and effort?</p>
+    <div class="check"><strong>Check:</strong> Can you articulate which automation tier to reach for in a given situation, and have you run at least one task from each? If yes, move on.</div>
   </div>
 
   <div class="module-block">
@@ -311,7 +313,7 @@
       <li><strong>Skills</strong> (Module 7): Create reusable skills for repeated patterns</li>
       <li><strong>MCP</strong> (Module 8): Connect to external tools you need</li>
       <li><strong>Multi-agent</strong> (Module 9): Parallelize where it makes sense</li>
-      <li><strong>Scheduled tasks</strong> (Module 10): Automate recurring work</li>
+      <li><strong>Scheduled tasks &amp; Routines</strong> (Module 10): Automate recurring work, including cloud-executed Routines</li>
       <li><strong>Remote Control + Channels</strong> (Modules 11&ndash;12): Stay connected on the go</li>
       <li><strong>Delivery</strong> (Module 13): Document, review, ship</li>
     </ol>
@@ -335,12 +337,12 @@
   </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../supabase-client.js"></script>
+<script src="../../supabase-client.js"></script>
 <script src="../../auth-guard.js"></script>
 <script src="../../auth-account.js"></script>
-<script src="../course-notes.js"></script>
-<script src="../notes-widget.js"></script>
-<script src="../feedback-widget.js"></script>
-<script src="../version.js"></script>
+<script src="../../course-notes.js"></script>
+<script src="../../notes-widget.js"></script>
+<script src="../../feedback-widget.js"></script>
+<script src="../../version.js"></script>
 </body>
 </html>
